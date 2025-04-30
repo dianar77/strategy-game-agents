@@ -1,6 +1,9 @@
 import time
 import os
-from base_llm import OpenAILLM, BaseLLM, MistralLLM, AzureOpenAILLM
+import sys, pathlib
+sys.path.insert(0, str(pathlib.Path(__file__).parent.parent))
+import base_llm
+from base_llm import OpenAILLM, AzureOpenAILLM, MistralLLM, BaseLLM, MistralLLM, AzureOpenAILLM
 from typing import List, Dict, Tuple, Any, Optional
 import json
 import random
@@ -68,7 +71,6 @@ class LLMPlayer(Player):
         super().__init__(color, name)
         # Get API key from environment variable
         if llm is None:
-            from agents.base_llm import OpenAILLM
             self.llm = OpenAILLM(model_name="gpt-3.5-turbo")
         else:
             self.llm = llm

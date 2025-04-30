@@ -1,36 +1,8 @@
 # strategy-game-agents
 
-Original LeaderBoard
+Example Use Case
 
-| Player               | % of wins in 1v1 games      | num games used for result |
-| -------------------- | --------------------------- | ------------------------- |
-| AlphaBeta(n=2)       | 80% vs ValueFunction        | 25                        |
-| ValueFunction        | 90% vs GreedyPlayouts(n=25) | 25                        |
-| GreedyPlayouts(n=25) | 100% vs MCTS(n=100)         | 25                        |
-| MCTS(n=100)          | 60% vs WeightedRandom       | 15                        |
-| WeightedRandom       | 53% vs WeightedRandom       | 1000                      |
-| VictoryPoint         | 60% vs Random               | 1000                      |
-| Random               | -                           | -                         |
-
-
-
-
-### New Custom Bots
-
-| Player               | % of wins in 1v1 games      | num games used for result |
-| -------------------- | --------------------------- | ------------------------- |
-| Vanilla              | -                           | -                         |
-| LLMPlayer            | -                           | -                         |
-| WeightedRandom       | -                           | -                         |
-
-
-
-## 1v1 Battle Results
-| Winner Player        | Loser Player                | wins / num games          | % wins           |
-| -------------------- | --------------------------- | ------------------------- | ---------------- |
-|                      | -                           | -                         |                  |
-|                      | -                           | -                         |                  |
-|                      | -                           | -                         |                  |
+catanatron-play --code=agents/vanillaLLM_player/vanillaLLM_player.py  --players=AB,VanillaLLM --num=1 --output=data/ --json
 
 
 
