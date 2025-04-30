@@ -1,7 +1,7 @@
 import time
 import os
 import sys, pathlib
-sys.path.insert(0, str(pathlib.Path(__file__).parent))
+sys.path.insert(0, str(pathlib.Path(__file__).parent.parent))
 import base_llm
 from base_llm import OpenAILLM, AzureOpenAILLM, MistralLLM
 from typing import List, Dict, Tuple, Any, Optional
