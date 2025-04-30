@@ -14,12 +14,24 @@ Original LeaderBoard
 
 
 
-Updated LeaderBoard
 
-### Custom Bots
+### New Custom Bots
 
 | Player               | % of wins in 1v1 games      | num games used for result |
 | -------------------- | --------------------------- | ------------------------- |
 | Vanilla              | -                           | -                         |
 | LLMPlayer            | -                           | -                         |
 | WeightedRandom       | -                           | -                         |
+
+
+
+## 1v1 Battle Results
+| Winner Player        | Loser Player                | wins / num games          | % wins           |
+| -------------------- | --------------------------- | ------------------------- | ---------------- |
+|                      | -                           | -                         |                  |
+|                      | -                           | -                         |                  |
+|                      | -                           | -                         |                  |
+
+
+
+
