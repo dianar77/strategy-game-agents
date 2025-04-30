@@ -1,6 +1,6 @@
 import time
 import os
-from base_llm import OpenAILLM
+from base_llm import OpenAILLM, BaseLLM, MistralLLM, AzureOpenAILLM
 from typing import List, Dict, Tuple, Any, Optional
 import json
 import random
@@ -522,8 +522,29 @@ class LLMPlayer(Player):
             dev_card_count = player_num_dev_cards(state, color)
             if is_current:
                 # Show current player's development cards
-                dev_cards = state.player_state.get(f"{key}_DEVELOPMENT_CARDS", {})
-                played_dev_cards = state.player_state.get(f"{key}_PLAYED_DEV_CARDS", {})
+                dev_cards = {}
+                played_dev_cards = {}
+                dev_card_types = ["KNIGHT", "YEAR_OF_PLENTY", "MONOPOLY", "ROAD_BUILDING", "VICTORY_POINT"]
+
+                # Check for unplayed development cards
+                for card_type in dev_card_types:
+                    card_key = f"{key}_{card_type}_IN_HAND"
+                    count = state.player_state.get(card_key, 0)
+                    if count > 0:
+                        dev_cards[card_type] = count
+
+                # Check for played cards
+                for card_type in dev_card_types:
+                    # if card_type == "VICTORY_POINT":
+                    #     continue  # VP cards aren't played
+                    card_key = f"{key}_PLAYED_{card_type}"
+                    count = state.player_state.get(card_key, 0)
+                    if count > 0:
+                        played_dev_cards[card_type] = count
+
+
+                # dev_cards = state.player_state.get(f"{key}_DEVELOPMENT_CARDS", {})
+                # played_dev_cards = state.player_state.get(f"{key}_PLAYED_DEV_CARDS", {})
 
                 # Format available dev cards
                 available_cards = []
@@ -542,13 +563,42 @@ class LLMPlayer(Player):
                 if played_cards:
                     output.write(f"    Played Cards: {', '.join(played_cards)}\n")
             else:
-                # For other players, just show the count
-                visible_played = state.player_state.get(f"{key}_PLAYED_DEV_CARDS", {})
-                knights_played = visible_played.get("KNIGHT", 0)
+                # For other players, just show the count but check the actual keys
+                played_dev_cards = {}
+                dev_cards = {}
+                dev_card_types = ["KNIGHT", "YEAR_OF_PLENTY", "MONOPOLY", "ROAD_BUILDING", "VICTORY_POINT"]
+
+                 # Check for unplayed development cards
+                dev_card_count = 0
+                for card_type in dev_card_types:
+                    card_key = f"{key}_{card_type}_IN_HAND"
+                    count = state.player_state.get(card_key, 0)
+                    if count > 0:
+                        dev_cards[card_type] = count
+                        dev_card_count += count
+
+                
+                # Check for played cards
+                for card_type in dev_card_types:
+                    card_key = f"{key}_PLAYED_{card_type}"
+                    count = state.player_state.get(card_key, 0)
+                    if count > 0:  # VP cards aren't visibly played
+                        played_dev_cards[card_type] = count
+                            
+                # Show total dev cards (hidden from other players)
                 if dev_card_count > 0:
                     output.write(f"    Development Cards: {dev_card_count} (hidden)\n")
-                if knights_played > 0:
-                    output.write(f"    Knights Played: {knights_played}\n")
+                else:
+                    output.write(f"    Development Cards: None\n")
+                
+                # Show all played cards (these are public information)
+                played_cards = []
+                for card_type, count in played_dev_cards.items():
+                    if count > 0:
+                        played_cards.append(f"{count} {card_type}")
+                
+                if played_cards:
+                    output.write(f"    Played Cards: {', '.join(played_cards)}\n")
 
             # Building information (public)
             output.write(f"    Buildings:\n")
@@ -625,11 +675,11 @@ class LLMPlayer(Player):
             return descriptions[action_type]
 
         if action_type == ActionType.BUILD_ROAD:
-            return f"Build a road at edge {value} ({self._format_cost('ROAD')})"
+            return f"Build a road at edge {value} (Cost: {self._format_cost('ROAD')})"
         elif action_type == ActionType.BUILD_SETTLEMENT:
-            return f"Build a settlement at node {value} ({self._format_cost('SETTLEMENT')})"
+            return f"Build a settlement at node {value} (Cost: {self._format_cost('SETTLEMENT')})"
         elif action_type == ActionType.BUILD_CITY:
-            return f"Upgrade settlement to city at node {value} ({self._format_cost('CITY')})"
+            return f"Upgrade settlement to city at node {value} (Cost: {self._format_cost('CITY')})"
         elif action_type == ActionType.MOVE_ROBBER:
             target_color = value[1]
             target_str = f" and steal from {target_color.name}" if target_color else ""
