@@ -1,15 +1,11 @@
 import sys
 import os
 sys.path.append(os.path.join(os.path.dirname(__file__), "agents"))
-# sys.path.append(os.path.join(os.path.dirname(__file__), "catanatron"))
-sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 from agents.base_llm import OpenAILLM, MistralLLM, AzureOpenAILLM
-#from catanatron.catanatron_experimental.catanatron_experimental.machine_learning.players.minimax import AlphaBetaPlayer
-
 
 
 from catanatron import Game, RandomPlayer, Color
-from agents.llm_player import LLMPlayer  # Import your LLMPlayer
+from agents.llm_player.llm_player import LLMPlayer  # Import your LLMPlayer
 
 def main():
     # Create players: 3 random, 1 LLM agent

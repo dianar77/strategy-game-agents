@@ -6,6 +6,7 @@ import json
 import random
 from enum import Enum
 from io import StringIO
+from datetime import datetime
 
 from catanatron.models.player import Player
 from catanatron.game import Game
@@ -61,6 +62,7 @@ class LLMPlayer(Player):
     """LLM-powered player that uses Claude API to make Catan game decisions."""
     # Class properties
     debug_mode = True
+    run_dir = None
 
     def __init__(self, color, name=None, llm=None):
         super().__init__(color, name)
@@ -72,6 +74,14 @@ class LLMPlayer(Player):
             self.llm = llm
         self.is_bot = True
         self.llm_name = self.llm.model
+
+        if LLMPlayer.run_dir is None:
+            agent_dir = os.path.dirname(os.path.abspath(__file__))
+            runs_dir = os.path.join(agent_dir, "runs")
+            os.makedirs(runs_dir, exist_ok=True)
+            run_id = datetime.now().strftime("run_%Y%m%d_%H%M%S")
+            LLMPlayer.run_dir = os.path.join(runs_dir, run_id)
+            os.makedirs(LLMPlayer.run_dir, exist_ok=True)
 
         # Initialize stats for the player
         self.api_calls = 0
@@ -234,16 +244,38 @@ class LLMPlayer(Player):
 
         try:
             response = self.llm.query(prompt)
-            # Use the model name for the log file
-            model_name = self.llm_name
-            safe_model_name = model_name.replace("/", "_").replace(":", "_").replace(" ", "_")
-            log_path = os.path.join(os.path.dirname(__file__), f"llm_log_{safe_model_name}.txt")
+
+            # # Get the root directory (project root)
+            # agent_dir = os.path.dirname(os.path.abspath(__file__))
+            # runs_dir = os.path.join(agent_dir, "runs")
+
+            # # Create runs directory if it doesn't exist
+            # os.makedirs(runs_dir, exist_ok=True)
+
+            # # Create a unique subdirectory for this run
+            # run_id = datetime.now().strftime("run_%Y%m%d_%H%M%S")
+            # run_dir = os.path.join(runs_dir, run_id)
+            # os.makedirs(run_dir, exist_ok=True)
+
+            # # Use the model name for the log file
+            # log_path = os.path.join(run_dir, f"llm_log_{self.llm_name}.txt")
+
+            # # Now write your log as before
+            # with open(log_path, "a") as log_file:
+            #     log_file.write("PROMPT:\n")
+            #     log_file.write(prompt + "\n")
+            #     log_file.write("RESPONSE:\n")
+            #     log_file.write(str(response) + "\n")
+            #     log_file.write("="*40 + "\n")
+
+            log_path = os.path.join(LLMPlayer.run_dir, f"llm_log_{self.llm_name}.txt")
             with open(log_path, "a") as log_file:
                 log_file.write("PROMPT:\n")
                 log_file.write(prompt + "\n")
                 log_file.write("RESPONSE:\n")
                 log_file.write(str(response) + "\n")
                 log_file.write("="*40 + "\n")
+
             # Extract the first integer from a boxed answer or any number
             import re
             boxed_match = re.search(r'\\boxed\{(\d+)\}', str(response))
