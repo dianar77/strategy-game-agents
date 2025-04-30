@@ -6,7 +6,7 @@ from agents.base_llm import OpenAILLM, MistralLLM, AzureOpenAILLM
 sys.path.append(os.path.join(os.path.dirname(__file__), "agents"))
 
 from catanatron import Game, RandomPlayer, Color
-from llm_player import LLMPlayer  # Import your LLMPlayer
+from agents.llm_player import LLMPlayer  # Import your LLMPlayer
 
 def main():
     # Create players: 3 random, 1 LLM agent
