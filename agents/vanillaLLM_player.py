@@ -57,7 +57,9 @@ DEV_CARD_DESCRIPTIONS = {
     "VICTORY_POINT": "Worth 1 victory point",
 }
 
-class VanillaPlayer(Player):
+# Manually register the LLMPlayer with the CLI system
+@register_player("VanillaLLM")
+class VanillaLLMPlayer(Player):
     """LLM-powered player that uses Claude API to make Catan game decisions."""
     # Class properties
     debug_mode = True
@@ -668,5 +670,3 @@ class VanillaPlayer(Player):
                 print(f"Updated plan: {self.current_plan}")
 
 
-# Manually register the LLMPlayer with the CLI system
-register_player("Vanilla")(VanillaPlayer)
