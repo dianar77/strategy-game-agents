@@ -8,19 +8,35 @@ sys.path.append(minimax_dir)
 from agents.base_llm import OpenAILLM, MistralLLM, AzureOpenAILLM
 from catanatron import Game, RandomPlayer, Color
 from agents.llm_player.llm_player import LLMPlayer  # Import your LLMPlayer
-from minimax import AlphaBetaPlayer
+from agents.basicLang_player.basicLang_player import BasicLangPlayer
+from agents.toolCallLLM_player.toolCallLLM_player import ToolCallLLMPlayer
+from agents.fromScratch_player.creator_agent import CreatorAgent, read_foo, write_foo, run_testfoo, list_local_files, read_local_file 
 
+from minimax import AlphaBetaPlayer
+from catanatron_server.utils import open_link
 
 def main():
+
+    cA = CreatorAgent()
+    #print(write_foo("print('Hello, world!')"))  # Write to foo_player.py
+    #print(read_foo())
+    #print(run_testfoo())
+    #print(list_local_files())
+    cA.run_react_graph()
+
     # Create players: 3 random, 1 LLM agent
-    players = [
-        #RandomPlayer(Color.RED),
-        AlphaBetaPlayer(Color.BLUE),
-        LLMPlayer(Color.ORANGE, llm=AzureOpenAILLM(model_name="gpt-4o")),
-        #LLMPlayer(Color.WHITE, llm=MistralLLM(model_name="mistral-large-latest"))
-    ]
-    game = Game(players)
-    print(game.play())
+
+
+    # players = [
+    #     RandomPlayer(Color.RED),
+    #     #AlphaBetaPlayer(Color.BLUE),
+    #     ToolCallLLMPlayer(Color.ORANGE),
+    #     #BasicLangPlayer(Color.BLUE),
+    #     #LLMPlayer(Color.WHITE, llm=MistralLLM(model_name="mistral-large-latest"))
+    # ]
+    # game = Game(players)
+    # #open_link(game)  # opens game in browser...not working yet
+    # print(game.play())
 
 if __name__ == "__main__":
     main()

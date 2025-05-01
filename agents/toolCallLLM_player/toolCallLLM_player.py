@@ -29,6 +29,17 @@ from catanatron.state_functions import (
 )
 from catanatron.state import State
 
+from langchain_openai import AzureChatOpenAI
+from langgraph.graph import MessagesState, START, StateGraph
+from langchain_core.messages import HumanMessage, SystemMessage
+from langgraph.prebuilt import tools_condition, ToolNode
+from IPython.display import Image, display
+from langgraph.checkpoint.memory import MemorySaver
+from langchain_core.messages import RemoveMessage
+from langchain_community.tools.tavily_search import TavilySearchResults
+
+
+
 # Constants for pretty printing
 RESOURCE_EMOJI = {
     "WOOD": "🌲",
@@ -60,29 +71,32 @@ DEV_CARD_DESCRIPTIONS = {
     "VICTORY_POINT": "Worth 1 victory point",
 }
 
-class LLMPlayer(Player):
+class ToolCallLLMPlayer(Player):
     """LLM-powered player that uses Claude API to make Catan game decisions."""
     # Class properties
     debug_mode = True
     run_dir = None
 
-    def __init__(self, color, name=None, llm=None):
+    def __init__(self, color, name=None):
         super().__init__(color, name)
         # Get API key from environment variable
-        if llm is None:
-            self.llm = AzureOpenAILLM(model_name="gpt-4o")
-        else:
-            self.llm = llm
-        self.is_bot = True
-        self.llm_name = self.llm.model
+        
+        #self.llm = AzureOpenAILLM(model_name="gpt-4o")
+        
+        self.llm_name = "gpt-4o"
+        self.llm = AzureChatOpenAI(
+            model="gpt-4o",
+            azure_endpoint="https://gpt-amayuelas.openai.azure.com/",
+            api_version = "2024-12-01-preview"
+        )
 
-        if LLMPlayer.run_dir is None:
+        if ToolCallLLMPlayer.run_dir is None:
             agent_dir = os.path.dirname(os.path.abspath(__file__))
             runs_dir = os.path.join(agent_dir, "runs")
             os.makedirs(runs_dir, exist_ok=True)
             run_id = datetime.now().strftime("run_%Y%m%d_%H%M%S")
-            LLMPlayer.run_dir = os.path.join(runs_dir, run_id)
-            os.makedirs(LLMPlayer.run_dir, exist_ok=True)
+            ToolCallLLMPlayer.run_dir = os.path.join(runs_dir, run_id)
+            os.makedirs(ToolCallLLMPlayer.run_dir, exist_ok=True)
 
         # Initialize stats for the player
         self.api_calls = 0
@@ -94,6 +108,57 @@ class LLMPlayer(Player):
         self.last_resources = None  # Resources from previous turn
         self.current_plan = None    # Current strategic plan
         self.last_turn_number = 0
+
+        # Langchain Addons
+        #self.memory_saver = MemorySaver()
+        self.memory_config = {"configurable": {"thread_id": "1"}}
+        self.num_memory_messages = 3        # Trim number of messages to keep in memory to limit API usage
+        self.react_graph = self.create_langchain_react_graph()
+        
+        self.test_count = 0
+
+
+    def create_langchain_react_graph(self):
+        """Create a react graph for the LLM to use."""
+        
+        tools = [web_search_tool_call]
+        llm_with_tools = self.llm.bind_tools(tools)
+        
+        def assistant(state: MessagesState):
+            return {"messages": [llm_with_tools.invoke(state["messages"])]}
+        
+        def trim_messages(state: MessagesState):
+            # Delete all but the 3 most recent messages
+            delete_messages = [RemoveMessage(id=m.id) for m in state["messages"][:-self.num_memory_messages]]
+            return {"messages": delete_messages}
+
+
+        builder = StateGraph(MessagesState)
+
+        # Define nodes: these do the work
+        builder.add_node("trim_messages", trim_messages)
+        builder.add_node("assistant", assistant)
+        builder.add_node("tools", ToolNode(tools))
+
+        # Define edges: these determine how the control flow moves
+        builder.add_edge(START, "trim_messages")
+        builder.add_edge("trim_messages", "assistant")
+        builder.add_conditional_edges(
+            "assistant",
+            # If the latest message (result) from assistant is a tool call -> tools_condition routes to tools
+            # If the latest message (result) from assistant is a not a tool call -> tools_condition routes to END
+            tools_condition,
+        )
+        builder.add_edge("tools", "assistant")
+        
+        return builder.compile(checkpointer=MemorySaver())
+
+    def print_react_graph(self):
+        """
+        Print the react graph for debugging purposes.
+        ONLY WORKS IN .IPYNB NOTEBOOKS
+        """
+        display(Image(self.react_graph.get_graph(xray=True).draw_mermaid_png()))
 
     def decide(self, game: Game, playable_actions: List[Action]) -> Action:
         """Use Claude API to analyze game state and choose an action.
@@ -124,6 +189,8 @@ class LLMPlayer(Player):
 
         if self.debug_mode:
             print(f"Game state prepared for LLM (length: {len(game_state_text)} chars)")
+            #print("Game state prepared for LLM")
+
 
         # Use LLM to choose an action
         try:
@@ -132,6 +199,7 @@ class LLMPlayer(Player):
                 action = playable_actions[chosen_action_idx]
                 if self.debug_mode:
                     print(f"LLM chose action {chosen_action_idx}: {self._get_action_description(action)}")
+                    #print(f"LLM chose action {chosen_action_idx}")
 
                 # Record decision time
                 decision_time = time.time() - start_time
@@ -239,43 +307,34 @@ class LLMPlayer(Player):
             "- Understanding the connectivity between nodes is crucial for road building strategy\n"
             "- Ports allow trading resources at better rates (2:1 or 3:1)\n\n"
             "Here is the current game state:\n\n"
-            f"{game_state_text}\n\n"
+            #f"{game_state_text}\n\n"
+            "Available Tool Calls:\n"
+            "  - web_search_tool_call: USE THIS TOOL! Search the web for information. Use this as much as you like. You can search for game rules, ask for advice, or to choose the most optimal option. \n\n"
+
             f"Based on this information, which action number do you choose? Think step by step about your options, then put the final action number in a box like \\boxed{{1}}."
         )
 
         try:
-            response = self.llm.query(prompt)
 
-            # # Get the root directory (project root)
-            # agent_dir = os.path.dirname(os.path.abspath(__file__))
-            # runs_dir = os.path.join(agent_dir, "runs")
 
-            # # Create runs directory if it doesn't exist
-            # os.makedirs(runs_dir, exist_ok=True)
+            msg = HumanMessage(content=prompt)
 
-            # # Create a unique subdirectory for this run
-            # run_id = datetime.now().strftime("run_%Y%m%d_%H%M%S")
-            # run_dir = os.path.join(runs_dir, run_id)
-            # os.makedirs(run_dir, exist_ok=True)
+            # Lang Graph Client
+            messages = self.react_graph.invoke({"messages": [msg]}, self.memory_config)
+            response = ""
+            for m in messages['messages']:
+                m.pretty_print()
+                response = m.content # Get the content of the last message
+            
+            # Remove quotes
+            response = response.strip()
 
-            # # Use the model name for the log file
-            # log_path = os.path.join(run_dir, f"llm_log_{self.llm_name}.txt")
+            log_path = os.path.join(ToolCallLLMPlayer.run_dir, f"llm_log_{self.llm_name}.txt")
 
-            # # Now write your log as before
-            # with open(log_path, "a") as log_file:
-            #     log_file.write("PROMPT:\n")
-            #     log_file.write(prompt + "\n")
-            #     log_file.write("RESPONSE:\n")
-            #     log_file.write(str(response) + "\n")
-            #     log_file.write("="*40 + "\n")
-
-            log_path = os.path.join(LLMPlayer.run_dir, f"llm_log_{self.llm_name}.txt")
             with open(log_path, "a") as log_file:
-                log_file.write("PROMPT:\n")
-                log_file.write(prompt + "\n")
-                log_file.write("RESPONSE:\n")
-                log_file.write(str(response) + "\n")
-                log_file.write("="*40 + "\n")
+                for messages in messages['messages']:
+                    log_file.write(messages.pretty_repr())
+                log_file.write("\n\n" + "|"*40 + "NEW TURN" + "|"*40 + "\n\n")
 
             # Extract the first integer from a boxed answer or any number
             import re
@@ -750,7 +809,25 @@ class LLMPlayer(Player):
             if self.debug_mode:
                 print(f"Updated plan: {self.current_plan}")
 
-# Do not register the player as placed in the cli_players.py file instead
-# from catanatron_experimental.cli.cli_players import register_player
-# Manually register the LLMPlayer with the CLI system
-#register_player("LLM")(LLMPlayer)
+
+def web_search_tool_call(query: str) -> str:
+    """Perform a web search using the Tavily API.
+
+    Args:
+        query: The search query string.
+
+    Returns:
+        The search result as a string.
+    """
+    # Simulate a web search
+    tavily_search = TavilySearchResults(max_results=3)
+    search_docs = tavily_search.invoke(query)
+    formatted_search_docs = "\n\n---\n\n".join(
+        [
+            f'<Document href="{doc["url"]}"/>\n{doc["content"]}\n</Document>'
+            for doc in search_docs
+        ]
+    )
+
+    return formatted_search_docs
+
