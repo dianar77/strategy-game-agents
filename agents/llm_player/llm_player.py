@@ -71,7 +71,7 @@ class LLMPlayer(Player):
         super().__init__(color, name)
         # Get API key from environment variable
         if llm is None:
-            self.llm = OpenAILLM(model_name="gpt-3.5-turbo")
+            self.llm = AzureOpenAILLM(model_name="gpt-4o")
         else:
             self.llm = llm
         self.is_bot = True

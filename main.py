@@ -14,8 +14,8 @@ from minimax import AlphaBetaPlayer
 def main():
     # Create players: 3 random, 1 LLM agent
     players = [
-        RandomPlayer(Color.RED),
-        #AlphaBetaPlayer(Color.BLUE),
+        #RandomPlayer(Color.RED),
+        AlphaBetaPlayer(Color.BLUE),
         LLMPlayer(Color.ORANGE, llm=AzureOpenAILLM(model_name="gpt-4o")),
         #LLMPlayer(Color.WHITE, llm=MistralLLM(model_name="mistral-large-latest"))
     ]
