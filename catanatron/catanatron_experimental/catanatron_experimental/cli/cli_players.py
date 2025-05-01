@@ -26,6 +26,12 @@ from catanatron_experimental.machine_learning.players.playouts import (
     GreedyPlayoutsPlayer,
 )
 
+from agents.llm_player.llm_player import LLMPlayer
+from agents.vanillaLLM_player.vanillaLLM_player import VanillaLLMPlayer
+from agents.basicLang_player.basicLang_player import BasicLangPlayer
+from agents.toolCallLLM_player.toolCallLLM_player import ToolCallLLMPlayer
+from agents.fromScratch_player.foo_player import FooPlayer
+
 # from catanatron_experimental.machine_learning.players.online_mcts_dqn import (
 #     OnlineMCTSDQNPlayer,
 # )
@@ -95,6 +101,39 @@ CLI_PLAYERS = [
         "AlphaBeta but searches only within turn",
         SameTurnAlphaBetaPlayer,
     ),
+    CliPlayer(
+        "VLLM",
+        "VanillaLLMPlayer",
+        "Initial Vanilla LLM Player with no additions",
+        VanillaLLMPlayer,
+    ),
+    CliPlayer(
+        "LLM",
+        "LLMPlayer",
+        "LLM with adjusted prompt and code to fix bugs with vanilla llm",
+        LLMPlayer,
+    ),
+    CliPlayer(
+        "BL",
+        "BasicLangPlayer",
+        "First iteration of migration to using Lang Chain instead of custom base_llm class. "
+        + "Has inneficient memory that is saves number of messages which is set to a variable ",
+        BasicLangPlayer,
+    ),
+    CliPlayer(
+        "TC",
+        "ToolCallLLMPlayer",
+        "LLM Player with tool call capabilities. Uses LangChain to call tools."
+        + " Has access to web search, ...",
+        ToolCallLLMPlayer,
+    ),
+    CliPlayer(
+        "FOO",
+        "FooPlayer",
+        "Player being created by creator agent",
+        FooPlayer,
+    ),
+
 ]
 
 
