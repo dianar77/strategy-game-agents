@@ -26,6 +26,9 @@ from catanatron_experimental.machine_learning.players.playouts import (
     GreedyPlayoutsPlayer,
 )
 
+from agents.llm_player.llm_player import LLMPlayer
+from agents.vanillaLLM_player.vanillaLLM_player import VanillaLLMPlayer
+
 # from catanatron_experimental.machine_learning.players.online_mcts_dqn import (
 #     OnlineMCTSDQNPlayer,
 # )
@@ -94,6 +97,18 @@ CLI_PLAYERS = [
         "SameTurnAlphaBetaPlayer",
         "AlphaBeta but searches only within turn",
         SameTurnAlphaBetaPlayer,
+    ),
+    CliPlayer(
+        "VLLM",
+        "VanillaLLMPlayer",
+        "Initial Vanilla LLM Player with no additions",
+        VanillaLLMPlayer,
+    ),
+    CliPlayer(
+        "LLM",
+        "LLMPlayer",
+        "LLM with adjusted prompt to fix bugs",
+        LLMPlayer,
     ),
 ]
 

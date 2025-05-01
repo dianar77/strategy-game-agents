@@ -28,7 +28,6 @@ from catanatron.state_functions import (
     get_largest_army,
 )
 from catanatron.state import State
-from catanatron_experimental.cli.cli_players import register_player
 
 # Constants for pretty printing
 RESOURCE_EMOJI = {
@@ -71,7 +70,7 @@ class LLMPlayer(Player):
         super().__init__(color, name)
         # Get API key from environment variable
         if llm is None:
-            self.llm = OpenAILLM(model_name="gpt-3.5-turbo")
+            self.llm = AzureOpenAILLM(model_name="gpt-4o")
         else:
             self.llm = llm
         self.is_bot = True
@@ -751,6 +750,7 @@ class LLMPlayer(Player):
             if self.debug_mode:
                 print(f"Updated plan: {self.current_plan}")
 
-
+# Do not register the player as placed in the cli_players.py file instead
+# from catanatron_experimental.cli.cli_players import register_player
 # Manually register the LLMPlayer with the CLI system
-register_player("LLM")(LLMPlayer)
+#register_player("LLM")(LLMPlayer)
