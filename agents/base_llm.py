@@ -144,6 +144,7 @@ class AzureOpenAILLM(BaseLLM):
         
         self.model = model_name
 
+
     def query(self, prompt: str) -> Dict[str, str]:
         while True:
             try:

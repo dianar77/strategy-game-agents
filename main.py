@@ -24,9 +24,6 @@ def main():
     #print(list_local_files())
     cA.run_react_graph()
 
-    # Create players: 3 random, 1 LLM agent
-
-
     # players = [
     #     RandomPlayer(Color.RED),
     #     #AlphaBetaPlayer(Color.BLUE),
