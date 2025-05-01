@@ -112,7 +112,7 @@ class ToolCallLLMPlayer(Player):
         # Langchain Addons
         #self.memory_saver = MemorySaver()
         self.memory_config = {"configurable": {"thread_id": "1"}}
-        self.num_memory_messages = 2
+        self.num_memory_messages = 3        # Trim number of messages to keep in memory to limit API usage
         self.react_graph = self.create_langchain_react_graph()
         
         self.test_count = 0
@@ -307,25 +307,17 @@ class ToolCallLLMPlayer(Player):
             "- Understanding the connectivity between nodes is crucial for road building strategy\n"
             "- Ports allow trading resources at better rates (2:1 or 3:1)\n\n"
             "Here is the current game state:\n\n"
-            f"{game_state_text}\n\n"
+            #f"{game_state_text}\n\n"
+            "Available Tool Calls:\n"
+            "  - web_search_tool_call: USE THIS TOOL! Search the web for information. Use this as much as you like. You can search for game rules, ask for advice, or to choose the most optimal option. \n\n"
 
-            #"Feel free to search the web for any information you need to make your decision with the web_search_tool_call.\n"
             f"Based on this information, which action number do you choose? Think step by step about your options, then put the final action number in a box like \\boxed{{1}}."
         )
 
         try:
-            # if self.test_count == 0:
-            #     prompt = "My name is Dakota"
-            #     self.test_count += 1
-            # else:
-            #     prompt = "What is my name"
 
-            #response = self.llm.query(prompt)
 
             msg = HumanMessage(content=prompt)
-
-            # Lang Chain Client
-            #response = self.llm.invoke([msg]).content
 
             # Lang Graph Client
             messages = self.react_graph.invoke({"messages": [msg]}, self.memory_config)
@@ -337,14 +329,7 @@ class ToolCallLLMPlayer(Player):
             # Remove quotes
             response = response.strip()
 
-
             log_path = os.path.join(ToolCallLLMPlayer.run_dir, f"llm_log_{self.llm_name}.txt")
-            # with open(log_path, "a") as log_file:
-            #     log_file.write("PROMPT:\n")
-            #     log_file.write(prompt + "\n")
-            #     log_file.write("RESPONSE:\n")
-            #     log_file.write(str(response) + "\n")
-            #     log_file.write("="*40 + "\n")
 
             with open(log_path, "a") as log_file:
                 for messages in messages['messages']:
@@ -825,34 +810,6 @@ class ToolCallLLMPlayer(Player):
                 print(f"Updated plan: {self.current_plan}")
 
 
-def multiply(a: int, b: int) -> int:
-    """Multiply a and b.
-
-    Args:
-        a: first int
-        b: second int
-    """
-    return a * b
-
-def add(a: int, b: int) -> int:
-    """Adds a and b.
-
-    Args:
-        a: first int
-        b: second int
-    """
-    return a + b
-
-def divide(a: int, b: int) -> float:
-    """Divide a and b.
-
-    Args:
-        a: first int
-        b: second int
-    """
-    return a / b
-
-
 def web_search_tool_call(query: str) -> str:
     """Perform a web search using the Tavily API.
 
@@ -863,8 +820,14 @@ def web_search_tool_call(query: str) -> str:
         The search result as a string.
     """
     # Simulate a web search
-    tavily_search = TavilySearchResults(max_results=1)
-    search_docs = tavily_search.invoke("What is LangGraph?")
+    tavily_search = TavilySearchResults(max_results=3)
+    search_docs = tavily_search.invoke(query)
+    formatted_search_docs = "\n\n---\n\n".join(
+        [
+            f'<Document href="{doc["url"]}"/>\n{doc["content"]}\n</Document>'
+            for doc in search_docs
+        ]
+    )
 
-    return f"Web Search Results:\n'{search_docs[0].content}'"
+    return formatted_search_docs
 

@@ -1,7 +1,5 @@
 from catanatron import Player
-from catanatron_experimental.cli.cli_players import register_player
 
-@register_player("FOO")
 class FooPlayer(Player):
   def decide(self, game, playable_actions):
     """Should return one of the playable_actions.

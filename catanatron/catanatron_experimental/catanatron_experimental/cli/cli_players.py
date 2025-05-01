@@ -30,6 +30,7 @@ from agents.llm_player.llm_player import LLMPlayer
 from agents.vanillaLLM_player.vanillaLLM_player import VanillaLLMPlayer
 from agents.basicLang_player.basicLang_player import BasicLangPlayer
 from agents.toolCallLLM_player.toolCallLLM_player import ToolCallLLMPlayer
+from agents.fromScratch_player.foo_player import FooPlayer
 
 # from catanatron_experimental.machine_learning.players.online_mcts_dqn import (
 #     OnlineMCTSDQNPlayer,
@@ -126,6 +127,13 @@ CLI_PLAYERS = [
         + " Has access to web search, ...",
         ToolCallLLMPlayer,
     ),
+    CliPlayer(
+        "FOO",
+        "FooPlayer",
+        "Player being created by creator agent",
+        FooPlayer,
+    ),
+
 ]
 
 
