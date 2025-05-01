@@ -27,10 +27,10 @@ from langchain_community.tools.tavily_search import TavilySearchResults
 
 # -------- tool call configuration ----------------------------------------------------
 LOCAL_SEARCH_BASE_DIR = (Path(__file__).parent.parent.parent / "catanatron").resolve()
-FOO_TARGET_FILENAME = "foo_player.py"
+FOO_TARGET_FILENAME = "codeRefiningLLM_player.py"
 FOO_TARGET_FILE = Path(__file__).parent / FOO_TARGET_FILENAME    # absolute path
 FOO_MAX_BYTES   = 64_000                                     # context-friendly cap
-FOO_RUN_COMMAND = "catanatron-play --players=R,FOO_S --num=10 --config-map=MINI --output=data/ --json"
+FOO_RUN_COMMAND = "catanatron-play --players=R,R --num=1 --config-map=MINI --output=data/ --json"
 
 # -------------------------------------------------------------------------------------
 
