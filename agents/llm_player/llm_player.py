@@ -246,28 +246,8 @@ class LLMPlayer(Player):
         try:
             response = self.llm.query(prompt)
 
-            # # Get the root directory (project root)
-            # agent_dir = os.path.dirname(os.path.abspath(__file__))
-            # runs_dir = os.path.join(agent_dir, "runs")
-
-            # # Create runs directory if it doesn't exist
-            # os.makedirs(runs_dir, exist_ok=True)
-
-            # # Create a unique subdirectory for this run
-            # run_id = datetime.now().strftime("run_%Y%m%d_%H%M%S")
-            # run_dir = os.path.join(runs_dir, run_id)
-            # os.makedirs(run_dir, exist_ok=True)
-
-            # # Use the model name for the log file
-            # log_path = os.path.join(run_dir, f"llm_log_{self.llm_name}.txt")
-
-            # # Now write your log as before
-            # with open(log_path, "a") as log_file:
-            #     log_file.write("PROMPT:\n")
-            #     log_file.write(prompt + "\n")
-            #     log_file.write("RESPONSE:\n")
-            #     log_file.write(str(response) + "\n")
-            #     log_file.write("="*40 + "\n")
+            # Gather plan from the response
+            self._extract_plan_from_response(response)
 
             log_path = os.path.join(LLMPlayer.run_dir, f"llm_log_{self.llm_name}.txt")
             with open(log_path, "a") as log_file:
@@ -290,6 +270,8 @@ class LLMPlayer(Player):
                 idx = int(numbers[0])
                 if 0 <= idx < num_actions:
                     return idx
+                
+            
         except Exception as e:
             if self.debug_mode:
                 print(f"Error calling LLM: {e}")
