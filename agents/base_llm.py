@@ -124,16 +124,16 @@ class AzureOpenAILLM(BaseLLM):
 
     def __init__(self, model_name: str = "gpt-4o-mini"):
         
-        self.endpoint = os.getenv("AZURE_OPENAI_ENDPOINT")
-        self.api_version = "2024-12-01-preview"
+        endpoint = "https://gpt-amayuelas.openai.azure.com/"
+        api_version = "2024-12-01-preview"
 
         self.api_key = os.getenv("AZURE_OPENAI_API_KEY")
         if not self.api_key:
             raise ValueError("AZURE_OPENAI_API_KEY not found in environment variables")
         
         self.client = AzureOpenAI(
-            api_version=self.api_version,
-            azure_endpoint=self.endpoint,
+            api_version=api_version,
+            azure_endpoint=endpoint,
             api_key=self.api_key,
         )
         # openai.api_type = "azure"
@@ -145,6 +145,7 @@ class AzureOpenAILLM(BaseLLM):
             raise ValueError(f"Model must be one of: {self.AVAILABLE_MODELS}")
         
         self.model = model_name
+
 
     def query(self, prompt: str) -> Dict[str, str]:
         while True:
