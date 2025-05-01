@@ -36,9 +36,7 @@ from langgraph.prebuilt import tools_condition, ToolNode
 from IPython.display import Image, display
 from langgraph.checkpoint.memory import MemorySaver
 from langchain_core.messages import RemoveMessage
-
-
-
+from langchain_community.tools.tavily_search import TavilySearchResults
 
 
 
@@ -73,7 +71,7 @@ DEV_CARD_DESCRIPTIONS = {
     "VICTORY_POINT": "Worth 1 victory point",
 }
 
-class BasicLangPlayer(Player):
+class ToolCallLLMPlayer(Player):
     """LLM-powered player that uses Claude API to make Catan game decisions."""
     # Class properties
     debug_mode = True
@@ -92,13 +90,13 @@ class BasicLangPlayer(Player):
             api_version = "2024-12-01-preview"
         )
 
-        if BasicLangPlayer.run_dir is None:
+        if ToolCallLLMPlayer.run_dir is None:
             agent_dir = os.path.dirname(os.path.abspath(__file__))
             runs_dir = os.path.join(agent_dir, "runs")
             os.makedirs(runs_dir, exist_ok=True)
             run_id = datetime.now().strftime("run_%Y%m%d_%H%M%S")
-            BasicLangPlayer.run_dir = os.path.join(runs_dir, run_id)
-            os.makedirs(BasicLangPlayer.run_dir, exist_ok=True)
+            ToolCallLLMPlayer.run_dir = os.path.join(runs_dir, run_id)
+            os.makedirs(ToolCallLLMPlayer.run_dir, exist_ok=True)
 
         # Initialize stats for the player
         self.api_calls = 0
@@ -114,7 +112,7 @@ class BasicLangPlayer(Player):
         # Langchain Addons
         #self.memory_saver = MemorySaver()
         self.memory_config = {"configurable": {"thread_id": "1"}}
-        self.num_memory_messages = 5
+        self.num_memory_messages = 2
         self.react_graph = self.create_langchain_react_graph()
         
         self.test_count = 0
@@ -123,7 +121,7 @@ class BasicLangPlayer(Player):
     def create_langchain_react_graph(self):
         """Create a react graph for the LLM to use."""
         
-        tools = []
+        tools = [web_search_tool_call]
         llm_with_tools = self.llm.bind_tools(tools)
         
         def assistant(state: MessagesState):
@@ -310,6 +308,8 @@ class BasicLangPlayer(Player):
             "- Ports allow trading resources at better rates (2:1 or 3:1)\n\n"
             "Here is the current game state:\n\n"
             f"{game_state_text}\n\n"
+
+            #"Feel free to search the web for any information you need to make your decision with the web_search_tool_call.\n"
             f"Based on this information, which action number do you choose? Think step by step about your options, then put the final action number in a box like \\boxed{{1}}."
         )
 
@@ -338,7 +338,7 @@ class BasicLangPlayer(Player):
             response = response.strip()
 
 
-            log_path = os.path.join(BasicLangPlayer.run_dir, f"llm_log_{self.llm_name}.txt")
+            log_path = os.path.join(ToolCallLLMPlayer.run_dir, f"llm_log_{self.llm_name}.txt")
             # with open(log_path, "a") as log_file:
             #     log_file.write("PROMPT:\n")
             #     log_file.write(prompt + "\n")
@@ -823,3 +823,48 @@ class BasicLangPlayer(Player):
             self.current_plan = plan_match.group(1).strip()
             if self.debug_mode:
                 print(f"Updated plan: {self.current_plan}")
+
+
+def multiply(a: int, b: int) -> int:
+    """Multiply a and b.
+
+    Args:
+        a: first int
+        b: second int
+    """
+    return a * b
+
+def add(a: int, b: int) -> int:
+    """Adds a and b.
+
+    Args:
+        a: first int
+        b: second int
+    """
+    return a + b
+
+def divide(a: int, b: int) -> float:
+    """Divide a and b.
+
+    Args:
+        a: first int
+        b: second int
+    """
+    return a / b
+
+
+def web_search_tool_call(query: str) -> str:
+    """Perform a web search using the Tavily API.
+
+    Args:
+        query: The search query string.
+
+    Returns:
+        The search result as a string.
+    """
+    # Simulate a web search
+    tavily_search = TavilySearchResults(max_results=1)
+    search_docs = tavily_search.invoke("What is LangGraph?")
+
+    return f"Web Search Results:\n'{search_docs[0].content}'"
+

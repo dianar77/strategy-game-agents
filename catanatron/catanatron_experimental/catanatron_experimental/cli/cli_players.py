@@ -28,6 +28,8 @@ from catanatron_experimental.machine_learning.players.playouts import (
 
 from agents.llm_player.llm_player import LLMPlayer
 from agents.vanillaLLM_player.vanillaLLM_player import VanillaLLMPlayer
+from agents.basicLang_player.basicLang_player import BasicLangPlayer
+from agents.toolCallLLM_player.toolCallLLM_player import ToolCallLLMPlayer
 
 # from catanatron_experimental.machine_learning.players.online_mcts_dqn import (
 #     OnlineMCTSDQNPlayer,
@@ -107,8 +109,22 @@ CLI_PLAYERS = [
     CliPlayer(
         "LLM",
         "LLMPlayer",
-        "LLM with adjusted prompt to fix bugs",
+        "LLM with adjusted prompt and code to fix bugs with vanilla llm",
         LLMPlayer,
+    ),
+    CliPlayer(
+        "BL",
+        "BasicLangPlayer",
+        "First iteration of migration to using Lang Chain instead of custom base_llm class. "
+        + "Has inneficient memory that is saves number of messages which is set to a variable ",
+        BasicLangPlayer,
+    ),
+    CliPlayer(
+        "TC",
+        "ToolCallLLMPlayer",
+        "LLM Player with tool call capabilities. Uses LangChain to call tools."
+        + " Has access to web search, ...",
+        ToolCallLLMPlayer,
     ),
 ]
 

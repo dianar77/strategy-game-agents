@@ -8,6 +8,9 @@ sys.path.append(minimax_dir)
 from agents.base_llm import OpenAILLM, MistralLLM, AzureOpenAILLM
 from catanatron import Game, RandomPlayer, Color
 from agents.llm_player.llm_player import LLMPlayer  # Import your LLMPlayer
+from agents.basicLang_player.basicLang_player import BasicLangPlayer
+from agents.toolCallLLM_player.toolCallLLM_player import ToolCallLLMPlayer
+
 from minimax import AlphaBetaPlayer
 
 
@@ -16,7 +19,7 @@ def main():
     players = [
         RandomPlayer(Color.RED),
         #AlphaBetaPlayer(Color.BLUE),
-        LLMPlayer(Color.ORANGE, llm=AzureOpenAILLM(model_name="gpt-4o")),
+        ToolCallLLMPlayer(Color.ORANGE),
         #LLMPlayer(Color.WHITE, llm=MistralLLM(model_name="mistral-large-latest"))
     ]
     game = Game(players)
