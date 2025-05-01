@@ -27,7 +27,6 @@ from catanatron.state_functions import (
     get_largest_army,
 )
 from catanatron.state import State
-from catanatron_experimental.cli.cli_players import register_player
 
 # Constants for pretty printing
 RESOURCE_EMOJI = {
@@ -60,8 +59,7 @@ DEV_CARD_DESCRIPTIONS = {
     "VICTORY_POINT": "Worth 1 victory point",
 }
 
-# Manually register the LLMPlayer with the CLI system
-@register_player("VanillaLLM")
+
 class VanillaLLMPlayer(Player):
     """LLM-powered player that uses Claude API to make Catan game decisions."""
     # Class properties
@@ -671,4 +669,5 @@ class VanillaLLMPlayer(Player):
             if self.debug_mode:
                 print(f"Updated plan: {self.current_plan}")
 
-
+# Manually register the LLMPlayer with the CLI system
+# register_player("vLLM")(VanillaLLMPlayer)

@@ -1,14 +1,12 @@
 from abc import ABC, abstractmethod
 from typing import Dict, Any
 import os
-from dotenv import load_dotenv
 from mistralai import Mistral
 from openai import OpenAI, AzureOpenAI
 import time
 import json
 #import openai
 # Load environment variables
-load_dotenv()
 
 class BaseLLM(ABC):
     """Abstract base class for LLM implementations"""
