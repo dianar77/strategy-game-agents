@@ -1,19 +1,25 @@
 ## setup
 
 ```bash
-uv venv --python=3.11
+uv venv --python=3.10
 source .venv/bin/activate
 uv pip install -r requirements.txt
+cd catanatron && uv pip install -r requirements.txt
 cd catanatron/catanatron_core && uv pip install -e .
 cd ../catanatron_experimental && uv pip install -e .
-# go back to root folder
+cd ../catanatron_gym && uv pip install -e .
+cd ../.. && uv pip install -e .
 python testing.py
 ```
 
 # strategy-game-agents
 
 NEW WAY: Add to cli_players.py your agent (make sure to include **init**.py in directory)
-catanatron-play --players=LLM,R --num=1 --output=data/ --json
+`catanatron-play --players=LLM,R --num=1 --output=data/ --json`
+
+or
+
+`AZURE_OPENAI_API_KEY=azure_open_ai_key catanatron-play --players=LLM,R --num=1 --output=data/ --json`
 
 DEPRECIATED Example Use Case for Code
 catanatron-play --code=agents/vanillaLLM_player/vanillaLLM_player.py --players=AB,VanillaLLM --num=1 --output=data/ --json
