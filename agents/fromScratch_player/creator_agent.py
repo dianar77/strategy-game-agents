@@ -30,7 +30,7 @@ LOCAL_SEARCH_BASE_DIR = (Path(__file__).parent.parent.parent / "catanatron").res
 FOO_TARGET_FILENAME = "foo_player.py"
 FOO_TARGET_FILE = Path(__file__).parent / FOO_TARGET_FILENAME    # absolute path
 FOO_MAX_BYTES   = 64_000                                     # context-friendly cap
-FOO_RUN_COMMAND = "catanatron-play --players=R,FOO_S --num=10 --config-map=MINI --output=data/ --json"
+FOO_RUN_COMMAND = "catanatron-play --players=AB,R,FOO_S --num=10 --config-map=MINI --output=data/ --json"
 
 # -------------------------------------------------------------------------------------
 
@@ -99,6 +99,21 @@ class CreatorAgent():
             tools_condition,
         )
         builder.add_edge("tools", "assistant")
+
+        #         builder = StateGraph(MessagesState)
+        # builder.add_node("trim_messages", trim_messages)
+        # builder.add_node("assistant", assistant)
+        # builder.add_node("tools", ToolNode(tools))
+
+        # builder.add_edge(START, "assistant")
+        # builder.add_conditional_edges(
+        #     "assistant",
+        #     # If the latest message (result) from assistant is a tool call -> tools_condition routes to tools
+        #     # If the latest message (result) from assistant is a not a tool call -> tools_condition routes to END
+        #     tools_condition,
+        # )
+        # builder.add_edge("tools", "trim_messages")
+        # builder.add_edge("trim_messages", "assistant")
         
         return builder.compile(checkpointer=MemorySaver())
 
@@ -177,21 +192,33 @@ def read_local_file(rel_path: str) -> str:
     return candidate.read_text(encoding="utf-8", errors="ignore")
 
 def read_foo(_: str = "") -> str:
-    """Return the UTF-8 content of Agent File (≤64 kB)."""
+    """
+    Return the UTF-8 content of Agent File (≤64 kB).
+    """
     if FOO_TARGET_FILE.stat().st_size > FOO_MAX_BYTES:
         raise ValueError("File too large for the agent")
     return FOO_TARGET_FILE.read_text(encoding="utf-8", errors="ignore")  # pathlib API :contentReference[oaicite:2]{index=2}
 
 def write_foo(new_text: str) -> str:
-    """Overwrite Agent File with new_text (UTF-8)."""
+    """
+    Overwrite Agent File with new_text (UTF-8).
+    """
     if len(new_text.encode()) > FOO_MAX_BYTES:
         raise ValueError("Refusing to write >64 kB")
     FOO_TARGET_FILE.write_text(new_text, encoding="utf-8")                 # pathlib write_text :contentReference[oaicite:3]{index=3}
+    
+    # Copy Result File to the new directory
+    shutil.copy2(                           
+        (FOO_TARGET_FILE).resolve(),
+        (Path(CreatorAgent.run_dir) / FOO_TARGET_FILENAME)
+    )
+
     return f"{FOO_TARGET_FILENAME} updated successfully"
 
 def run_testfoo(_: str = "") -> str:
-    """Run one Catanatron match (R vs Agent File) and return raw CLI output."""
-    # Use shlex.split so it works on POSIX & Windows shells. :contentReference[oaicite:0]{index=0}
+    """
+    Run one Catanatron match (R vs Agent File) and return raw CLI output.
+    """    
     result = subprocess.run(
         shlex.split(FOO_RUN_COMMAND),
         capture_output=True,          # capture stdout+stderr :contentReference[oaicite:1]{index=1}
