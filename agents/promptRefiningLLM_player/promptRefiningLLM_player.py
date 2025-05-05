@@ -76,13 +76,26 @@ class PromptRefiningLLMPlayer(Player):
         self.is_bot = True
         self.llm_name = self.llm.model
 
+        # Use the shared run directory from the creator agent if available
         if PromptRefiningLLMPlayer.run_dir is None:
-            agent_dir = os.path.dirname(os.path.abspath(__file__))
-            runs_dir = os.path.join(agent_dir, "runs")
-            os.makedirs(runs_dir, exist_ok=True)
-            run_id = datetime.now().strftime("run_%Y%m%d_%H%M%S")
-            PromptRefiningLLMPlayer.run_dir = os.path.join(runs_dir, run_id)
-            os.makedirs(PromptRefiningLLMPlayer.run_dir, exist_ok=True)
+            if "CATAN_CURRENT_RUN_DIR" in os.environ:
+                # Use the directory passed from the creator agent
+                PromptRefiningLLMPlayer.run_dir = os.environ["CATAN_CURRENT_RUN_DIR"]
+            else:
+                # Create a new run directory if not running through creator agent
+                agent_dir = os.path.dirname(os.path.abspath(__file__))
+                runs_dir = os.path.join(agent_dir, "runs")
+                os.makedirs(runs_dir, exist_ok=True)
+                
+                # Try to read current_run.txt for the last known run
+                try:
+                    with open(os.path.join(runs_dir, "current_run.txt"), "r") as f:
+                        PromptRefiningLLMPlayer.run_dir = f.read().strip()
+                except:
+                    # Fallback to creating a new run directory
+                    run_id = datetime.now().strftime("run_%Y%m%d_%H%M%S")
+                    PromptRefiningLLMPlayer.run_dir = os.path.join(runs_dir, run_id)
+                    os.makedirs(PromptRefiningLLMPlayer.run_dir, exist_ok=True)
 
         # Initialize stats for the player
         self.api_calls = 0
@@ -90,9 +103,9 @@ class PromptRefiningLLMPlayer(Player):
         self.decision_times = []
 
         # Initialize resource tracking and planning
-        self.resource_history = []  # Track resource gains/losses
-        self.last_resources = None  # Resources from previous turn
-        self.current_plan = None    # Current strategic plan
+        self.resource_history = []
+        self.last_resources = None
+        self.current_plan = None
         self.last_turn_number = 0
 
     def decide(self, game: Game, playable_actions: List[Action]) -> Action:
@@ -256,14 +269,23 @@ class PromptRefiningLLMPlayer(Player):
         )
         prompt_template += added_text
         prompt = prompt_template
-
+    
         try:
             response = self.llm.query(prompt)
 
             # Gather plan from the response
             self._extract_plan_from_response(response)
 
-            log_path = os.path.join(PromptRefiningLLMPlayer.run_dir, f"llm_log_{self.llm_name}.txt")
+            # Find the current game run directory (should be the most recent one)
+            game_run_dirs = [d for d in pathlib.Path(PromptRefiningLLMPlayer.run_dir).glob("game_*") if d.is_dir()]
+            if game_run_dirs:
+                # Sort by creation time (newest first)
+                latest_game_run = max(game_run_dirs, key=lambda d: d.stat().st_mtime)
+                log_path = latest_game_run / f"llm_log_{self.llm_name}.txt"
+            else:
+                # Fallback to main run directory if no game subdirectories exist
+                log_path = pathlib.Path(PromptRefiningLLMPlayer.run_dir) / f"llm_log_{self.llm_name}.txt"
+                
             with open(log_path, "a") as log_file:
                 log_file.write("PROMPT:\n")
                 log_file.write(prompt + "\n")

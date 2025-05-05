@@ -22,23 +22,23 @@ from catanatron_server.utils import open_link
 
 def main():
 
-    #cA = CodeRefiningCreatorAgent()
+    cA = PromptRefiningCreatorAgent()
     #print(write_foo("print('Hello, world!')"))  # Write to foo_player.py
     #print(read_foo())
     #print(run_testfoo())
     #print(list_local_files())
-    #cA.run_react_graph()
+    cA.run_react_graph()
 
-    players = [
-        RandomPlayer(Color.RED),
-        #AlphaBetaPlayer(Color.BLUE),
-        #ToolCallLLMPlayer(Color.ORANGE),
-        #BasicLangPlayer(Color.BLUE),
-        LLMPlayer(Color.WHITE, llm=MistralLLM(model_name="mistral-large-latest"))
-    ]
-    game = Game(players)
-    #open_link(game)  # opens game in browser...not working yet
-    print(game.play())
+    # players = [
+    #     RandomPlayer(Color.RED),
+    #     #AlphaBetaPlayer(Color.BLUE),
+    #     #ToolCallLLMPlayer(Color.ORANGE),
+    #     #BasicLangPlayer(Color.BLUE),
+    #     LLMPlayer(Color.WHITE, llm=MistralLLM(model_name="mistral-large-latest"))
+    # ]
+    # game = Game(players)
+    # #open_link(game)  # opens game in browser...not working yet
+    # print(game.play())
 
 if __name__ == "__main__":
     main()
