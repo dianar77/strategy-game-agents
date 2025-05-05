@@ -73,7 +73,7 @@ class CreatorAgent():
 
         shutil.copy2(
             PROMPT_BASE_FILE.resolve(),
-            Path(CreatorAgent.run_dir) / "initial_" + PROMPT_BASE_FILENAME
+            Path(CreatorAgent.run_dir) / f"initial_{PROMPT_BASE_FILENAME}"
         )
        
         self.config = {
@@ -179,6 +179,7 @@ class CreatorAgent():
                 error_log.write(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - Error: {str(e)}\n")
         return None
 
+    
     # def run_react_graph(self):
     #     prompt = (
     #         f"""
