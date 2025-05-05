@@ -34,7 +34,7 @@ LOCAL_SEARCH_BASE_DIR = (Path(__file__).parent.parent.parent / "catanatron").res
 FOO_TARGET_FILENAME = "promptRefiningLLM_player.py"
 FOO_TARGET_FILE = Path(__file__).parent / FOO_TARGET_FILENAME    # absolute path
 FOO_MAX_BYTES   = 64_000                                     # context-friendly cap
-FOO_RUN_COMMAND = "catanatron-play --players=AB,PR_LLM --num=1 --config-map=MINI --output=data/ --json"
+# FOO_RUN_COMMAND = "catanatron-play --players=AB,PR_LLM --num=1 --config-map=MINI --output=data/ --json"
 
 # -------------------------------------------------------------------------------------
 
@@ -43,7 +43,7 @@ class CreatorAgent():
     # Class properties
     run_dir = None
 
-    def __init__(self):
+    def __init__(self, opponent: str = "AB"):
         # Get API key from environment variable
         self.llm_name = "gpt-4o"
         self.llm = AzureChatOpenAI(
@@ -51,6 +51,9 @@ class CreatorAgent():
             azure_endpoint="https://gpt-amayuelas.openai.azure.com/",
             api_version = "2024-12-01-preview"
         )
+
+        # Define the run game command here so that we can pass in the opponent
+        self.foo_run_command = f"catanatron-play --players={opponent},PR_LLM --num=5 --config-map=MINI --output=data/ --json"
 
         # Create run directory if it doesn't exist
         if CreatorAgent.run_dir is None:
@@ -88,7 +91,7 @@ class CreatorAgent():
     def create_langchain_react_graph(self):
         """Create a react graph for the LLM to use."""
         
-        tools = [list_local_files, read_local_file, read_foo, write_foo, run_testfoo, web_search_tool_call]
+        tools = [list_local_files, read_local_file, read_foo, write_foo, self.run_testfoo, web_search_tool_call]
         llm_with_tools = self.llm.bind_tools(tools)
         
 
@@ -141,8 +144,8 @@ class CreatorAgent():
             - run_testfoo: Test the {PROMPT_NEW_FILENAME} being used in a game.
             - web_search_tool_call: Perform a web search to search for strategies and advice on playing and winning a Catan game.
 
-            YOUR GOAL: Create a prompt for the Catan Player That Will allow us to play run_testfoo and win the game without crashing. 
-            Don't stop refining the prompt until PromptRefiningLLMPlayer wins a game against its opponent.
+            YOUR GOAL: Create a prompt for the Catan Player That Will allow us to play run_testfoo and win a majority of games without crashing. 
+            Don't stop refining the prompt until PromptRefiningLLMPlayer wins 3/5 games against its opponent with a prompt.
 
             """
         )
@@ -179,50 +182,37 @@ class CreatorAgent():
                 error_log.write(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - Error: {str(e)}\n")
         return None
 
-    
-    # def run_react_graph(self):
-    #     prompt = (
-    #         f"""
-    #         You are in charge of creating the code for a Catan Player in {FOO_TARGET_FILENAME}. 
-            
-    #         You Have the Following Tools at Your Disposal:
-    #         - list_local_files: List all files in the current directory.
-    #         - read_local_file: Read the content of a file in the current directory.
-    #         - read_foo: Read the content of {PROMPT_NEW_FILENAME}.
-    #         - write_foo: Write the content of {PROMPT_NEW_FILENAME}. (Any text in brackets MUST remain in brackets)
-    #         - run_testfoo: Test the {PROMPT_NEW_FILENAME} being used in a game.
-    #         - web_search_tool_call: Perform a web search using the Tavily API.
-
-    #         YOUR GOAL: Create a Catan Player That Will play run_testfoo and win the game without crashing. 
-    #         Use less than 15 tool calls to achieve this
-
-    #         """
-    #     )
-
-    #     try:
-
-    #         log_path = os.path.join(CreatorAgent.run_dir, f"llm_log_{self.llm_name}.txt")
-
-    #         # Run Through The Graph
-    #         initial_input = {"messages": prompt}
-    #         with open(log_path, "a") as log_file:                # Run the graph until the first interruption
-    #             for event in self.react_graph.stream(initial_input, self.memory_config, stream_mode="values"):
-    #                 msg = event['messages'][-1]
-    #                 msg.pretty_print()
-    #                 log_file.write((msg).pretty_repr())
-
-
-    #         print("✅  graph finished")
-
-    #         # Copy Result File to the new directory
-    #         shutil.copy2(                           
-    #             (FOO_TARGET_FILE).resolve(),
-    #             (Path(CreatorAgent.run_dir) / FOO_TARGET_FILENAME)
-    #         )
-
-    #     except Exception as e:
-    #         print(f"Error calling LLM: {e}")
-    #     return None
+    def run_testfoo(self, _: str = "") -> str:
+        """Run one Catanatron match using current_prompt.txt and save logs to run folder."""
+        # Create a timestamped folder for this specific game run
+        run_id = datetime.now().strftime("game_%Y%m%d_%H%M%S")
+        game_run_dir = Path(CreatorAgent.run_dir) / run_id
+        game_run_dir.mkdir(exist_ok=True)
+        
+        # Save the current prompt used for this game
+        prompt_copy_path = game_run_dir / "prompt_used.txt"
+        shutil.copy2(PROMPT_NEW_FILE, prompt_copy_path)
+        
+        # Create/update env variable or file to tell the player which run directory to use
+        # This ensures the Player writes logs to the same top-level directory
+        os.environ["CATAN_CURRENT_RUN_DIR"] = str(CreatorAgent.run_dir)
+        
+        # Run the game
+        result = subprocess.run(
+            shlex.split(self.foo_run_command),
+            capture_output=True,
+            text=True,
+            timeout=14400,
+            check=False
+        )
+        
+        # Save the output to a log file in the game run directory
+        output_log = game_run_dir / "game_output.txt"
+        with open(output_log, "w", encoding="utf-8") as f:
+            f.write((result.stdout + result.stderr).strip())
+        
+        # Return the results as before
+        return (result.stdout + result.stderr).strip()
 
 def list_local_files(_: str = "") -> str:
     """Return all files beneath BASE_DIR, one per line."""
@@ -272,50 +262,6 @@ def write_foo(new_text: str) -> str:
         raise ValueError("Refusing to write >16 kB")
     PROMPT_NEW_FILE.write_text(new_text, encoding="utf-8")
     return f"{PROMPT_NEW_FILENAME} updated successfully"
-
-# def run_testfoo(_: str = "") -> str:
-#     """Run one Catanatron match (R vs Agent File) and return raw CLI output."""
-#     # Use shlex.split so it works on POSIX & Windows shells. :contentReference[oaicite:0]{index=0}
-#     result = subprocess.run(
-#         shlex.split(FOO_RUN_COMMAND),
-#         capture_output=True,          # capture stdout+stderr :contentReference[oaicite:1]{index=1}
-#         text=True,
-#         timeout=14400,                  # avoids infinite-loop hangs
-#         check=False                   # we’ll return non-zero output instead of raising
-#     )
-#     return (result.stdout + result.stderr).strip()
-
-def run_testfoo(_: str = "") -> str:
-    """Run one Catanatron match using current_prompt.txt and save logs to run folder."""
-    # Create a timestamped folder for this specific game run
-    run_id = datetime.now().strftime("game_%Y%m%d_%H%M%S")
-    game_run_dir = Path(CreatorAgent.run_dir) / run_id
-    game_run_dir.mkdir(exist_ok=True)
-    
-    # Save the current prompt used for this game
-    prompt_copy_path = game_run_dir / "prompt_used.txt"
-    shutil.copy2(PROMPT_NEW_FILE, prompt_copy_path)
-    
-    # Create/update env variable or file to tell the player which run directory to use
-    # This ensures the Player writes logs to the same top-level directory
-    os.environ["CATAN_CURRENT_RUN_DIR"] = str(CreatorAgent.run_dir)
-    
-    # Run the game
-    result = subprocess.run(
-        shlex.split(FOO_RUN_COMMAND),
-        capture_output=True,
-        text=True,
-        timeout=14400,
-        check=False
-    )
-    
-    # Save the output to a log file in the game run directory
-    output_log = game_run_dir / "game_output.txt"
-    with open(output_log, "w", encoding="utf-8") as f:
-        f.write((result.stdout + result.stderr).strip())
-    
-    # Return the results as before
-    return (result.stdout + result.stderr).strip()
 
 def web_search_tool_call(query: str) -> str:
     """Perform a web search using the Tavily API.

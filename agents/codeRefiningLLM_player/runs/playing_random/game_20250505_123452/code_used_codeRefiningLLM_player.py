@@ -29,6 +29,17 @@ from catanatron.state_functions import (
 )
 from catanatron.state import State
 
+from langchain_openai import AzureChatOpenAI
+from langgraph.graph import MessagesState, START, StateGraph
+from langchain_core.messages import HumanMessage, SystemMessage
+from langgraph.prebuilt import tools_condition, ToolNode
+from IPython.display import Image, display
+from langgraph.checkpoint.memory import MemorySaver
+from langchain_core.messages import RemoveMessage
+from langchain_community.tools.tavily_search import TavilySearchResults
+
+
+
 # Constants for pretty printing
 RESOURCE_EMOJI = {
     "WOOD": "🌲",
@@ -66,15 +77,18 @@ class CodeRefiningLLMPlayer(Player):
     debug_mode = True
     run_dir = None
 
-    def __init__(self, color, name=None, llm=None):
+    def __init__(self, color, name=None):
         super().__init__(color, name)
         # Get API key from environment variable
-        if llm is None:
-            self.llm = AzureOpenAILLM(model_name="gpt-4o")
-        else:
-            self.llm = llm
-        self.is_bot = True
-        self.llm_name = self.llm.model
+        
+        #self.llm = AzureOpenAILLM(model_name="gpt-4o")
+        
+        self.llm_name = "gpt-4o"
+        self.llm = AzureChatOpenAI(
+            model="gpt-4o",
+            azure_endpoint="https://gpt-amayuelas.openai.azure.com/",
+            api_version = "2024-12-01-preview"
+        )
 
         # Use the shared run directory from the creator agent if available
         if CodeRefiningLLMPlayer.run_dir is None:
@@ -97,16 +111,68 @@ class CodeRefiningLLMPlayer(Player):
                     CodeRefiningLLMPlayer.run_dir = os.path.join(runs_dir, run_id)
                     os.makedirs(CodeRefiningLLMPlayer.run_dir, exist_ok=True)
 
+
         # Initialize stats for the player
         self.api_calls = 0
         self.api_tokens_used = 0
         self.decision_times = []
 
         # Initialize resource tracking and planning
-        self.resource_history = []
-        self.last_resources = None
-        self.current_plan = None
+        self.resource_history = []  # Track resource gains/losses
+        self.last_resources = None  # Resources from previous turn
+        self.current_plan = None    # Current strategic plan
         self.last_turn_number = 0
+
+        # Langchain Addons
+        #self.memory_saver = MemorySaver()
+        self.memory_config = {"configurable": {"thread_id": "1"}}
+        self.num_memory_messages = 3        # Trim number of messages to keep in memory to limit API usage
+        self.react_graph = self.create_langchain_react_graph()
+        
+        self.test_count = 0
+
+
+    def create_langchain_react_graph(self):
+        """Create a react graph for the LLM to use."""
+        
+        tools = [web_search_tool_call]
+        llm_with_tools = self.llm.bind_tools(tools)
+        
+        def assistant(state: MessagesState):
+            return {"messages": [llm_with_tools.invoke(state["messages"])]}
+        
+        def trim_messages(state: MessagesState):
+            # Delete all but the 3 most recent messages
+            delete_messages = [RemoveMessage(id=m.id) for m in state["messages"][:-self.num_memory_messages]]
+            return {"messages": delete_messages}
+
+
+        builder = StateGraph(MessagesState)
+
+        # Define nodes: these do the work
+        builder.add_node("trim_messages", trim_messages)
+        builder.add_node("assistant", assistant)
+        builder.add_node("tools", ToolNode(tools))
+
+        # Define edges: these determine how the control flow moves
+        builder.add_edge(START, "trim_messages")
+        builder.add_edge("trim_messages", "assistant")
+        builder.add_conditional_edges(
+            "assistant",
+            # If the latest message (result) from assistant is a tool call -> tools_condition routes to tools
+            # If the latest message (result) from assistant is a not a tool call -> tools_condition routes to END
+            tools_condition,
+        )
+        builder.add_edge("tools", "assistant")
+        
+        return builder.compile(checkpointer=MemorySaver())
+
+    def print_react_graph(self):
+        """
+        Print the react graph for debugging purposes.
+        ONLY WORKS IN .IPYNB NOTEBOOKS
+        """
+        display(Image(self.react_graph.get_graph(xray=True).draw_mermaid_png()))
 
     def decide(self, game: Game, playable_actions: List[Action]) -> Action:
         """Use Claude API to analyze game state and choose an action.
@@ -133,10 +199,12 @@ class CodeRefiningLLMPlayer(Player):
         # Create a string representation of the game state for Claude
         game_state_text = self._format_game_state_for_llm(game, state, playable_actions)
 
-        # print(game_state_text)
+        print(game_state_text)
 
         if self.debug_mode:
             print(f"Game state prepared for LLM (length: {len(game_state_text)} chars)")
+            #print("Game state prepared for LLM")
+
 
         # Use LLM to choose an action
         try:
@@ -145,6 +213,7 @@ class CodeRefiningLLMPlayer(Player):
                 action = playable_actions[chosen_action_idx]
                 if self.debug_mode:
                     print(f"LLM chose action {chosen_action_idx}: {self._get_action_description(action)}")
+                    #print(f"LLM chose action {chosen_action_idx}")
 
                 # Record decision time
                 decision_time = time.time() - start_time
@@ -232,24 +301,47 @@ class CodeRefiningLLMPlayer(Player):
         Returns:
             int: Index of the selected action, or None if API call fails
         """
-        # Load prompt template from file
-        prompt_path = pathlib.Path(__file__).parent / "current_prompt.txt"
-        with open(prompt_path, "r", encoding="utf-8") as f:
-            prompt_template = f.read()
-        # Append the game state and final instruction lines
-        added_text = (
-            f"\n\n{game_state_text}\n\n"
-            "Based on this information, which action number do you choose? "
-            "Think step by step about your options, then put the final action number in a box like \\boxed{1}."
-        )
-        prompt_template += added_text
-        prompt = prompt_template
-    
-        try:
-            response = self.llm.query(prompt)
+        # Compose the prompt (system + user, as a single string)
+        prompt = (
+            "You are playing Settlers of Catan. Your task is to analyze the game state and choose the best action from the available options.\n\n"
+            "Rules:\n"
+            "1. Think through your decision step by step, analyzing the game state, resources, and available actions\n"
+            "2. Your aim is to WIN. That means 10 victory points.\n"
+            "3. Put your final chosen action inside a box like \\boxed{5}\n"
+            "4. Your final answer must be a single integer corresponding to the action number\n"
+            "5. If you want to create or update your strategic plan, put it in <plan> tags like:\n"
+            "   <plan>Build roads toward port, then build settlement at node 13, then focus on city upgrades</plan>\n"
+            "6. Analyze the recent resource changes to understand what resources you're collecting effectively\n"
+            "7. Think about the next 2-3 turns, not just the immediate action\n\n"
+            "Board Understanding Guide:\n"
+            "- The RESOURCE & NODE GRID shows hexagonal tiles with their coordinates, resources, and dice numbers\n"
+            "- The nodes connected to each tile are listed below each tile\n"
+            "- 🔍 marks the robber's location, blocking resource production on that hex\n"
+            "- Settlements/cities and their production are listed in the BUILDINGS section\n"
+            "- Understanding the connectivity between nodes is crucial for road building strategy\n"
+            "- Ports allow trading resources at better rates (2:1 or 3:1)\n\n"
+            "Here is the current game state:\n\n"
+            f"{game_state_text}\n\n"
+            "Available Tool Calls:\n"
+            "  - web_search_tool_call: USE THIS TOOL! Search the web for information. Use this as much as you like. You can search for game rules, ask for advice, or to choose the most optimal option. \n\n"
 
-            # Gather plan from the response
-            self._extract_plan_from_response(response)
+            f"Based on this information, which action number do you choose? Think step by step about your options, then put the final action number in a box like \\boxed{{1}}."
+        )
+
+        try:
+
+
+            msg = HumanMessage(content=prompt)
+
+            # Lang Graph Client
+            messages = self.react_graph.invoke({"messages": [msg]}, self.memory_config)
+            response = ""
+            for m in messages['messages']:
+                m.pretty_print()
+                response = m.content # Get the content of the last message
+            
+            # Remove quotes
+            response = response.strip()
 
             # Find the current game run directory (should be the most recent one)
             game_run_dirs = [d for d in pathlib.Path(CodeRefiningLLMPlayer.run_dir).glob("game_*") if d.is_dir()]
@@ -260,13 +352,11 @@ class CodeRefiningLLMPlayer(Player):
             else:
                 # Fallback to main run directory if no game subdirectories exist
                 log_path = pathlib.Path(CodeRefiningLLMPlayer.run_dir) / f"llm_log_{self.llm_name}.txt"
-                
+            
             with open(log_path, "a") as log_file:
-                log_file.write("PROMPT:\n")
-                log_file.write(prompt + "\n")
-                log_file.write("RESPONSE:\n")
-                log_file.write(str(response) + "\n")
-                log_file.write("="*40 + "\n")
+                for message in messages['messages']:
+                    log_file.write(message.pretty_repr())
+                log_file.write("\n\n" + "|"*40 + "NEW TURN" + "|"*40 + "\n\n")
 
             # Extract the first integer from a boxed answer or any number
             import re
@@ -281,8 +371,6 @@ class CodeRefiningLLMPlayer(Player):
                 idx = int(numbers[0])
                 if 0 <= idx < num_actions:
                     return idx
-                
-            
         except Exception as e:
             if self.debug_mode:
                 print(f"Error calling LLM: {e}")
@@ -744,12 +832,24 @@ class CodeRefiningLLMPlayer(Player):
                 print(f"Updated plan: {self.current_plan}")
 
 
+def web_search_tool_call(query: str) -> str:
+    """Perform a web search using the Tavily API.
 
-def substitute_variable(template: str, variable: str, value: str) -> str:
-    import re
+    Args:
+        query: The search query string.
+
+    Returns:
+        The search result as a string.
     """
-    Replace only the {variable} placeholder in the template with value.
-    Leaves other curly braces (like \boxed{5}) untouched.
-    """
-    pattern = r'\{' + re.escape(variable) + r'\}'
-    return re.sub(pattern, value, template)
+    # Simulate a web search
+    tavily_search = TavilySearchResults(max_results=3)
+    search_docs = tavily_search.invoke(query)
+    formatted_search_docs = "\n\n---\n\n".join(
+        [
+            f'<Document href="{doc["url"]}"/>\n{doc["content"]}\n</Document>'
+            for doc in search_docs
+        ]
+    )
+
+    return formatted_search_docs
+
