@@ -30,7 +30,7 @@ LOCAL_SEARCH_BASE_DIR = (Path(__file__).parent.parent.parent / "catanatron").res
 FOO_TARGET_FILENAME = "foo_player.py"
 FOO_TARGET_FILE = Path(__file__).parent / FOO_TARGET_FILENAME    # absolute path
 FOO_MAX_BYTES   = 64_000                                     # context-friendly cap
-FOO_RUN_COMMAND = "catanatron-play --players=AB,R,FOO_S --num=10 --config-map=MINI --output=data/ --json"
+FOO_RUN_COMMAND = "catanatron-play --players=AB,R,FOO_LLM --num=1 --config-map=MINI --output=data/ --json"
 
 # -------------------------------------------------------------------------------------
 
@@ -138,7 +138,7 @@ class CreatorAgent():
             - web_search_tool_call: Perform a web search using the Tavily API.
 
             YOUR GOAL: Create a Catan Player That Will play run_testfoo and win the game without crashing. 
-            Use less than 15 tool calls to achieve this
+            Use less than 15 tool calls to achieve this, and incoorporate the LLM() class and the .query_llm() method
 
             """
         )
@@ -223,9 +223,11 @@ def run_testfoo(_: str = "") -> str:
         shlex.split(FOO_RUN_COMMAND),
         capture_output=True,          # capture stdout+stderr :contentReference[oaicite:1]{index=1}
         text=True,
-        timeout=120,                  # avoids infinite-loop hangs
+        timeout=3600,                  # avoids infinite-loop hangs
         check=False                   # we’ll return non-zero output instead of raising
     )
+
+    print((result.stdout + result.stderr).strip())
     return (result.stdout + result.stderr).strip()
 
 def web_search_tool_call(query: str) -> str:

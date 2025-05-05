@@ -31,8 +31,10 @@ from agents.vanillaLLM_player.vanillaLLM_player import VanillaLLMPlayer
 from agents.basicLang_player.basicLang_player import BasicLangPlayer
 from agents.toolCallLLM_player.toolCallLLM_player import ToolCallLLMPlayer
 from agents.fromScratch_player.foo_player import FooPlayer as FooScratchPlayer
+from agents.fromScratchLLM_player.foo_player import FooPlayer as FooLLMPlayer
 from agents.promptRefiningLLM_player.promptRefiningLLM_player import PromptRefiningLLMPlayer
 from agents.codeRefiningLLM_player.codeRefiningLLM_player import CodeRefiningLLMPlayer
+
 # from catanatron_experimental.machine_learning.players.online_mcts_dqn import (
 #     OnlineMCTSDQNPlayer,
 # )
@@ -130,9 +132,15 @@ CLI_PLAYERS = [
     ),
     CliPlayer(
         "FOO_S",
-        "FooPlayer",
+        "FooPlayer_Scratch",
         "Player being created by creator agent",
         FooScratchPlayer
+    ),
+    CliPlayer(
+        "FOO_LLM",
+        "FooPlayer_LLM",
+        "Player being created by creator agent. FooPlayer has access to query the LLM",
+        FooLLMPlayer
     ),
     CliPlayer(
         "PR_LLM",
