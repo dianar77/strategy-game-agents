@@ -30,7 +30,7 @@ LOCAL_SEARCH_BASE_DIR = (Path(__file__).parent.parent.parent / "catanatron").res
 FOO_TARGET_FILENAME = "codeRefiningLLM_player.py"
 FOO_TARGET_FILE = Path(__file__).parent / FOO_TARGET_FILENAME    # absolute path
 FOO_MAX_BYTES   = 64_000                                     # context-friendly cap
-FOO_RUN_COMMAND = "catanatron-play --players=R,R --num=1 --config-map=MINI --output=data/ --json"
+FOO_RUN_COMMAND = "catanatron-play --players=R,CR_LLM --num=1 --config-map=MINI --output=data/ --json"
 
 # -------------------------------------------------------------------------------------
 
@@ -64,7 +64,7 @@ class CreatorAgent():
         )
        
         self.memory_config = {"configurable": {"thread_id": "1"}}
-        self.num_memory_messages = 10        # Trim number of messages to keep in memory to limit API usage
+        self.num_memory_messages = 4        # Trim number of messages to keep in memory to limit API usage
         self.react_graph = self.create_langchain_react_graph()
         
     def create_langchain_react_graph(self):
@@ -196,7 +196,7 @@ def run_testfoo(_: str = "") -> str:
         shlex.split(FOO_RUN_COMMAND),
         capture_output=True,          # capture stdout+stderr :contentReference[oaicite:1]{index=1}
         text=True,
-        timeout=120,                  # avoids infinite-loop hangs
+        timeout=14400,                  # avoids infinite-loop hangs
         check=False                   # we’ll return non-zero output instead of raising
     )
     return (result.stdout + result.stderr).strip()

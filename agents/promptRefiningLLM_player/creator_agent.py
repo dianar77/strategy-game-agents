@@ -26,11 +26,15 @@ from langchain_community.tools.tavily_search import TavilySearchResults
 
 
 # -------- tool call configuration ----------------------------------------------------
+PROMPT_BASE_FILENAME = "base_prompt.txt"
+PROMPT_NEW_FILENAME = "current_prompt.txt"
+PROMPT_BASE_FILE = Path(__file__).parent / PROMPT_BASE_FILENAME
+PROMPT_NEW_FILE = Path(__file__).parent / PROMPT_NEW_FILENAME
 LOCAL_SEARCH_BASE_DIR = (Path(__file__).parent.parent.parent / "catanatron").resolve()
 FOO_TARGET_FILENAME = "promptRefiningLLM_player.py"
 FOO_TARGET_FILE = Path(__file__).parent / FOO_TARGET_FILENAME    # absolute path
 FOO_MAX_BYTES   = 64_000                                     # context-friendly cap
-FOO_RUN_COMMAND = "catanatron-play --players=R,PR_LLM --num=1 --config-map=MINI --output=data/ --json"
+FOO_RUN_COMMAND = "catanatron-play --players=G,PR_LLM --num=1 --config-map=MINI --output=data/ --json"
 
 # -------------------------------------------------------------------------------------
 
@@ -57,10 +61,10 @@ class CreatorAgent():
             CreatorAgent.run_dir = os.path.join(runs_dir, run_id)
             os.makedirs(CreatorAgent.run_dir, exist_ok=True)
 
-        #Copy the Blank FooPlayer to the run directory
-        shutil.copy2(                           # ↩ copy with metadata
-            (Path(__file__).parent / ("__TEMPLATE__" + FOO_TARGET_FILENAME)).resolve(),  # ../foo_player.py
-            FOO_TARGET_FILE.resolve()          # ./foo_player.py
+        # Copy the base prompt to new prompt at the start of each run
+        shutil.copy2(
+            PROMPT_BASE_FILE.resolve(),
+            PROMPT_NEW_FILE.resolve()
         )
        
         self.memory_config = {"configurable": {"thread_id": "1"}}
@@ -117,9 +121,9 @@ class CreatorAgent():
             You Have the Following Tools at Your Disposal:
             - list_local_files: List all files in the current directory.
             - read_local_file: Read the content of a file in the current directory.
-            - read_foo: Read the content of {FOO_TARGET_FILENAME}.
-            - write_foo: Write the content of {FOO_TARGET_FILENAME}. (Make sure to keep imports)
-            - run_testfoo: Test the content of {FOO_TARGET_FILENAME} in a game.
+            - read_foo: Read the content of {PROMPT_NEW_FILENAME}.
+            - write_foo: Write the content of {PROMPT_NEW_FILENAME}. (Any text in brackets MUST remain in brackets)
+            - run_testfoo: Test the {PROMPT_NEW_FILENAME} being used in a game.
             - web_search_tool_call: Perform a web search using the Tavily API.
 
             YOUR GOAL: Create a Catan Player That Will play run_testfoo and win the game without crashing. 
@@ -176,18 +180,31 @@ def read_local_file(rel_path: str) -> str:
         raise ValueError("File too large")
     return candidate.read_text(encoding="utf-8", errors="ignore")
 
+# def read_foo(_: str = "") -> str:
+#     """Return the UTF-8 content of Agent File (≤64 kB)."""
+#     if FOO_TARGET_FILE.stat().st_size > FOO_MAX_BYTES:
+#         raise ValueError("File too large for the agent")
+#     return FOO_TARGET_FILE.read_text(encoding="utf-8", errors="ignore")  # pathlib API :contentReference[oaicite:2]{index=2}
+
+# def write_foo(new_text: str) -> str:
+#     """Overwrite Agent File with new_text (UTF-8)."""
+#     if len(new_text.encode()) > FOO_MAX_BYTES:
+#         raise ValueError("Refusing to write >64 kB")
+#     FOO_TARGET_FILE.write_text(new_text, encoding="utf-8")                 # pathlib write_text :contentReference[oaicite:3]{index=3}
+#     return f"{FOO_TARGET_FILENAME} updated successfully"
+
 def read_foo(_: str = "") -> str:
-    """Return the UTF-8 content of Agent File (≤64 kB)."""
-    if FOO_TARGET_FILE.stat().st_size > FOO_MAX_BYTES:
+    """Return the UTF-8 content of base_prompt.txt (≤16 kB)."""
+    if PROMPT_BASE_FILE.stat().st_size > FOO_MAX_BYTES:
         raise ValueError("File too large for the agent")
-    return FOO_TARGET_FILE.read_text(encoding="utf-8", errors="ignore")  # pathlib API :contentReference[oaicite:2]{index=2}
+    return PROMPT_BASE_FILE.read_text(encoding="utf-8", errors="ignore")
 
 def write_foo(new_text: str) -> str:
-    """Overwrite Agent File with new_text (UTF-8)."""
+    """Overwrite current_prompt.txt with new_text (UTF-8)."""
     if len(new_text.encode()) > FOO_MAX_BYTES:
-        raise ValueError("Refusing to write >64 kB")
-    FOO_TARGET_FILE.write_text(new_text, encoding="utf-8")                 # pathlib write_text :contentReference[oaicite:3]{index=3}
-    return f"{FOO_TARGET_FILENAME} updated successfully"
+        raise ValueError("Refusing to write >16 kB")
+    PROMPT_NEW_FILE.write_text(new_text, encoding="utf-8")
+    return f"{PROMPT_NEW_FILENAME} updated successfully"
 
 def run_testfoo(_: str = "") -> str:
     """Run one Catanatron match (R vs Agent File) and return raw CLI output."""
@@ -196,7 +213,7 @@ def run_testfoo(_: str = "") -> str:
         shlex.split(FOO_RUN_COMMAND),
         capture_output=True,          # capture stdout+stderr :contentReference[oaicite:1]{index=1}
         text=True,
-        timeout=120,                  # avoids infinite-loop hangs
+        timeout=14400,                  # avoids infinite-loop hangs
         check=False                   # we’ll return non-zero output instead of raising
     )
     return (result.stdout + result.stderr).strip()

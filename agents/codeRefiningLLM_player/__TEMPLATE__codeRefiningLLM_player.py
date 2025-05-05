@@ -307,7 +307,7 @@ class CodeRefiningLLMPlayer(Player):
             "- Understanding the connectivity between nodes is crucial for road building strategy\n"
             "- Ports allow trading resources at better rates (2:1 or 3:1)\n\n"
             "Here is the current game state:\n\n"
-            #f"{game_state_text}\n\n"
+            f"{game_state_text}\n\n"
             "Available Tool Calls:\n"
             "  - web_search_tool_call: USE THIS TOOL! Search the web for information. Use this as much as you like. You can search for game rules, ask for advice, or to choose the most optimal option. \n\n"
 
