@@ -11,7 +11,7 @@ AGENT_NAME = "LLMPlayer"
 NUM_GAMES = 15
 
 # List opponents from strongest to weakest
-OPPONENTS = ["AB", "F", "G", "M", "W", "VP", "R"]
+OPPONENTS = ["AB", "F", "M", "W", "VP", "R"]
 #OPPONENTS = ["VP", "R"]
 
 def run_game(eval_player, opponent, num_games):
