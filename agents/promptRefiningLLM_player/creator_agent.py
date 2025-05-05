@@ -169,7 +169,7 @@ class CreatorAgent():
             # Copy Result File to the new directory
             shutil.copy2(                           
                 (PROMPT_NEW_FILE).resolve(),
-                (Path(CreatorAgent.run_dir) / "final_" + PROMPT_NEW_FILENAME)
+                (Path(CreatorAgent.run_dir) / "final_" / PROMPT_NEW_FILENAME)
             )
 
         except Exception as e:
