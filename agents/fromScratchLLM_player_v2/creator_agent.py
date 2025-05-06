@@ -30,8 +30,9 @@ LOCAL_SEARCH_BASE_DIR = (Path(__file__).parent.parent.parent / "catanatron").res
 FOO_TARGET_FILENAME = "foo_player.py"
 FOO_TARGET_FILE = Path(__file__).parent / FOO_TARGET_FILENAME    # absolute path
 FOO_MAX_BYTES   = 64_000                                     # context-friendly cap
-FOO_RUN_COMMAND = "catanatron-play --players=AB,R,FOO_S --num=10 --config-map=MINI --output=data/ --json"
-
+# Set winning points to 5 for quicker game
+FOO_RUN_COMMAND = "catanatron-play --players=AB,R,FOO_LLM_V2  --num=1 --config-map=MINI  --config-vps-to-win=5"
+RUN_TEST_FOO_HAPPENED = False # Used to keep track of whether the testfoo tool has been called
 # -------------------------------------------------------------------------------------
 
 class CreatorAgent():
@@ -53,7 +54,7 @@ class CreatorAgent():
             agent_dir = os.path.dirname(os.path.abspath(__file__))
             runs_dir = os.path.join(agent_dir, "runs")
             os.makedirs(runs_dir, exist_ok=True)
-            run_id = datetime.now().strftime("run_%Y%m%d_%H%M%S")
+            run_id = datetime.now().strftime("creator_%Y%m%d_%H%M%S")
             CreatorAgent.run_dir = os.path.join(runs_dir, run_id)
             os.makedirs(CreatorAgent.run_dir, exist_ok=True)
 
@@ -71,11 +72,22 @@ class CreatorAgent():
         #self.memory_config = {"configurable": {"thread_id": "1"}}
         self.num_memory_messages = 10        # Trim number of messages to keep in memory to limit API usage
         self.react_graph = self.create_langchain_react_graph()
+
         
     def create_langchain_react_graph(self):
         """Create a react graph for the LLM to use."""
         
-        tools = [list_local_files, read_local_file, read_foo, write_foo, run_testfoo, web_search_tool_call]
+        tools = [
+            list_local_files,
+            read_local_file,
+            read_foo,
+            write_foo,
+            run_testfoo,
+            web_search_tool_call,
+            view_last_game_llm_query,
+            view_last_game_results
+        ]
+
         llm_with_tools = self.llm.bind_tools(tools)
         
         def assistant(state: MessagesState):
@@ -95,30 +107,16 @@ class CreatorAgent():
         builder.add_node("tools", ToolNode(tools))
 
         # Define edges: these determine how the control flow moves
-        builder.add_edge(START, "trim_messages")
-        builder.add_edge("trim_messages", "assistant")
+        builder.add_edge(START, "assistant")
+        #builder.add_edge("trim_messages", "assistant")
         builder.add_conditional_edges(
             "assistant",
             # If the latest message (result) from assistant is a tool call -> tools_condition routes to tools
             # If the latest message (result) from assistant is a not a tool call -> tools_condition routes to END
             tools_condition,
         )
-        builder.add_edge("tools", "assistant")
-
-        #         builder = StateGraph(MessagesState)
-        # builder.add_node("trim_messages", trim_messages)
-        # builder.add_node("assistant", assistant)
-        # builder.add_node("tools", ToolNode(tools))
-
-        # builder.add_edge(START, "assistant")
-        # builder.add_conditional_edges(
-        #     "assistant",
-        #     # If the latest message (result) from assistant is a tool call -> tools_condition routes to tools
-        #     # If the latest message (result) from assistant is a not a tool call -> tools_condition routes to END
-        #     tools_condition,
-        # )
-        # builder.add_edge("tools", "trim_messages")
-        # builder.add_edge("trim_messages", "assistant")
+        builder.add_edge("tools", "trim_messages")
+        builder.add_edge("trim_messages", "assistant")
         
         return builder.compile(checkpointer=MemorySaver())
 
@@ -138,12 +136,14 @@ class CreatorAgent():
             - list_local_files: List all files in the current directory.
             - read_local_file: Read the content of a file in the current directory.
             - read_foo: Read the content of {FOO_TARGET_FILENAME}.
-            - write_foo: Write the content of {FOO_TARGET_FILENAME}. (Make sure to keep imports)
+            - write_foo: Write the content of {FOO_TARGET_FILENAME}. (Make sure to keep imports) Note: print() commands will be visible in view_last_game_results
             - run_testfoo: Test the content of {FOO_TARGET_FILENAME} in a game.
             - web_search_tool_call: Perform a web search using the Tavily API.
-
-            YOUR GOAL: Create a Catan Player That Will play run_testfoo and win the game without crashing. 
-            Use less than 15 tool calls to achieve this
+            - view_last_game_llm_query: View the LLM query from the last game to see performance. 
+            - view_last_game_results: View the game results from the last game. (Includes stdout and stderr from the game)
+            
+            YOUR GOAL: Create a Catan Player That Will play run_testfoo and Win Catan against the other players
+            It must Incoorporate the LLM() class and the .query_llm() method
 
             """
         )
@@ -152,23 +152,49 @@ class CreatorAgent():
 
             log_path = os.path.join(CreatorAgent.run_dir, f"llm_log_{self.llm_name}.txt")
 
-            # Run Through The Graph
-            initial_input = {"messages": prompt}
-            with open(log_path, "a") as log_file:                # Run the graph until the first interruption
-                for event in self.react_graph.stream(initial_input, self.memory_config, stream_mode="values"):
-                    msg = event['messages'][-1]
-                    msg.pretty_print()
-                    log_file.write((msg).pretty_repr())
+            # Variables for user input
+            user_advice = ""
+            user_advice_prompt = ""
+            user_choose_continue = "y"
+
+            while user_choose_continue == "y":
+
+                # Place user feedback into the prompt
+                if user_advice_prompt != "":
+                    cur_prompt = user_advice_prompt
+                else:
+                    cur_prompt = prompt
+                initial_input = {"messages": cur_prompt}
+
+                # Run Through The Graph
+                final_msg = ""
+                with open(log_path, "a") as log_file:                # Run the graph until the first interruption
+                    for event in self.react_graph.stream(initial_input, self.memory_config, stream_mode="values"):
+                        msg = event['messages'][-1]
+                        msg.pretty_print()
+                        log_file.write((msg).pretty_repr())
+                        final_msg = msg.content
 
 
-            print("✅  graph finished")
+                print("✅  graph finished")
 
-            # Copy Result File to the new directory
-            shutil.copy2(                           
-                (FOO_TARGET_FILE).resolve(),
-                (Path(CreatorAgent.run_dir) / FOO_TARGET_FILENAME)
-            )
+                # Copy Result File to the new directory
+                shutil.copy2(                           
+                    (FOO_TARGET_FILE).resolve(),
+                    (Path(CreatorAgent.run_dir) / FOO_TARGET_FILENAME)
+                )
 
+                # Ask the user if they want to continue, and for advice
+                user_choose_continue = input("Continue? (y/n):")
+                if user_choose_continue.lower() == "y":
+                    user_advice = input("What do you want the agent to do? Press Enter for default:")
+                    if user_advice == "":
+                        user_advice = "Do This" + final_msg
+                    user_advice_prompt = "NEW USER ADVICE " + user_advice + "/n/n" + prompt
+                else:
+                    user_advice_prompt = ""
+
+        
         except Exception as e:
             print(f"Error calling LLM: {e}")
         return None
@@ -180,6 +206,7 @@ def list_local_files(_: str = "") -> str:
         for p in LOCAL_SEARCH_BASE_DIR.glob("**/*")
         if p.is_file() and p.suffix in {".py", ".txt", ".md"}
     )
+
 
 def read_local_file(rel_path: str) -> str:
     """
@@ -196,6 +223,7 @@ def read_local_file(rel_path: str) -> str:
         raise ValueError("File too large")
     return candidate.read_text(encoding="utf-8", errors="ignore")
 
+
 def read_foo(_: str = "") -> str:
     """
     Return the UTF-8 content of Agent File (≤64 kB).
@@ -203,6 +231,7 @@ def read_foo(_: str = "") -> str:
     if FOO_TARGET_FILE.stat().st_size > FOO_MAX_BYTES:
         raise ValueError("File too large for the agent")
     return FOO_TARGET_FILE.read_text(encoding="utf-8", errors="ignore")  # pathlib API :contentReference[oaicite:2]{index=2}
+
 
 def write_foo(new_text: str) -> str:
     """
@@ -220,6 +249,7 @@ def write_foo(new_text: str) -> str:
 
     return f"{FOO_TARGET_FILENAME} updated successfully"
 
+
 def run_testfoo(_: str = "") -> str:
     """
     Run one Catanatron match (R vs Agent File) and return raw CLI output.
@@ -228,10 +258,36 @@ def run_testfoo(_: str = "") -> str:
         shlex.split(FOO_RUN_COMMAND),
         capture_output=True,          # capture stdout+stderr :contentReference[oaicite:1]{index=1}
         text=True,
-        timeout=120,                  # avoids infinite-loop hangs
+        timeout=3600,                  # avoids infinite-loop hangs
         check=False                   # we’ll return non-zero output instead of raising
     )
-    return (result.stdout + result.stderr).strip()
+    
+    game_results = (result.stdout + result.stderr).strip()
+
+    # Update the run_test_foo flag to read game results
+    global RUN_TEST_FOO_HAPPENED
+    RUN_TEST_FOO_HAPPENED = True
+
+    # Path to the runs directory
+    runs_dir = Path(__file__).parent / "runs"
+    
+    # Find all folders that start with game_run
+    game_run_folders = [f for f in runs_dir.glob("game_run*") if f.is_dir()]
+    
+    if not game_run_folders:
+        return "No game run folders found."
+    
+    # Sort folders by name (which includes datetime) to get the most recent one
+    latest_run_folder = sorted(game_run_folders)[-1]
+
+    # Add a file with the stdout and stderr called catanatron_output.txt
+    output_file_path = latest_run_folder / "catanatron_output.txt"
+    with open(output_file_path, "w") as output_file:
+        output_file.write(game_results)
+        
+    print(game_results)
+    return game_results
+
 
 def web_search_tool_call(query: str) -> str:
     """Perform a web search using the Tavily API.
@@ -253,3 +309,87 @@ def web_search_tool_call(query: str) -> str:
     )
 
     return formatted_search_docs
+
+
+def view_last_game_llm_query(query_number: int = -1) -> str:
+    """
+    View the game results from a specific run.
+    
+    Args:
+        query_number: The index of the file to view (0-based). 
+                     If -1 (default), returns the most recent file.
+    
+    Returns:
+        The content of the requested game results file or an error message.
+    """
+
+    if RUN_TEST_FOO_HAPPENED == False:
+        return "No game run has been executed yet."
+    
+    # Path to the runs directory
+    runs_dir = Path(__file__).parent / "runs"
+    
+    # Find all folders that start with game_run
+    game_run_folders = [f for f in runs_dir.glob("game_run*") if f.is_dir()]
+    
+    if not game_run_folders:
+        return "No game run folders found."
+    
+    # Sort folders by name (which includes datetime) to get the most recent one
+    latest_run_folder = sorted(game_run_folders)[-1]
+    
+    # Get all files in the folder and sort them
+    result_files = sorted(latest_run_folder.glob("*"))
+    
+    if not result_files:
+        return f"No result files found in {latest_run_folder.name}."
+    
+    # Determine which file to read
+    file_index = query_number if query_number >= 0 else len(result_files) - 1
+    
+    # Check if index is valid
+    if file_index >= len(result_files):
+        return f"Invalid file index. There are only {len(result_files)} files (0-{len(result_files)-1})."
+    
+    target_file = result_files[file_index]
+    
+    # Read and return the content of the file
+    try:
+        with open(target_file, "r") as file:
+            return f"Content of {target_file.name}:\n\n{file.read()}"
+    except Exception as e:
+        return f"Error reading file {target_file.name}: {str(e)}"
+    
+
+def view_last_game_results(_: str = "") -> str:
+    """
+    View the game results from a specific run.
+    
+    Returns:
+        The content of the requested game results file or an error message.
+    """
+
+    if RUN_TEST_FOO_HAPPENED == False:
+        return "No game run has been executed yet."
+    
+    # Path to the runs directory
+    runs_dir = Path(__file__).parent / "runs"
+    
+    # Find all folders that start with game_run
+    game_run_folders = [f for f in runs_dir.glob("game_run*") if f.is_dir()]
+    
+    if not game_run_folders:
+        return "No game run folders found."
+    
+    # Sort folders by name (which includes datetime) to get the most recent one
+    latest_run_folder = sorted(game_run_folders)[-1]
+
+    # Read a file with the stdout and stderr called catanatron_output.txt
+    output_file_path = latest_run_folder / "catanatron_output.txt"
+    
+    # Read and return the content of the file
+    try:
+        with open(output_file_path, "w") as file:
+            return f"Content of {output_file_path.name}:\n\n{file.read()}"
+    except Exception as e:
+        return f"Error reading file {output_file_path.name}: {str(e)}"

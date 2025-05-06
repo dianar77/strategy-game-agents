@@ -1,7 +1,7 @@
 import os
 from catanatron import Player
 from datetime import datetime
-from agents.fromScratchLLM_player.llm_tools import LLM
+from agents.fromScratchLLM_player_v2.llm_tools import LLM
 
 class FooPlayer(Player):
     def __init__(self, color, name=None):
@@ -13,7 +13,8 @@ class FooPlayer(Player):
         """Should return one of the playable_actions.
 
         Args:
-            game (Game): complete game state. read-only.
+            game (Game): complete game state. read-only. 
+                Defined in in "catanatron/catanatron_core/catanatron/game.py"
             playable_actions (Iterable[Action]): options to choose from
         Return:
             action (Action): Chosen element of playable_actions
