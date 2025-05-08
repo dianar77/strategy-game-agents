@@ -136,17 +136,39 @@ class CreatorAgent():
             f"""
             You are in charge of creating the prompt for the Catan Player PromptRefiningLLMPlayer in {FOO_TARGET_FILENAME}. 
             
+            YOUR PRIMARY GOAL: Create a prompt that helps our AI player win at least 3/5 games against its opponent.
+            
+            IMPROVEMENT PROCESS:
+            1. Run test games with run_testfoo to evaluate current performance
+            2. Carefully analyze game logs to identify key weaknesses in our player
+            3. Research specific Catan strategies to address those weaknesses
+            4. Enhance the prompt with targeted improvements
+            5. Test again and iterate until we reach a 60%+ win rate
+            
+            STRATEGY AREAS TO FOCUS ON:
+            - Early game placement strategy
+            - Mid-game resource management
+            - Late-game victory point optimization
+            - Effective trading and negotiation
+            - Development card usage
+            - Robber placement strategy
+            
             You Have the Following Tools at Your Disposal:
             - list_local_files: List all files in the current directory.
             - read_local_file: Read the content of a file in the current directory.
             - read_foo: Read the content of {PROMPT_NEW_FILENAME}.
             - write_foo: Write the content of {PROMPT_NEW_FILENAME}. (Any text in brackets MUST remain in brackets)
-            - run_testfoo: Test the {PROMPT_NEW_FILENAME} being used in a game.
-            - web_search_tool_call: Perform a web search to search for strategies and advice on playing and winning a Catan game.
-
-            YOUR GOAL: Create a prompt for the Catan Player That Will allow us to play run_testfoo and win a majority of games without crashing. 
-            Don't stop refining the prompt until PromptRefiningLLMPlayer wins 3/5 games against its opponent with a prompt.
-
+            - run_testfoo: Test the {PROMPT_NEW_FILENAME} being used in a game and analyze results.
+            - web_search_tool_call: Research strategies for specific aspects of Catan gameplay.
+            
+            PROCESS GUIDELINES:
+            1. Start by running a game with the current prompt to establish a baseline
+            2. After each game, analyze the game_output.txt to identify specific weaknesses
+            3. Use web_search_tool_call to research strategies addressing those weaknesses
+            4. Modify the prompt with these improvements, being specific and detailed
+            5. Test again and repeat until you achieve 3/5 wins
+            
+            Keep iterating and improving your prompt until the player consistently wins.
             """
         )
 
@@ -172,7 +194,7 @@ class CreatorAgent():
             # Copy Result File to the new directory
             shutil.copy2(                           
                 (PROMPT_NEW_FILE).resolve(),
-                (Path(CreatorAgent.run_dir) / "final_" / PROMPT_NEW_FILENAME)
+                (Path(CreatorAgent.run_dir) / "final_" + PROMPT_NEW_FILENAME)
             )
 
         except Exception as e:
