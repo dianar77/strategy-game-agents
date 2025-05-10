@@ -13,30 +13,34 @@ class FooPlayer(Player):
 
         Args:
             game (Game): complete game state. read-only. 
-                Defined in in "catanatron/catanatron_core/catanatron/game.py"
             playable_actions (Iterable[Action]): options to choose from
         Return:
             action (Action): Chosen element of playable_actions
         """
-        # Simplify the prompt to avoid unknown attributes in the game object.
-        action_descriptions = "\n".join([f"Action {i}: {action}" for i, action in enumerate(playable_actions)])
+        # Prepare game details for the LLM
+        try:
+            game_description = f"Turn: {game.turn}, Phase: {game.phase}, Dice: {game.dice}, Resources: {game.resources}, Roads: {game.roads}, Settlements: {game.settlements}, Cities: {game.cities}"
+        except AttributeError:
+            game_description = "Some game details could not be retrieved."
 
-        prompt = (
-            f"You are an AI agent playing as the {self.color} player in Catan. "
-            f"Here are your possible actions:\n{action_descriptions}\n\n"
-            f"Select ONE action you will take. Respond with only the action number in the format 'Action X' (e.g., 'Action 2')."
-        )
+        # Construct the prompt
+        prompt = ("You are a Catan player. The current game state is as follows: \n"
+                  f"{game_description}\n"
+                  "The available actions are listed below. Each action is indexed numerically:\n"
+                  f"{[(i, str(action)) for i, action in enumerate(playable_actions)]}\n"
+                  "Choose the index of the best action to play, considering the goal to win Catan.")
 
-        # Query the LLM for a decision
+        # Query the LLM for decision-making
         llm_response = self.llm.query_llm(prompt)
 
-        # Parse the response to select the action
+        # Try to parse the LLM response and choose the appropriate action
         try:
-            selected_action_index = int(llm_response.strip().split()[1])  # Extract the number (e.g., 'Action 2')
-            if 0 <= selected_action_index < len(playable_actions):
-                return playable_actions[selected_action_index]
-            else:
-                raise ValueError("Selected index out of range.")
-        except Exception as e:
-            print(f"Error interpreting LLM response: {llm_response}. Defaulting to first action. Error: {e}")
-            return playable_actions[0] # Default to first action in case of an error
+            print("LLM response:", llm_response)
+            action_index = int(llm_response.strip())  # Expecting an index from the LLM
+            if 0 <= action_index < len(playable_actions):
+                return playable_actions[action_index]
+        except (ValueError, IndexError):
+            print("Invalid LLM response. Choosing the first action as a fallback.")
+
+        # Fallback to the first action
+        return playable_actions[0]

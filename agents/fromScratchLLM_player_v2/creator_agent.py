@@ -16,6 +16,7 @@ import subprocess, shlex
 
 
 from langchain_openai import AzureChatOpenAI
+from langchain_mistralai import ChatMistralAI
 from langgraph.graph import MessagesState, START, StateGraph
 from langchain_core.messages import HumanMessage, SystemMessage
 from langgraph.prebuilt import tools_condition, ToolNode
@@ -23,6 +24,7 @@ from IPython.display import Image, display
 from langgraph.checkpoint.memory import MemorySaver
 from langchain_core.messages import RemoveMessage
 from langchain_community.tools.tavily_search import TavilySearchResults
+from langchain_core.rate_limiters import InMemoryRateLimiter
 
 
 # -------- tool call configuration ----------------------------------------------------
@@ -48,6 +50,21 @@ class CreatorAgent():
             azure_endpoint="https://gpt-amayuelas.openai.azure.com/",
             api_version = "2024-12-01-preview"
         )
+        os.environ["LANGCHAIN_TRACING_V2"] = "false"
+
+
+        # self.llm_name = "mistral-large-latest"
+        # rate_limiter = InMemoryRateLimiter(
+        #     requests_per_second=0.5,    # Adjust based on your API tier
+        #     check_every_n_seconds=0.1,
+        #     max_bucket_size=10        # Allows for burst handling
+        # )
+        # self.llm = ChatMistralAI(
+        #     model="mistral-large-latest",
+        #     temperature=0,
+        #     max_retries=2,
+        #     rate_limiter=rate_limiter,
+        # )
 
         # Create run directory if it doesn't exist
         if CreatorAgent.run_dir is None:

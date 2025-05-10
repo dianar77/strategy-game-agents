@@ -6,7 +6,7 @@ from agents.fromScratchLLM_player_v2.llm_tools import LLM
 class FooPlayer(Player):
     def __init__(self, color, name=None):
         super().__init__(color, name)
-        self.llm = LLM()  # Includes LLM class with llm.llm_query(prompt: str) -> str method
+        self.llm = LLM()  # Includes LLM class with llm.query_llm(prompt: str) -> str method
 
 
     def decide(self, game, playable_actions):
@@ -21,6 +21,7 @@ class FooPlayer(Player):
         """
         # ===== YOUR CODE HERE =====
         # As an example we simply return the first action:
+        print("Choosing First Action on Default")
         return playable_actions[0]
         # ===== END YOUR CODE =====
 
