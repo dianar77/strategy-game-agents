@@ -22,12 +22,16 @@ from catanatron_server.utils import open_link
 
 def main():
 
+    # run prompt refining (should loop until it wins 3/5 of games in a run)
     cA = PromptRefiningCreatorAgent(opponent="AB")
-    #print(write_foo("print('Hello, world!')"))  # Write to foo_player.py
-    #print(read_foo())
-    #print(run_testfoo())
-    #print(list_local_files())
     cA.run_react_graph()
+
+    # run code refining (should loop until it wins 3/5 of games in a run)
+    # cA = CodeRefiningCreatorAgent(opponent="AB")
+    # cA.run_react_graph()
+
+
+
 
     # players = [
     #     RandomPlayer(Color.RED),

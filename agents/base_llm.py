@@ -112,6 +112,43 @@ class OpenAILLM(BaseLLM):
                 else:
                     raise
 
+class AnthropicLLM(BaseLLM):
+    # AVAILABLE_MODELS = [
+    #     "gpt-4o",
+    #     "gpt-4o-mini",
+    #     "o1",
+    #     "o1-mini"
+    # ]
+
+    def __init__(self, model_name: str = "claude-3.7"):
+
+        self.llm_name = "claude-3.7"
+
+
+
+    def query(self, prompt: str) -> Dict[str, str]:
+        while True:
+            try:
+                completion = self.client.chat.completions.create(
+                #completion = openai.ChatCompletion.create(
+                    messages=[
+                        {"role": "user", "content": prompt}
+                    ],
+                    # max_tokens=4096,
+                    temperature=1.0,
+                    top_p=1.0,
+                    model = self.model
+                )
+
+                return completion.choices[0].message.content.strip()
+                
+            except Exception as e:
+                if hasattr(e, 'status_code') and e.status_code == 429:
+                    time.sleep(1)  # Add delay for rate limiting
+                    continue
+                else:
+                    raise
+
 class AzureOpenAILLM(BaseLLM):
     AVAILABLE_MODELS = [
         "gpt-4o",

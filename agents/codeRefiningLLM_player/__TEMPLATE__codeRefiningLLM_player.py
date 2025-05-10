@@ -11,6 +11,8 @@ from enum import Enum
 from io import StringIO
 from datetime import datetime
 
+from agent_code import get_prompt_enhancement
+
 from catanatron.models.player import Player
 from catanatron.game import Game
 from catanatron.models.player import Color
@@ -70,7 +72,8 @@ class CodeRefiningLLMPlayer(Player):
         super().__init__(color, name)
         # Get API key from environment variable
         if llm is None:
-            self.llm = AzureOpenAILLM(model_name="gpt-4o")
+            # self.llm = AzureOpenAILLM(model_name="gpt-4o")
+            self.llm = MistralLLM(model_name="mistral-large-latest")
         else:
             self.llm = llm
         self.is_bot = True
@@ -136,7 +139,8 @@ class CodeRefiningLLMPlayer(Player):
         # print(game_state_text)
 
         if self.debug_mode:
-            print(f"Game state prepared for LLM (length: {len(game_state_text)} chars)")
+            pass
+            # print(f"Game state prepared for LLM (length: {len(game_state_text)} chars)")
 
         # Use LLM to choose an action
         try:
@@ -236,6 +240,11 @@ class CodeRefiningLLMPlayer(Player):
         prompt_path = pathlib.Path(__file__).parent / "current_prompt.txt"
         with open(prompt_path, "r", encoding="utf-8") as f:
             prompt_template = f.read()
+        
+        enhancement = get_prompt_enhancement()
+        if enhancement:
+            prompt_template = enhancement + "\n\n" + prompt_template
+        
         # Append the game state and final instruction lines
         added_text = (
             f"\n\n{game_state_text}\n\n"

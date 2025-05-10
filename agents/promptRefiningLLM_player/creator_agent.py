@@ -16,12 +16,14 @@ import subprocess, shlex
 
 
 from langchain_openai import AzureChatOpenAI
+from langchain_mistralai import ChatMistralAI
 from langgraph.graph import MessagesState, START, StateGraph
 from langchain_core.messages import HumanMessage, SystemMessage
 from langgraph.prebuilt import tools_condition, ToolNode
 from IPython.display import Image, display
 from langgraph.checkpoint.memory import MemorySaver
 from langchain_core.messages import RemoveMessage
+from langchain_core.rate_limiters import InMemoryRateLimiter
 from langchain_community.tools.tavily_search import TavilySearchResults
 
 
@@ -45,12 +47,26 @@ class CreatorAgent():
 
     def __init__(self, opponent: str = "AB"):
         # Get API key from environment variable
-        self.llm_name = "gpt-4o"
-        self.llm = AzureChatOpenAI(
-            model="gpt-4o",
-            azure_endpoint="https://gpt-amayuelas.openai.azure.com/",
-            api_version = "2024-12-01-preview"
+        # self.llm_name = "gpt-4o"
+        # self.llm = AzureChatOpenAI(
+        #     model="gpt-4o",
+        #     azure_endpoint="https://gpt-amayuelas.openai.azure.com/",
+        #     api_version = "2024-12-01-preview"
+        # )
+        
+        self.llm_name = "mistral-large-latest"
+        rate_limiter = InMemoryRateLimiter(
+            requests_per_second=0.5,    # Adjust based on your API tier
+            check_every_n_seconds=0.1,
+            max_bucket_size=10        # Allows for burst handling
         )
+        self.llm = ChatMistralAI(
+            model="mistral-large-latest",
+            temperature=0,
+            max_retries=2,
+            rate_limiter=rate_limiter,
+        )
+
 
         # Define the run game command here so that we can pass in the opponent
         self.foo_run_command = f"catanatron-play --players={opponent},PR_LLM --num=5 --config-map=MINI --output=data/ --json"
@@ -194,7 +210,7 @@ class CreatorAgent():
             # Copy Result File to the new directory
             shutil.copy2(                           
                 (PROMPT_NEW_FILE).resolve(),
-                (Path(CreatorAgent.run_dir) / "final_" + PROMPT_NEW_FILENAME)
+                (Path(CreatorAgent.run_dir) / f"final_{PROMPT_NEW_FILENAME}")
             )
 
         except Exception as e:
