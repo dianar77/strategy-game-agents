@@ -3,7 +3,7 @@ import os
 import sys, pathlib
 sys.path.insert(0, str(pathlib.Path(__file__).parent.parent))
 import base_llm
-from base_llm import OpenAILLM, AzureOpenAILLM, MistralLLM, BaseLLM, MistralLLM, AzureOpenAILLM
+from base_llm import OpenAILLM, AzureOpenAILLM, MistralLLM, BaseLLM, MistralLLM, AzureOpenAILLM, AnthropicLLM
 from typing import List, Dict, Tuple, Any, Optional
 import json
 import random
@@ -71,7 +71,8 @@ class LLMPlayer(Player):
         # Get API key from environment variable
         if llm is None:
             #self.llm = AzureOpenAILLM(model_name="gpt-4o")
-            self.llm = MistralLLM(model_name="mistral-large-latest")
+            #self.llm = MistralLLM(model_name="mistral-large-latest")
+            self.llm = AnthropicLLM()
         else:
             self.llm = llm
         self.is_bot = True

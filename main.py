@@ -5,7 +5,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "catanatron"))
 minimax_dir = os.path.join(os.path.dirname(__file__), "catanatron/catanatron_experimental/catanatron_experimental/machine_learning/players")
 sys.path.append(minimax_dir)
 
-from agents.base_llm import OpenAILLM, MistralLLM, AzureOpenAILLM
+from agents.base_llm import OpenAILLM, MistralLLM, AzureOpenAILLM, AnthropicLLM
 from catanatron import Game, RandomPlayer, Color
 from agents.llm_player.llm_player import LLMPlayer  # Import your LLMPlayer
 from agents.basicLang_player.basicLang_player import BasicLangPlayer
@@ -22,9 +22,9 @@ from catanatron_server.utils import open_link
 
 def main():
 
-    # run prompt refining (should loop until it wins 3/5 of games in a run)
-    cA = PromptRefiningCreatorAgent(opponent="AB")
-    cA.run_react_graph()
+    # # run prompt refining (should loop until it wins 3/5 of games in a run)
+    # cA = PromptRefiningCreatorAgent(opponent="AB")
+    # cA.run_react_graph()
 
     # run code refining (should loop until it wins 3/5 of games in a run)
     # cA = CodeRefiningCreatorAgent(opponent="AB")
@@ -33,16 +33,16 @@ def main():
 
 
 
-    # players = [
-    #     RandomPlayer(Color.RED),
-    #     #AlphaBetaPlayer(Color.BLUE),
-    #     #ToolCallLLMPlayer(Color.ORANGE),
-    #     #BasicLangPlayer(Color.BLUE),
-    #     LLMPlayer(Color.WHITE, llm=MistralLLM(model_name="mistral-large-latest"))
-    # ]
-    # game = Game(players)
-    # #open_link(game)  # opens game in browser...not working yet
-    # print(game.play())
+    players = [
+        RandomPlayer(Color.RED),
+        #AlphaBetaPlayer(Color.BLUE),
+        #ToolCallLLMPlayer(Color.ORANGE),
+        #BasicLangPlayer(Color.BLUE),
+        LLMPlayer(Color.WHITE, llm=AnthropicLLM())
+    ]
+    game = Game(players)
+    #open_link(game)  # opens game in browser...not working yet
+    print(game.play())
 
 if __name__ == "__main__":
     main()

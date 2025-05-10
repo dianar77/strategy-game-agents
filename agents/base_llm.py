@@ -3,6 +3,7 @@ from typing import Dict, Any
 import os
 from mistralai import Mistral
 from openai import OpenAI, AzureOpenAI
+from anthropic import AnthropicBedrock
 import time
 import json
 #import openai
@@ -113,34 +114,33 @@ class OpenAILLM(BaseLLM):
                     raise
 
 class AnthropicLLM(BaseLLM):
-    # AVAILABLE_MODELS = [
-    #     "gpt-4o",
-    #     "gpt-4o-mini",
-    #     "o1",
-    #     "o1-mini"
-    # ]
 
     def __init__(self, model_name: str = "claude-3.7"):
 
-        self.llm_name = "claude-3.7"
+        self.model = model_name # currently only supports "claude-3.7"
+        self.api_key = os.getenv("ANTHROPIC_API_KEY")
+        self.model_id = "arn:aws:bedrock:us-east-2:288380904485:inference-profile/us.anthropic.claude-3-7-sonnet-20250219-v1:0"
+        self.region_name = "us-east-2"
+        self.client = AnthropicBedrock(
+            aws_access_key=os.environ["AWS_ACESS_KEY"],
+            aws_secret_key=os.environ["AWS_SECRET_KEY"],
+            aws_region="us-east-2",
+        )
 
 
 
     def query(self, prompt: str) -> Dict[str, str]:
         while True:
             try:
-                completion = self.client.chat.completions.create(
-                #completion = openai.ChatCompletion.create(
+                completion = self.client.messages.create(
+                    model = self.model_id,
                     messages=[
                         {"role": "user", "content": prompt}
                     ],
-                    # max_tokens=4096,
-                    temperature=1.0,
-                    top_p=1.0,
-                    model = self.model
+                    max_tokens=4096
                 )
 
-                return completion.choices[0].message.content.strip()
+                return completion.content[0].text.strip()
                 
             except Exception as e:
                 if hasattr(e, 'status_code') and e.status_code == 429:
