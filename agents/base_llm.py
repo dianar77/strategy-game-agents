@@ -118,7 +118,6 @@ class AnthropicLLM(BaseLLM):
     def __init__(self, model_name: str = "claude-3.7"):
 
         self.model = model_name # currently only supports "claude-3.7"
-        self.api_key = os.getenv("ANTHROPIC_API_KEY")
         self.model_id = "arn:aws:bedrock:us-east-2:288380904485:inference-profile/us.anthropic.claude-3-7-sonnet-20250219-v1:0"
         self.region_name = "us-east-2"
         self.client = AnthropicBedrock(
