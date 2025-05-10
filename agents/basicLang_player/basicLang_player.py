@@ -337,6 +337,9 @@ class BasicLangPlayer(Player):
             # Remove quotes
             response = response.strip()
 
+            # Gather plan from the response
+            self._extract_plan_from_response(response)
+
 
             log_path = os.path.join(BasicLangPlayer.run_dir, f"llm_log_{self.llm_name}.txt")
             # with open(log_path, "a") as log_file:

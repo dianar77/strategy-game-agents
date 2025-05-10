@@ -71,7 +71,7 @@ DEV_CARD_DESCRIPTIONS = {
     "VICTORY_POINT": "Worth 1 victory point",
 }
 
-class PromptRefiningLLMPlayer(Player):
+class CodeRefiningLLMPlayer(Player):
     """LLM-powered player that uses Claude API to make Catan game decisions."""
     # Class properties
     debug_mode = True
@@ -90,13 +90,27 @@ class PromptRefiningLLMPlayer(Player):
             api_version = "2024-12-01-preview"
         )
 
-        if PromptRefiningLLMPlayer.run_dir is None:
-            agent_dir = os.path.dirname(os.path.abspath(__file__))
-            runs_dir = os.path.join(agent_dir, "runs")
-            os.makedirs(runs_dir, exist_ok=True)
-            run_id = datetime.now().strftime("run_%Y%m%d_%H%M%S")
-            PromptRefiningLLMPlayer.run_dir = os.path.join(runs_dir, run_id)
-            os.makedirs(PromptRefiningLLMPlayer.run_dir, exist_ok=True)
+        # Use the shared run directory from the creator agent if available
+        if CodeRefiningLLMPlayer.run_dir is None:
+            if "CATAN_CURRENT_RUN_DIR" in os.environ:
+                # Use the directory passed from the creator agent
+                CodeRefiningLLMPlayer.run_dir = os.environ["CATAN_CURRENT_RUN_DIR"]
+            else:
+                # Create a new run directory if not running through creator agent
+                agent_dir = os.path.dirname(os.path.abspath(__file__))
+                runs_dir = os.path.join(agent_dir, "runs")
+                os.makedirs(runs_dir, exist_ok=True)
+                
+                # Try to read current_run.txt for the last known run
+                try:
+                    with open(os.path.join(runs_dir, "current_run.txt"), "r") as f:
+                        CodeRefiningLLMPlayer.run_dir = f.read().strip()
+                except:
+                    # Fallback to creating a new run directory
+                    run_id = datetime.now().strftime("run_%Y%m%d_%H%M%S")
+                    CodeRefiningLLMPlayer.run_dir = os.path.join(runs_dir, run_id)
+                    os.makedirs(CodeRefiningLLMPlayer.run_dir, exist_ok=True)
+
 
         # Initialize stats for the player
         self.api_calls = 0
@@ -307,12 +321,13 @@ class PromptRefiningLLMPlayer(Player):
             "- Understanding the connectivity between nodes is crucial for road building strategy\n"
             "- Ports allow trading resources at better rates (2:1 or 3:1)\n\n"
             "Here is the current game state:\n\n"
-            #f"{game_state_text}\n\n"
+            f"{game_state_text}\n\n"
             "Available Tool Calls:\n"
             "  - web_search_tool_call: USE THIS TOOL! Search the web for information. Use this as much as you like. You can search for game rules, ask for advice, or to choose the most optimal option. \n\n"
 
             f"Based on this information, which action number do you choose? Think step by step about your options, then put the final action number in a box like \\boxed{{1}}."
         )
+
 
         try:
 
@@ -329,11 +344,19 @@ class PromptRefiningLLMPlayer(Player):
             # Remove quotes
             response = response.strip()
 
-            log_path = os.path.join(PromptRefiningLLMPlayer.run_dir, f"llm_log_{self.llm_name}.txt")
-
+            # Find the current game run directory (should be the most recent one)
+            game_run_dirs = [d for d in pathlib.Path(CodeRefiningLLMPlayer.run_dir).glob("game_*") if d.is_dir()]
+            if game_run_dirs:
+                # Sort by creation time (newest first)
+                latest_game_run = max(game_run_dirs, key=lambda d: d.stat().st_mtime)
+                log_path = latest_game_run / f"llm_log_{self.llm_name}.txt"
+            else:
+                # Fallback to main run directory if no game subdirectories exist
+                log_path = pathlib.Path(CodeRefiningLLMPlayer.run_dir) / f"llm_log_{self.llm_name}.txt"
+            
             with open(log_path, "a") as log_file:
-                for messages in messages['messages']:
-                    log_file.write(messages.pretty_repr())
+                for message in messages['messages']:
+                    log_file.write(message.pretty_repr())
                 log_file.write("\n\n" + "|"*40 + "NEW TURN" + "|"*40 + "\n\n")
 
             # Extract the first integer from a boxed answer or any number

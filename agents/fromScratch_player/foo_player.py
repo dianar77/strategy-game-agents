@@ -10,31 +10,31 @@ class FooPlayer(Player):
         Return:
             action (Action): Chosen element of playable_actions
         """
-        # ===== YOUR CODE HERE =====
-        # Expert Strategy:
-        # 1. Prioritize "Ore/Wheat" for early cities and dev cards.
-        # 2. Expand roads to block opponents and reach high-value spots.
-        # 3. Trade effectively to achieve step 1 and 2.
-        # 4. Conquer Longest Road and Largest Army midgame.
-
-        def evaluate_action(action):
-            # Assign weight based on optimal strategy goals
-            action_str = str(action)
-            if 'build_city' in action_str:
-                return 100  # Cities boost resource production
-            if 'build_settlement' in action_str:
-                return 90  # Settlements secure presence
-            if 'build_road' in action_str:
-                return 70  # Roads enable expansion
-            if 'trade' in action_str:
-                return 50  # Trades unblock resource constraints
-            if 'play_dev_card' in action_str:
-                return 40  # Development cards give bonuses
-            if 'block_opponent' in action_str:
-                return 30  # Disrupt rivals
-            return 10  # Lower priority actions
-
-        # Select action with the highest score
-        best_action = max(playable_actions, key=evaluate_action)
-        return best_action
-        # ===== END YOUR CODE =====
+        # Strategic prioritization of actions
+        for action in playable_actions:
+            # Always try to build a settlement if possible
+            if action.action_type.name == "BUILD_SETTLEMENT":
+                return action
+            # Try to build a city next
+            elif action.action_type.name == "BUILD_CITY":
+                return action
+            # Build a road if settlements or cities are not possible
+            elif action.action_type.name == "BUILD_ROAD":
+                return action
+            # Buy a development card if building is not viable
+            elif action.action_type.name == "BUY_DEVELOPMENT_CARD":
+                return action
+            # Play specific development cards
+            elif action.action_type.name in ["PLAY_KNIGHT_CARD", "PLAY_YEAR_OF_PLENTY", "PLAY_MONOPOLY"]:
+                return action
+            # Trade resources if no other options are available
+            elif action.action_type.name == "MARITIME_TRADE":
+                return action
+        
+        # Roll dice if it's the player's turn and required
+        for action in playable_actions:
+            if action.action_type.name == "ROLL":
+                return action
+        
+        # Default to ending the turn if no other actions are better
+        return playable_actions[-1]
