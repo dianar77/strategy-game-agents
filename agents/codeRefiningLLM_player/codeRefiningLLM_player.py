@@ -11,6 +11,8 @@ from enum import Enum
 from io import StringIO
 from datetime import datetime
 
+from agents.codeRefiningLLM_player.agent_code import get_prompt_enhancement
+
 from catanatron.models.player import Player
 from catanatron.game import Game
 from catanatron.models.player import Color
@@ -70,7 +72,8 @@ class CodeRefiningLLMPlayer(Player):
         super().__init__(color, name)
         # Get API key from environment variable
         if llm is None:
-            self.llm = AzureOpenAILLM(model_name="gpt-4o")
+            # self.llm = AzureOpenAILLM(model_name="gpt-4o")
+            self.llm = MistralLLM(model_name="mistral-large-latest")
         else:
             self.llm = llm
         self.is_bot = True
@@ -136,7 +139,8 @@ class CodeRefiningLLMPlayer(Player):
         # print(game_state_text)
 
         if self.debug_mode:
-            print(f"Game state prepared for LLM (length: {len(game_state_text)} chars)")
+            pass
+            # print(f"Game state prepared for LLM (length: {len(game_state_text)} chars)")
 
         # Use LLM to choose an action
         try:
@@ -232,35 +236,15 @@ class CodeRefiningLLMPlayer(Player):
         Returns:
             int: Index of the selected action, or None if API call fails
         """
-        # Compose the prompt (system + user, as a single string)
-        # prompt = (
-        #     "You are playing Settlers of Catan. Your task is to analyze the game state and choose the best action from the available options.\n\n"
-        #     "Rules:\n"
-        #     "1. Think through your decision step by step, analyzing the game state, resources, and available actions\n"
-        #     "2. Your aim is to WIN. That means 10 victory points.\n"
-        #     "3. Put your final chosen action inside a box like \\boxed{5}\n"
-        #     "4. Your final answer must be a single integer corresponding to the action number\n"
-        #     "5. If you want to create or update your strategic plan, put it in <plan> tags like:\n"
-        #     "   <plan>Build roads toward port, then build settlement at node 13, then focus on city upgrades</plan>\n"
-        #     "6. Analyze the recent resource changes to understand what resources you're collecting effectively\n"
-        #     "7. Think about the next 2-3 turns, not just the immediate action\n\n"
-        #     "Board Understanding Guide:\n"
-        #     "- The RESOURCE & NODE GRID shows hexagonal tiles with their coordinates, resources, and dice numbers\n"
-        #     "- The nodes connected to each tile are listed below each tile\n"
-        #     "- 🔍 marks the robber's location, blocking resource production on that hex\n"
-        #     "- Settlements/cities and their production are listed in the BUILDINGS section\n"
-        #     "- Understanding the connectivity between nodes is crucial for road building strategy\n"
-        #     "- Ports allow trading resources at better rates (2:1 or 3:1)\n\n"
-        #     "Here is the current game state:\n\n"
-        #     f"{game_state_text}\n\n"
-        #     f"Based on this information, which action number do you choose? Think step by step about your options, then put the final action number in a box like \\boxed{{1}}."
-        # )
-
-
         # Load prompt template from file
         prompt_path = pathlib.Path(__file__).parent / "current_prompt.txt"
         with open(prompt_path, "r", encoding="utf-8") as f:
             prompt_template = f.read()
+        
+        enhancement = get_prompt_enhancement()
+        if enhancement:
+            prompt_template = enhancement + "\n\n" + prompt_template
+        
         # Append the game state and final instruction lines
         added_text = (
             f"\n\n{game_state_text}\n\n"

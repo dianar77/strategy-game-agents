@@ -16,18 +16,23 @@ import subprocess, shlex
 
 
 from langchain_openai import AzureChatOpenAI
+from langchain_mistralai import ChatMistralAI
+from langchain_aws import ChatBedrockConverse
 from langgraph.graph import MessagesState, START, StateGraph
 from langchain_core.messages import HumanMessage, SystemMessage
 from langgraph.prebuilt import tools_condition, ToolNode
 from IPython.display import Image, display
 from langgraph.checkpoint.memory import MemorySaver
 from langchain_core.messages import RemoveMessage
+from langchain_core.rate_limiters import InMemoryRateLimiter
 from langchain_community.tools.tavily_search import TavilySearchResults
 
 
 # -------- tool call configuration ----------------------------------------------------
 LOCAL_SEARCH_BASE_DIR = (Path(__file__).parent.parent.parent / "catanatron").resolve()
-FOO_TARGET_FILENAME = "codeRefiningLLM_player.py"
+FOO_TARGET_FILENAME = "agent_code.py"
+PLAYER_CODE = "codeRefiningLLM_player.py"
+PLAYER_CODE_PATH = Path(__file__).parent / PLAYER_CODE
 FOO_TARGET_FILE = Path(__file__).parent / FOO_TARGET_FILENAME    # absolute path
 FOO_MAX_BYTES   = 64_000                                     # context-friendly cap, R,CR_LLM
 FOO_RUN_COMMAND = "catanatron-play --players=AB,CR_LLM --num=1 --config-map=MINI --output=data/ --json"
@@ -41,12 +46,35 @@ class CreatorAgent():
 
     def __init__(self, opponent: str = "AB"):
         # Get API key from environment variable
-        self.llm_name = "gpt-4o"
-        self.llm = AzureChatOpenAI(
-            model="gpt-4o",
-            azure_endpoint="https://gpt-amayuelas.openai.azure.com/",
-            api_version = "2024-12-01-preview"
+        # self.llm_name = "gpt-4o"
+        # self.llm = AzureChatOpenAI(
+        #     model="gpt-4o",
+        #     azure_endpoint="https://gpt-amayuelas.openai.azure.com/",
+        #     api_version = "2024-12-01-preview"
+        # )
+
+        self.llm_name = "claude-3.7"
+        self.llm = ChatBedrockConverse(
+            aws_access_key_id = os.environ["AWS_ACESS_KEY"],
+            aws_secret_access_key = os.environ["AWS_SECRET_KEY"],
+            region_name = "us-east-2",
+            provider = "anthropic",
+            model_id="arn:aws:bedrock:us-east-2:288380904485:inference-profile/us.anthropic.claude-3-7-sonnet-20250219-v1:0"
         )
+
+        # self.llm_name = "mistral-large-latest"
+        # rate_limiter = InMemoryRateLimiter(
+        #     requests_per_second=0.5,    # Adjust based on your API tier
+        #     check_every_n_seconds=0.1,
+        #     max_bucket_size=10        # Allows for burst handling
+        # )
+        # self.llm = ChatMistralAI(
+        #     model="mistral-large-latest",
+        #     temperature=0,
+        #     max_retries=2,
+        #     rate_limiter=rate_limiter,
+        # )
+
         self.foo_run_command = f"catanatron-play --players={opponent},CR_LLM --num=5 --config-map=MINI --output=data/ --json"
 
         # Create run directory if it doesn't exist
@@ -86,7 +114,7 @@ class CreatorAgent():
     def create_langchain_react_graph(self):
         """Create a react graph for the LLM to use."""
         
-        tools = [list_local_files, read_local_file, read_foo, write_foo, self.run_testfoo, web_search_tool_call]
+        tools = [list_local_files, read_local_file, read_foo, read_player_code, write_foo, self.run_testfoo, web_search_tool_call]
         llm_with_tools = self.llm.bind_tools(tools)
         
         def assistant(state: MessagesState):
@@ -126,21 +154,74 @@ class CreatorAgent():
         display(Image(self.react_graph.get_graph(xray=True).draw_mermaid_png()))
 
     def run_react_graph(self):
+        # prompt = (
+        #     f"""
+        #     You are in charge of creating the code for a Catan Player codeRefiningLLM_player in {FOO_TARGET_FILENAME}. 
+            
+        #     You Have the Following Tools at Your Disposal:
+        #     - list_local_files: List all files in the current directory.
+        #     - read_local_file: Read the content of a file in the current directory.
+        #     - read_foo: Read the content of {FOO_TARGET_FILENAME}.
+        #     - read_player_code: Read the content of the player code to understand how to access game state information and how the game is played.
+        #     - write_foo: Modify {FOO_TARGET_FILENAME} with the goal of improving gameplay. Write code based on your research that uses a strategy to gives advice to the LLM that is making the final decisions. Ensure that anything you want to be included in the LLM prompt is outputted as a string from get_prompt_enhancement().
+        #     - run_testfoo: Test the content of {FOO_TARGET_FILENAME} in a game.
+        #     - web_search_tool_call: Perform a web search to search for strategies and advice on playing and winning a Catan game.
+
+        #     YOUR GOAL: Create a prompt for the Catan Player That Will allow us to play run_testfoo and win a majority of games without crashing. 
+        #     Don't stop refining the prompt until codeRefiningLLM_player wins at least 3/5 games against its opponent when calling run_testfoo.
+
+        #     """
+        # )
         prompt = (
             f"""
-            You are in charge of creating the code for a Catan Player codeRefiningLLM_player in {FOO_TARGET_FILENAME}. 
+            You are an expert AI developer creating a strategic advisor for a Catan game-playing agent.
             
-            You Have the Following Tools at Your Disposal:
-            - list_local_files: List all files in the current directory.
+            ## Your Task
+            Enhance the {FOO_TARGET_FILENAME} file to implement strategic game analysis that will guide the LLM player (codeRefiningLLM_player) to victory. The core player code already handles game mechanics and state formatting - your job is to add strategic intelligence.
+            
+            ## How the System Works
+            1. The LLM player (codeRefiningLLM_player.py) handles all game mechanics and formatting game state
+            2. The agent_code.py file contains a get_prompt_enhancement() function that returns strategic advice
+            3. The advice from get_prompt_enhancement() is added to the beginning of the LLM prompt
+            4. The LLM uses this enhanced prompt to make better decisions in the game
+            
+            ## Your Approach Should Be
+            1. First analyze what's happening - read the player code to understand how game state is accessed and how decisions are made
+            2. Research effective Catan strategies through web search
+            3. Implement those strategies in agent_code.py by:
+            - Adding functions that analyze the game state (using the same access methods as in the player code)
+            - Evaluating positions, resources, and potential moves
+            - Returning strategic advice as a string from get_prompt_enhancement()
+            
+            ## Tools at Your Disposal
+            - list_local_files: List files to understand the codebase structure
             - read_local_file: Read the content of a file in the current directory.
-            - read_foo: Read the content of {FOO_TARGET_FILENAME}.
-            - write_foo: Write the content of {FOO_TARGET_FILENAME}. (Make sure to keep imports)
-            - run_testfoo: Test the content of {FOO_TARGET_FILENAME} in a game.
-            - web_search_tool_call: Perform a web search to search for strategies and advice on playing and winning a Catan game.
-
-            YOUR GOAL: Create a prompt for the Catan Player That Will allow us to play run_testfoo and win a majority of games without crashing. 
-            Don't stop refining the prompt until codeRefiningLLM_player wins at least 3/5 games against its opponent when calling run_testfoo.
-
+            - read_player_code: Read the player code to understand how game state is accessed
+            - read_foo: Read the current agent_code.py implementation
+            - write_foo: Update agent_code.py with your enhanced implementation
+            - run_testfoo: Test your implementation in actual games
+            - web_search_tool_call: Research Catan strategies and tactics (Don't call more than 3 times in a row)
+            
+            ## Implementation Guidelines
+            1. KEEP the get_prompt_enhancement() function signature - this is required
+            2. Add helper functions that analyze game state and implement strategies
+            3. The advice returned should be clear, concise, and directly applicable
+            4. Maintain proper Python style and ensure the code is well-documented
+            5. Make sure get_prompt_enhancement() returns a string (not None or other types)
+            6. DO NOT use placeholders (like "..." or "some_condition()") - write actual executable code
+            
+            ## Success Criteria
+            Your implementation should enable the LLM player to win at least 3/5 games against its opponent.
+            
+            ## Process to Follow
+            1. Understand: Read the player code to see how it accesses game state and makes decisions
+            2. Research: Look up winning Catan strategies using web search
+            3. Design: Plan what state analysis and advice would most help the player
+            4. Implement: Write code that performs this analysis in agent_code.py
+            5. Test: Run games and observe performance
+            6. Iterate: Refine your implementation based on game results
+            
+            Keep improving until the agent consistently wins. Start now by examining the existing code. DO NOT stop until you win 3/5 games when calling the run_testfoo() function.
             """
         )
 
@@ -228,11 +309,18 @@ def read_local_file(rel_path: str) -> str:
         raise ValueError("File too large")
     return candidate.read_text(encoding="utf-8", errors="ignore")
 
+def read_player_code(_: str = "") -> str:
+    """Return the UTF-8 content of Agent File (≤64 kB)."""
+    if PLAYER_CODE_PATH.stat().st_size > FOO_MAX_BYTES:
+        raise ValueError("File too large for the agent")
+    return PLAYER_CODE_PATH.read_text(encoding="utf-8", errors="ignore")  # pathlib API :contentReference[oaicite:2]{index=2}
+
 def read_foo(_: str = "") -> str:
     """Return the UTF-8 content of Agent File (≤64 kB)."""
     if FOO_TARGET_FILE.stat().st_size > FOO_MAX_BYTES:
         raise ValueError("File too large for the agent")
     return FOO_TARGET_FILE.read_text(encoding="utf-8", errors="ignore")  # pathlib API :contentReference[oaicite:2]{index=2}
+
 
 def write_foo(new_text: str) -> str:
     """Overwrite Agent File with new_text (UTF-8)."""

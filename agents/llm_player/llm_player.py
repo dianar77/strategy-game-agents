@@ -70,7 +70,8 @@ class LLMPlayer(Player):
         super().__init__(color, name)
         # Get API key from environment variable
         if llm is None:
-            self.llm = AzureOpenAILLM(model_name="gpt-4o")
+            #self.llm = AzureOpenAILLM(model_name="gpt-4o")
+            self.llm = MistralLLM(model_name="mistral-large-latest")
         else:
             self.llm = llm
         self.is_bot = True
@@ -736,3 +737,67 @@ class LLMPlayer(Player):
 # from catanatron_experimental.cli.cli_players import register_player
 # Manually register the LLMPlayer with the CLI system
 #register_player("LLM")(LLMPlayer)
+
+
+# Add this to the LLMPlayer class
+
+    def dump_state(self, state: State) -> None:
+        """
+        Simply dump the entire state object to a file for inspection.
+        This prints all attributes at all levels without any filtering.
+        """
+        import inspect
+        import json
+        
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        dump_path = os.path.join(LLMPlayer.run_dir, f"state_dump_{timestamp}.txt")
+        
+        with open(dump_path, 'w') as f:
+            # Use recursive inspection to print everything
+            def inspect_object(obj, prefix="", max_depth=10, current_depth=0):
+                if current_depth > max_depth:
+                    return f.write(f"{prefix}[MAX DEPTH REACHED]\n")
+                
+                # Handle basic types
+                if obj is None:
+                    f.write(f"{prefix}None\n")
+                    return
+                elif isinstance(obj, (int, float, bool, str, Enum)):
+                    f.write(f"{prefix}{type(obj).__name__}: {obj}\n")
+                    return
+                    
+                # Print type information
+                f.write(f"{prefix}{type(obj).__name__}:\n")
+                
+                # Handle different collections
+                if isinstance(obj, dict):
+                    for k, v in obj.items():
+                        f.write(f"{prefix}  {k}:\n")
+                        inspect_object(v, prefix + "    ", max_depth, current_depth + 1)
+                elif isinstance(obj, (list, tuple, set)):
+                    for i, item in enumerate(obj):
+                        f.write(f"{prefix}  [{i}]:\n")
+                        inspect_object(item, prefix + "    ", max_depth, current_depth + 1)
+                else:
+                    # For other objects, get all attributes
+                    for attr in dir(obj):
+                        if attr.startswith('_'):
+                            continue
+                        try:
+                            value = getattr(obj, attr)
+                            # Skip methods and functions
+                            if inspect.ismethod(value) or inspect.isfunction(value) or inspect.isbuiltin(value):
+                                continue
+                            f.write(f"{prefix}  {attr}:\n")
+                            inspect_object(value, prefix + "    ", max_depth, current_depth + 1)
+                        except Exception as e:
+                            f.write(f"{prefix}  {attr}: [Error: {e}]\n")
+            
+            f.write("STATE OBJECT DUMP\n")
+            f.write("=================\n\n")
+            inspect_object(state)
+        
+        print(f"Complete state dump saved to {dump_path}")
+
+
+        
