@@ -37,13 +37,17 @@ from typing_extensions import TypedDict
 
 # -------- tool call configuration ----------------------------------------------------
 LOCAL_SEARCH_BASE_DIR = (Path(__file__).parent.parent.parent / "catanatron").resolve()
-FOO_TARGET_FILENAME = "foo_player.py"
+PROMPT_BASE_FILENAME = "base_prompt.txt"
+PROMPT_NEW_FILENAME = "current_prompt.txt"
+PROMPT_BASE_FILE = Path(__file__).parent / PROMPT_BASE_FILENAME
+PROMPT_NEW_FILE = Path(__file__).parent / PROMPT_NEW_FILENAME
+FOO_TARGET_FILENAME = "promptRefiningLLM_player.py"
 FOO_TARGET_FILE = Path(__file__).parent / FOO_TARGET_FILENAME    # absolute path
 FOO_MAX_BYTES   = 64_000                                     # context-friendly cap
 
 EVOLVE_COUNTER_MAX = 5
 # Set winning points to 5 for quicker game
-FOO_RUN_COMMAND = "catanatron-play --players=AB,R  --num=5 --config-map=MINI  --config-vps-to-win=10"
+FOO_RUN_COMMAND = "catanatron-play --players=AB,PR_LLM  --num=1 --config-map=MINI  --config-vps-to-win=4"
 RUN_TEST_FOO_HAPPENED = False # Used to keep track of whether the testfoo tool has been called
 # -------------------------------------------------------------------------------------
 
@@ -90,9 +94,24 @@ class CreatorAgent():
             agent_dir = os.path.dirname(os.path.abspath(__file__))
             runs_dir = os.path.join(agent_dir, "runs")
             os.makedirs(runs_dir, exist_ok=True)
-            run_id = datetime.now().strftime("creator_%Y%m%d_%H%M%S")
+            run_id = datetime.now().strftime("run_%Y%m%d_%H%M%S")
             CreatorAgent.run_dir = os.path.join(runs_dir, run_id)
             os.makedirs(CreatorAgent.run_dir, exist_ok=True)
+
+        # Create a marker file to allow the player to detect the current run directory
+        with open(os.path.join(runs_dir, "current_run.txt"), "w") as f:
+            f.write(CreatorAgent.run_dir)
+
+        # Copy the base prompt to new prompt at the start of each run
+        shutil.copy2(
+            PROMPT_BASE_FILE.resolve(),
+            PROMPT_NEW_FILE.resolve()
+        )
+
+        shutil.copy2(
+            PROMPT_BASE_FILE.resolve(),
+            Path(CreatorAgent.run_dir) / f"initial_{PROMPT_BASE_FILENAME}"
+        )
 
         #Copy the Blank FooPlayer to the run directory
         # shutil.copy2(                           # ↩ copy with metadata
@@ -175,8 +194,8 @@ class CreatorAgent():
             
             messages = react_graph.invoke({"messages": msgs})
             
-            # for m in messages['messages']:
-            #     m.pretty_print()
+            for m in messages['messages']:
+                m.pretty_print()
 
             return messages
 
@@ -219,21 +238,18 @@ class CreatorAgent():
             else:
                 evolve_counter = state["evolve_counter"] - 1
 
-            PROMPT_NEW_FILENAME = "TODO.txt"
-
             sys_msg = SystemMessage(content =
                 (
                     f"""
                     You are in charge of creating the prompt for the Catan Player PromptRefiningLLMPlayer in {FOO_TARGET_FILENAME}. 
                     
-                    YOUR PRIMARY GOAL: Create a prompt that helps our AI player win at least 3/5 games against its opponent.
+                    YOUR PRIMARY GOAL: Create a prompt that helps our PromptRefiningLLMPlayer win against its opponent AlphaBetaPlayer.
                     
                     IMPROVEMENT PROCESS:
-                    1. Run test games with run_testfoo to evaluate current performance
-                    2. Carefully analyze game logs to identify key weaknesses in our player
-                    3. Research specific Catan strategies to address those weaknesses
-                    4. Enhance the prompt with targeted improvements
-                    5. Test again and iterate until we reach a 60%+ win rate
+                    1. Carefully analyze game logs to identify key weaknesses in our player
+                    3. Research specific Catan strategies online to address those weaknesses
+                    4. Read and update the current prompt with targeted improvements
+                    5. Test again and iterate until we reach the highest win rate possible
                     
                     STRATEGY AREAS TO FOCUS ON:
                     - Early game placement strategy
@@ -246,17 +262,15 @@ class CreatorAgent():
                     You Have the Following Tools at Your Disposal:
                     - list_local_files: List all files in the current directory.
                     - read_local_file: Read the content of a file in the current directory.
-                    - read_foo: Read the content of {PROMPT_NEW_FILENAME}.
-                    - write_foo: Write the content of {PROMPT_NEW_FILENAME}. (Any text in brackets MUST remain in brackets)
-                    - run_testfoo: Test the {PROMPT_NEW_FILENAME} being used in a game and analyze results.
+                    - read_prompt: Read the content of {PROMPT_NEW_FILENAME}.
+                    - write_prompt: Write the content of {PROMPT_NEW_FILENAME}. (Any text in brackets MUST remain in brackets)
                     - web_search_tool_call: Research strategies for specific aspects of Catan gameplay.
                     
                     PROCESS GUIDELINES:
-                    1. Start by running a game with the current prompt to establish a baseline
-                    2. After each game, analyze the game_output.txt to identify specific weaknesses
+                    2. After each game, analyze the results to identify specific weaknesses
                     3. Use web_search_tool_call to research strategies addressing those weaknesses
                     4. Modify the prompt with these improvements, being specific and detailed
-                    5. Test again and repeat until you achieve 3/5 wins
+                    5. Once you have called enough tools to improve the prompt, stop calling tools to allow the player to run a test game.
                     
                     Keep iterating and improving your prompt until the player consistently wins.
                     """
@@ -266,7 +280,7 @@ class CreatorAgent():
             msg = [state["full_results"]]
 
             # TODO: Add all tools Prompt Tools
-            tools = []
+            tools = [list_local_files, read_local_file, read_prompt, write_prompt, web_search_tool_call]
             output = tool_calling_state_graph(sys_msg, msg, tools)
 
             #print(output)
@@ -577,7 +591,7 @@ class CreatorAgent():
             #                     print(line)
             #                     log_file.write(line + "\n")
             with open(log_path, "a") as log_file:                # Run the graph until the first interruption
-                for step in self.react_graph.stream({"evolve_counter": EVOLVE_COUNTER_MAX}, stream_mode="updates"):
+                for step in self.react_graph.stream({"evolve_counter": EVOLVE_COUNTER_MAX}, self.memory_config, stream_mode="updates"):
                     #print(step)
                     #log_file.write(f"Step: {step.}\n")
                     for node, update in step.items():
@@ -651,9 +665,10 @@ class CreatorAgent():
             # Copy Result File to the new directory
             dt = datetime.now().strftime("_%Y%m%d_%H%M%S_")
 
+            # Copy Result File to the new directory
             shutil.copy2(                           
-                (FOO_TARGET_FILE).resolve(),
-                (Path(CreatorAgent.run_dir) / ("final" + dt + FOO_TARGET_FILENAME))
+                (PROMPT_NEW_FILE).resolve(),
+                (Path(CreatorAgent.run_dir) / f"final_{PROMPT_NEW_FILENAME}")
             )
 
         
@@ -687,45 +702,72 @@ def read_local_file(rel_path: str) -> str:
     return candidate.read_text(encoding="utf-8", errors="ignore")
 
 
-def read_foo(_: str = "") -> str:
-    """
-    Return the UTF-8 content of Agent File (≤64 kB).
-    """
-    if FOO_TARGET_FILE.stat().st_size > FOO_MAX_BYTES:
-        raise ValueError("File too large for the agent")
-    return FOO_TARGET_FILE.read_text(encoding="utf-8", errors="ignore")  # pathlib API :contentReference[oaicite:2]{index=2}
+# def read_foo(_: str = "") -> str:
+#     """
+#     Return the UTF-8 content of Agent File (≤64 kB).
+#     """
+#     if FOO_TARGET_FILE.stat().st_size > FOO_MAX_BYTES:
+#         raise ValueError("File too large for the agent")
+#     return FOO_TARGET_FILE.read_text(encoding="utf-8", errors="ignore")  # pathlib API :contentReference[oaicite:2]{index=2}
 
 
-def write_foo(new_text: str) -> str:
-    """
-    Overwrite Agent File with new_text (UTF-8).
-    """
-    if len(new_text.encode()) > FOO_MAX_BYTES:
-        raise ValueError("Refusing to write >64 kB")
-    FOO_TARGET_FILE.write_text(new_text, encoding="utf-8")                 # pathlib write_text :contentReference[oaicite:3]{index=3}
+# def write_foo(new_text: str) -> str:
+#     """
+#     Overwrite Agent File with new_text (UTF-8).
+#     """
+#     if len(new_text.encode()) > FOO_MAX_BYTES:
+#         raise ValueError("Refusing to write >64 kB")
+#     FOO_TARGET_FILE.write_text(new_text, encoding="utf-8")                 # pathlib write_text :contentReference[oaicite:3]{index=3}
     
-    # Copy Result File to the new directory
-    dt = datetime.now().strftime("%Y%m%d_%H%M%S_")
+#     # Copy Result File to the new directory
+#     dt = datetime.now().strftime("%Y%m%d_%H%M%S_")
 
-    shutil.copy2(                           
-        (FOO_TARGET_FILE).resolve(),
-        (Path(CreatorAgent.run_dir) / (dt + FOO_TARGET_FILENAME))
-    )
+#     shutil.copy2(                           
+#         (FOO_TARGET_FILE).resolve(),
+#         (Path(CreatorAgent.run_dir) / (dt + FOO_TARGET_FILENAME))
+#     )
 
-    return f"{FOO_TARGET_FILENAME} updated successfully"
+#     return f"{FOO_TARGET_FILENAME} updated successfully"
 
+def read_prompt(_: str = "") -> str:
+    """Return the UTF-8 content of base_prompt.txt (≤16 kB)."""
+    if PROMPT_BASE_FILE.stat().st_size > FOO_MAX_BYTES:
+        raise ValueError("File too large for the agent")
+    return PROMPT_BASE_FILE.read_text(encoding="utf-8", errors="ignore")
+
+def write_prompt(new_text: str) -> str:
+    """Overwrite current_prompt.txt with new_text (UTF-8)."""
+    if len(new_text.encode()) > FOO_MAX_BYTES:
+        raise ValueError("Refusing to write >16 kB")
+    PROMPT_NEW_FILE.write_text(new_text, encoding="utf-8")
+    return f"{PROMPT_NEW_FILENAME} updated successfully"
 
 def run_gamefoo(_: str = "") -> str:
     """
     Run one Catanatron match (R vs Agent File) and return raw CLI output.
     """    
+
+    run_id = datetime.now().strftime("game_%Y%m%d_%H%M%S")
+    game_run_dir = Path(CreatorAgent.run_dir) / run_id
+    game_run_dir.mkdir(exist_ok=True)
+    
+    # Save the current prompt used for this game
+    prompt_copy_path = game_run_dir / "prompt_used.txt"
+    shutil.copy2(PROMPT_NEW_FILE, prompt_copy_path)
+
+    os.environ["CATAN_CURRENT_RUN_DIR"] = str(CreatorAgent.run_dir)
+
+
     result = subprocess.run(
         shlex.split(FOO_RUN_COMMAND),
         capture_output=True,          # capture stdout+stderr :contentReference[oaicite:1]{index=1}
         text=True,
-        timeout=3600,                  # avoids infinite-loop hangs
+        timeout=14400,                  # avoids infinite-loop hangs
         check=False                   # we’ll return non-zero output instead of raising
     )
+
+    # Save the output to a log file in the game run directory
+    output_file_path = game_run_dir / "game_output.txt"
     
     game_results = (result.stdout + result.stderr).strip()
 
@@ -734,19 +776,19 @@ def run_gamefoo(_: str = "") -> str:
     RUN_TEST_FOO_HAPPENED = True
 
     # Path to the runs directory
-    runs_dir = Path(__file__).parent / "runs"
+    # runs_dir = Path(__file__).parent / "runs"
     
-    # Find all folders that start with game_run
-    game_run_folders = [f for f in runs_dir.glob("game_run*") if f.is_dir()]
+    # # Find all folders that start with game_run
+    # game_run_folders = [f for f in runs_dir.glob("game_run*") if f.is_dir()]
     
-    if not game_run_folders:
-        return "No game run folders found."
+    # if not game_run_folders:
+    #     return "No game run folders found."
     
-    # Sort folders by name (which includes datetime) to get the most recent one
-    latest_run_folder = sorted(game_run_folders)[-1]
+    # # Sort folders by name (which includes datetime) to get the most recent one
+    # latest_run_folder = sorted(game_run_folders)[-1]
 
     # Add a file with the stdout and stderr called catanatron_output.txt
-    output_file_path = latest_run_folder / "catanatron_output.txt"
+    #output_file_path = latest_run_folder / "catanatron_output.txt"
     with open(output_file_path, "w") as output_file:
         output_file.write(game_results)
         
