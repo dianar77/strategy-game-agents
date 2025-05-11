@@ -34,7 +34,6 @@ from agents.promptRefiningLLM_player.promptRefiningLLM_player import PromptRefin
 from agents.codeRefiningLLM_player.codeRefiningLLM_player import CodeRefiningLLMPlayer
 
 from agents.fromScratch_player.foo_player import FooPlayer as FooScratchPlayer
-from agents.fromScratchStructured_player.foo_player import FooPlayer as FooScratchStructuredPlayer
 
 from agents.fromScratchLLM_player.foo_player import FooPlayer as FooLLMPlayer
 from agents.fromScratchLLM_player_v2.foo_player import FooPlayer as FooLLMPlayerV2
@@ -141,12 +140,6 @@ CLI_PLAYERS = [
         "FooPlayer_Scratch",
         "Player being created by creator agent",
         FooScratchPlayer
-    ),
-    CliPlayer(
-        "FOO_S_S",
-        "FooPlayer_Scratch_Structured",
-        "Player being created by creator agent. FooPlayer has access to query the LLM",
-        FooScratchStructuredPlayer
     ),
     CliPlayer(
         "FOO_LLM",
