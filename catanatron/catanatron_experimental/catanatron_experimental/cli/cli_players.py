@@ -34,8 +34,11 @@ from agents.promptRefiningLLM_player.promptRefiningLLM_player import PromptRefin
 from agents.codeRefiningLLM_player.codeRefiningLLM_player import CodeRefiningLLMPlayer
 
 from agents.fromScratch_player.foo_player import FooPlayer as FooScratchPlayer
+from agents.fromScratchStructured_player.foo_player import FooPlayer as FooScratchStructuredPlayer
+
 from agents.fromScratchLLM_player.foo_player import FooPlayer as FooLLMPlayer
 from agents.fromScratchLLM_player_v2.foo_player import FooPlayer as FooLLMPlayerV2
+from agents.fromScratchLLMStructured_player.foo_player import FooPlayer as FooLLMStructuredPlayer
 
 from agents.fromScratchLLM_player_v2.runs.creator_20250508_112135_hitl.foo_player import FooPlayer as FooLLMPlayerV2_1
 # from catanatron_experimental.machine_learning.players.online_mcts_dqn import (
@@ -140,6 +143,12 @@ CLI_PLAYERS = [
         FooScratchPlayer
     ),
     CliPlayer(
+        "FOO_S_S",
+        "FooPlayer_Scratch_Structured",
+        "Player being created by creator agent. FooPlayer has access to query the LLM",
+        FooScratchStructuredPlayer
+    ),
+    CliPlayer(
         "FOO_LLM",
         "FooPlayer_LLM",
         "Player being created by creator agent. FooPlayer has access to query the LLM",
@@ -168,6 +177,12 @@ CLI_PLAYERS = [
         "FooPlayer_LLM_V2_1",
         "Player being created by creator agent that has more tools to edit FooPlayer's code. FooPlayer has access to query the LLM",
         FooLLMPlayerV2_1
+    ),
+    CliPlayer(
+        "FOO_LLM_S",
+        "FooPlayer_LLM_Structured",
+        "Player being created by creator agent. FooPlayer has access to query the LLM",
+        FooLLMStructuredPlayer
     ),
 
 ]
