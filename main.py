@@ -32,7 +32,9 @@ from agents.codeRefiningLLM_player.creator_agent import read_foo, write_foo, lis
 # from agents.fromScratch_player.creator_agent import CreatorAgent as ScratchCreatorAgent 
 # from agents.fromScratchLLM_player.creator_agent import CreatorAgent as ScratchCreatorLLMAgent
 # from agents.fromScratchLLM_player.creator_agent import read_foo, write_foo, run_testfoo, list_local_files, read_local_file
-from agents.fromScratchLLM_player_v2.creator_agent import CreatorAgent as ScratchCreatorLLMAgentV2
+# from agents.fromScratchLLM_player_v2.creator_agent import CreatorAgent as ScratchCreatorLLMAgentV2
+# from agents.fromScratchLLM_player_v2.creator_agent import read_foo, write_foo, run_testfoo, list_local_files, read_local_file
+from agents.fromScratchLLMStructured_player.creator_agent import CreatorAgent as ScratchStructuredCreatorLLMAgent
 from agents.fromScratchLLM_player_v2.creator_agent import read_foo, write_foo, run_testfoo, list_local_files, read_local_file
 
 
@@ -43,21 +45,21 @@ def main():
 
 
     # # run prompt refining (should loop until it wins 3/5 of games in a run)
-    # cA = PromptRefiningCreatorAgent(opponent="AB")
-    # cA.run_react_graph()
+    cA = PromptRefiningCreatorAgent(opponent="AB")
+    cA.run_react_graph()
 
     # run code refining (should loop until it wins 3/5 of games in a run)
     # cA = CodeRefiningCreatorAgent(opponent="AB")
     # cA.run_react_graph()
 
     #cA = ScratchCreatorLLMAgent()
-    cA = ScratchCreatorLLMAgentV2()
+    # cA = ScratchStructuredCreatorLLMAgent()
     #cA = PromptRefiningCreatorAgent(opponent="AB")
     #print(write_foo("print('Hello, world!')"))  # Write to foo_player.py
     #print(read_foo())
     #print(run_testfoo())
     #print(list_local_files())
-    cA.run_react_graph()
+    # cA.run_react_graph()
 
     # players = [
     #     RandomPlayer(Color.RED),
