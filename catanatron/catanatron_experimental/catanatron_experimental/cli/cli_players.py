@@ -40,7 +40,7 @@ from agents.fromScratchLLM_player.foo_player import FooPlayer as FooLLMPlayer
 from agents.fromScratchLLM_player_v2.foo_player import FooPlayer as FooLLMPlayerV2
 from agents.fromScratchLLMStructured_player.foo_player import FooPlayer as FooLLMStructuredPlayer
 
-from agents.fromScratchLLM_player_v2.runs.creator_20250508_112135_hitl.foo_player import FooPlayer as FooLLMPlayerV2_1
+# from agents.fromScratchLLM_player_v2.runs.creator_20250508_112135_hitl.foo_player import FooPlayer as FooLLMPlayerV2_1
 # from catanatron_experimental.machine_learning.players.online_mcts_dqn import (
 #     OnlineMCTSDQNPlayer,
 # )
@@ -172,12 +172,12 @@ CLI_PLAYERS = [
         "LLM Player That has had the code refined by the creator agent",
         CodeRefiningLLMPlayer,
     ),
-    CliPlayer(
-        "FOO_LLM_V2_1",
-        "FooPlayer_LLM_V2_1",
-        "Player being created by creator agent that has more tools to edit FooPlayer's code. FooPlayer has access to query the LLM",
-        FooLLMPlayerV2_1
-    ),
+    # CliPlayer(
+    #     "FOO_LLM_V2_1",
+    #     "FooPlayer_LLM_V2_1",
+    #     "Player being created by creator agent that has more tools to edit FooPlayer's code. FooPlayer has access to query the LLM",
+    #     FooLLMPlayerV2_1
+    # ),
     CliPlayer(
         "FOO_LLM_S",
         "FooPlayer_LLM_Structured",

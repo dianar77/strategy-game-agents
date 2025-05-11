@@ -1,6 +1,6 @@
 import os
 from datetime import datetime
-from langchain.chat_models import AzureChatOpenAI
+from langchain_openai import AzureChatOpenAI
 #from langchain_openai import AzureChatOpenAI
 from langchain_mistralai import ChatMistralAI
 from langchain_core.messages import HumanMessage
