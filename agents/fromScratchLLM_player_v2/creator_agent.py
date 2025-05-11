@@ -18,7 +18,7 @@ import subprocess, shlex
 from langchain_openai import AzureChatOpenAI
 from langchain_mistralai import ChatMistralAI
 from langgraph.graph import MessagesState, START, StateGraph
-from langchain_core.messages import HumanMessage, SystemMessage
+from langchain_core.messages import HumanMessage, SystemMessage, ToolMessage, AIMessage
 from langgraph.prebuilt import tools_condition, ToolNode
 from IPython.display import Image, display
 from langgraph.checkpoint.memory import MemorySaver
@@ -33,7 +33,7 @@ FOO_TARGET_FILENAME = "foo_player.py"
 FOO_TARGET_FILE = Path(__file__).parent / FOO_TARGET_FILENAME    # absolute path
 FOO_MAX_BYTES   = 64_000                                     # context-friendly cap
 # Set winning points to 5 for quicker game
-FOO_RUN_COMMAND = "catanatron-play --players=AB,R,FOO_LLM_V2  --num=1 --config-map=MINI  --config-vps-to-win=5"
+FOO_RUN_COMMAND = "catanatron-play --players=AB,R,FOO_LLM_V2  --num=1 --config-map=MINI  --config-vps-to-win=10"
 RUN_TEST_FOO_HAPPENED = False # Used to keep track of whether the testfoo tool has been called
 # -------------------------------------------------------------------------------------
 
@@ -94,6 +94,32 @@ class CreatorAgent():
     def create_langchain_react_graph(self):
         """Create a react graph for the LLM to use."""
         
+        self.sys_prompt = (
+            f"""
+            You are in charge of creating the code for a Catan Player in {FOO_TARGET_FILENAME}. 
+            
+            You Have the Following Tools at Your Disposal:
+            - list_local_files: List all files in the current directory. Use this to see the source code for catanatron and its objects
+            - read_local_file: Read the content of a file in the current directory. Use this to see the source code for catanatron and its objects
+            - read_foo: Read the content of {FOO_TARGET_FILENAME}.
+            - write_foo: Write the content of {FOO_TARGET_FILENAME}. (Make sure to keep imports) Note: print() commands will be visible in view_last_game_results
+            - run_testfoo: Test the content of {FOO_TARGET_FILENAME} in a game. 
+                    Input is bool short_game, 
+                        True: run a short game to test the player, this will return a timeout exception. 
+                        False: run a full game, used to test the player against other players. 
+                    Returns the output (last 20000 characters stdout and stderr of the game)
+            - web_search_tool_call: Perform a web search using the Tavily API.
+            - view_last_game_llm_query: View the LLM query from the last game to see performance. 
+            - view_last_game_results: View the game results from the last game. (Includes stdout and stderr from the game)
+            
+            YOUR GOAL: Create a Catan Player That Will play run_testfoo and Win Catan against the other players
+            It must Incoorporate the LLM() class and the .query_llm() method
+
+            If you are stuck, do not call a tool and reply with just an AI message, and I will direct you.  
+
+            """
+        )
+
         tools = [
             list_local_files,
             read_local_file,
@@ -110,10 +136,42 @@ class CreatorAgent():
         def assistant(state: MessagesState):
             return {"messages": [llm_with_tools.invoke(state["messages"])]}
         
-        def trim_messages(state: MessagesState):
-            # Delete all but the specified most recent messages
-            delete_messages = [RemoveMessage(id=m.id) for m in state["messages"][:-self.num_memory_messages]]
-            return {"messages": delete_messages}
+        # Adjusted to never leave a tool message without the initial ai message
+        # Also adjusted to always keep a system message
+        def trim_messages(state, keep_last_n: int = 10):
+            """
+            Keep the last `keep_last_n` conversational turns (assistant/user/system),
+            preserve assistant–tool pairs, **and guarantee at least one SystemMessage**.
+            """
+            messages = state["messages"]
+
+            kept, count = [], 0
+            for m in reversed(messages):
+                # --- preserve assistant/tool pairs -----------------------------
+                if isinstance(m, ToolMessage):
+                    kept.append(m)                            # tool itself
+                    count += 1
+                elif isinstance(m, AIMessage) and m.tool_calls:
+                    kept.append(m)
+                    count += 1                # paired assistant
+                else:                                         # human or system
+                    kept.append(m)
+                    count += 1
+
+                if count >= keep_last_n:
+                    break
+
+            kept = list(reversed(kept))  # restore chronological order
+
+            # -------- ensure at least one SystemMessage ------------------------
+            if not any(isinstance(m, SystemMessage) for m in kept):
+                # try to recycle the *oldest* system message still in history
+                recycled = next((m for m in messages if isinstance(m, SystemMessage)), None)
+                kept.insert(0, recycled or SystemMessage(
+                    content=self.sys_prompt
+                ))
+
+            return {"messages": kept}
 
 
         builder = StateGraph(MessagesState)
@@ -125,13 +183,14 @@ class CreatorAgent():
 
         # Define edges: these determine how the control flow moves
         builder.add_edge(START, "assistant")
-        #builder.add_edge("trim_messages", "assistant")
+        builder.add_edge("trim_messages", "assistant")
         builder.add_conditional_edges(
             "assistant",
             # If the latest message (result) from assistant is a tool call -> tools_condition routes to tools
             # If the latest message (result) from assistant is a not a tool call -> tools_condition routes to END
             tools_condition,
         )
+        #builder.add_edge("assistant", "tools")
         builder.add_edge("tools", "trim_messages")
         builder.add_edge("trim_messages", "assistant")
         
@@ -145,25 +204,6 @@ class CreatorAgent():
         display(Image(self.react_graph.get_graph(xray=True).draw_mermaid_png()))
 
     def run_react_graph(self):
-        prompt = (
-            f"""
-            You are in charge of creating the code for a Catan Player in {FOO_TARGET_FILENAME}. 
-            
-            You Have the Following Tools at Your Disposal:
-            - list_local_files: List all files in the current directory.
-            - read_local_file: Read the content of a file in the current directory.
-            - read_foo: Read the content of {FOO_TARGET_FILENAME}.
-            - write_foo: Write the content of {FOO_TARGET_FILENAME}. (Make sure to keep imports) Note: print() commands will be visible in view_last_game_results
-            - run_testfoo: Test the content of {FOO_TARGET_FILENAME} in a game.
-            - web_search_tool_call: Perform a web search using the Tavily API.
-            - view_last_game_llm_query: View the LLM query from the last game to see performance. 
-            - view_last_game_results: View the game results from the last game. (Includes stdout and stderr from the game)
-            
-            YOUR GOAL: Create a Catan Player That Will play run_testfoo and Win Catan against the other players
-            It must Incoorporate the LLM() class and the .query_llm() method
-
-            """
-        )
 
         try:
 
@@ -180,8 +220,8 @@ class CreatorAgent():
                 if user_advice_prompt != "":
                     cur_prompt = user_advice_prompt
                 else:
-                    cur_prompt = prompt
-                initial_input = {"messages": cur_prompt}
+                    cur_prompt = self.sys_prompt
+                initial_input = {"messages": SystemMessage(content=cur_prompt)}
 
                 # Run Through The Graph
                 final_msg = ""
@@ -195,10 +235,12 @@ class CreatorAgent():
 
                 print("✅  graph finished")
 
+                dt = datetime.now().strftime("_%Y%m%d_%H%M%S_")
+
                 # Copy Result File to the new directory
                 shutil.copy2(                           
                     (FOO_TARGET_FILE).resolve(),
-                    (Path(CreatorAgent.run_dir) / FOO_TARGET_FILENAME)
+                    (Path(CreatorAgent.run_dir) / ("final" + dt + FOO_TARGET_FILENAME))
                 )
 
                 # Ask the user if they want to continue, and for advice
@@ -207,7 +249,7 @@ class CreatorAgent():
                     user_advice = input("What do you want the agent to do? Press Enter for default:")
                     if user_advice == "":
                         user_advice = "Do This" + final_msg
-                    user_advice_prompt = "NEW USER ADVICE " + user_advice + "/n/n" + prompt
+                    user_advice_prompt = "NEW USER ADVICE " + user_advice + "/n/n" + self.sys_prompt
                 else:
                     user_advice_prompt = ""
 
@@ -258,29 +300,56 @@ def write_foo(new_text: str) -> str:
         raise ValueError("Refusing to write >64 kB")
     FOO_TARGET_FILE.write_text(new_text, encoding="utf-8")                 # pathlib write_text :contentReference[oaicite:3]{index=3}
     
+    dt = datetime.now().strftime("_%Y%m%d_%H%M%S_")
+
     # Copy Result File to the new directory
     shutil.copy2(                           
         (FOO_TARGET_FILE).resolve(),
-        (Path(CreatorAgent.run_dir) / FOO_TARGET_FILENAME)
+        (Path(CreatorAgent.run_dir) / (dt + FOO_TARGET_FILENAME))
     )
 
     return f"{FOO_TARGET_FILENAME} updated successfully"
 
 
-def run_testfoo(_: str = "") -> str:
+def run_testfoo(short_game: bool = False) -> str:
     """
     Run one Catanatron match (R vs Agent File) and return raw CLI output.
+    Input: short_game (bool): If True, run a short game with a 30 second timeout.
     """    
-    result = subprocess.run(
-        shlex.split(FOO_RUN_COMMAND),
-        capture_output=True,          # capture stdout+stderr :contentReference[oaicite:1]{index=1}
-        text=True,
-        timeout=3600,                  # avoids infinite-loop hangs
-        check=False                   # we’ll return non-zero output instead of raising
-    )
-    
-    game_results = (result.stdout + result.stderr).strip()
+    MAX_CHARS =20_000                      
 
+    try:
+        if short_game:
+            result = subprocess.run(
+                shlex.split(FOO_RUN_COMMAND),
+                capture_output=True,
+                text=True,
+                timeout=30,
+                check=False
+            )
+        else:
+            result = subprocess.run(
+                shlex.split(FOO_RUN_COMMAND),
+                capture_output=True,
+                text=True,
+                timeout=3600,
+                check=False
+            )
+        stdout_limited  = result.stdout[-MAX_CHARS:]
+        stderr_limited  = result.stderr[-MAX_CHARS:]
+        game_results = (stdout_limited + stderr_limited).strip()
+    except subprocess.TimeoutExpired as e:
+        # Handle timeout case
+        stdout_output = e.stdout or ""
+        stderr_output = e.stderr or ""
+        if stdout_output and not isinstance(stdout_output, str):
+            stdout_output = stdout_output.decode('utf-8', errors='ignore')
+        if stderr_output and not isinstance(stderr_output, str):
+            stderr_output = stderr_output.decode('utf-8', errors='ignore')
+        stdout_limited  = stdout_output[-MAX_CHARS:]
+        stderr_limited  = stderr_output[-MAX_CHARS:]
+        game_results = "TIMEOUT: Game exceeded time limit.\n\n" + (stdout_output + stderr_output).strip()
+    
     # Update the run_test_foo flag to read game results
     global RUN_TEST_FOO_HAPPENED
     RUN_TEST_FOO_HAPPENED = True
@@ -302,7 +371,8 @@ def run_testfoo(_: str = "") -> str:
     with open(output_file_path, "w") as output_file:
         output_file.write(game_results)
         
-    print(game_results)
+    #print(game_results)
+        # limit the output to a certain number of characters
     return game_results
 
 
@@ -406,7 +476,7 @@ def view_last_game_results(_: str = "") -> str:
     
     # Read and return the content of the file
     try:
-        with open(output_file_path, "w") as file:
+        with open(output_file_path, "r") as file:
             return f"Content of {output_file_path.name}:\n\n{file.read()}"
     except Exception as e:
         return f"Error reading file {output_file_path.name}: {str(e)}"
