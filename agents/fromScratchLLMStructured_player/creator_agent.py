@@ -25,6 +25,8 @@ from langgraph.checkpoint.memory import MemorySaver
 from langchain_core.messages import RemoveMessage
 from langchain_community.tools.tavily_search import TavilySearchResults
 from langchain_core.rate_limiters import InMemoryRateLimiter
+from langchain_aws import ChatBedrockConverse
+
 from typing_extensions import TypedDict
 from typing_extensions import TypedDict
 
@@ -40,7 +42,7 @@ FOO_TARGET_FILENAME = "foo_player.py"
 FOO_TARGET_FILE = Path(__file__).parent / FOO_TARGET_FILENAME    # absolute path
 FOO_MAX_BYTES   = 64_000                                     # context-friendly cap
 # Set winning points to 5 for quicker game
-FOO_RUN_COMMAND = "catanatron-play --players=AB,R,FOO_LLM_S  --num=1 --config-map=MINI  --config-vps-to-win=10"
+FOO_RUN_COMMAND = "catanatron-play --players=AB,R,FOO_LLM_S  --num=2 --config-map=MINI  --config-vps-to-win=10"
 RUN_TEST_FOO_HAPPENED = False # Used to keep track of whether the testfoo tool has been called
 # -------------------------------------------------------------------------------------
 
@@ -51,11 +53,20 @@ class CreatorAgent():
 
     def __init__(self):
         # Get API key from environment variable
-        self.llm_name = "gpt-4o"
-        self.llm = AzureChatOpenAI(
-            model="gpt-4o",
-            azure_endpoint="https://gpt-amayuelas.openai.azure.com/",
-            api_version = "2024-12-01-preview"
+        # self.llm_name = "gpt-4o"
+        # self.llm = AzureChatOpenAI(
+        #     model="gpt-4o",
+        #     azure_endpoint="https://gpt-amayuelas.openai.azure.com/",
+        #     api_version = "2024-12-01-preview"
+        # )
+
+        self.llm_name = "claude-3.7"
+        self.llm = ChatBedrockConverse(
+            aws_access_key_id = os.environ["AWS_ACESS_KEY"],
+            aws_secret_access_key = os.environ["AWS_SECRET_KEY"],
+            region_name = "us-east-2",
+            provider = "anthropic",
+            model_id="arn:aws:bedrock:us-east-2:288380904485:inference-profile/us.anthropic.claude-3-7-sonnet-20250219-v1:0"
         )
         os.environ["LANGCHAIN_TRACING_V2"] = "false"
 
@@ -83,10 +94,10 @@ class CreatorAgent():
             os.makedirs(CreatorAgent.run_dir, exist_ok=True)
 
         #Copy the Blank FooPlayer to the run directory
-        # shutil.copy2(                           # ↩ copy with metadata
-        #     (Path(__file__).parent / ("__TEMPLATE__" + FOO_TARGET_FILENAME)).resolve(),  # ../foo_player.py
-        #     FOO_TARGET_FILE.resolve()          # ./foo_player.py
-        # )
+        shutil.copy2(                           # ↩ copy with metadata
+            (Path(__file__).parent / ("__TEMPLATE__" + FOO_TARGET_FILENAME)).resolve(),  # ../foo_player.py
+            FOO_TARGET_FILE.resolve()          # ./foo_player.py
+        )
         self.config = {
             "recursion_limit": 50, # set recursion limit for graph
             # "configurable": {
@@ -185,7 +196,7 @@ class CreatorAgent():
                 "code_additions": AIMessage(content=""),
                 "test_results": SystemMessage(content=""),
                 "validation": AIMessage(content=""),
-                "tool_calling_messages": []
+                "tool_calling_messages": [],
             }
 
         def test_player_node(state: CreatorGraphState):
@@ -318,8 +329,9 @@ class CreatorAgent():
                     Task: Digest at the proposed solution from the Researcher and Analyzer, and implement it into the foo_player.py file.
 
                     1. Digest 
-                        - Digest the solution provided by the Researcher and the Analyzer, and Validator if applicatble
+                        - Digest the solution provided by the Researcher and the Analyzer, and Validator if applicable
                         - Look at the code from the foo_player.py file using the read_foo tool call
+                        - Utilize the list_local_file and read_local_file to view any game files (Very helpful for debugging!)
 
                     2. Implement
                         - Use what you learned and digested to call write_foo tool call and write the entire new code for the foo_player.py file
@@ -735,7 +747,7 @@ def run_testfoo(short_game: bool = False) -> str:
                 shlex.split(FOO_RUN_COMMAND),
                 capture_output=True,
                 text=True,
-                timeout=3600,
+                timeout=14400,
                 check=False
             )
         stdout_limited  = result.stdout[-MAX_CHARS:]
@@ -751,7 +763,7 @@ def run_testfoo(short_game: bool = False) -> str:
             stderr_output = stderr_output.decode('utf-8', errors='ignore')
         stdout_limited  = stdout_output[-MAX_CHARS:]
         stderr_limited  = stderr_output[-MAX_CHARS:]
-        game_results = "TIMEOUT: Game exceeded time limit.\n\n" + (stdout_output + stderr_output).strip()
+        game_results = "Game Ended From Timeout (As Expected).\n\n" + (stdout_output + stderr_output).strip()
     
     # Update the run_test_foo flag to read game results
     global RUN_TEST_FOO_HAPPENED
