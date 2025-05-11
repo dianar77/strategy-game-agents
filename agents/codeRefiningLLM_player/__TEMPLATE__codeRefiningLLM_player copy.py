@@ -202,7 +202,8 @@ class CodeRefiningLLMPlayer(Player):
         print(game_state_text)
 
         if self.debug_mode:
-            print(f"Game state prepared for LLM (length: {len(game_state_text)} chars)")
+            pass
+            #print(f"Game state prepared for LLM (length: {len(game_state_text)} chars)")
             #print("Game state prepared for LLM")
 
 

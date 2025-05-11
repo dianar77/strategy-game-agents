@@ -3,13 +3,12 @@ import os
 import sys, pathlib
 sys.path.insert(0, str(pathlib.Path(__file__).parent.parent))
 import base_llm
-from base_llm import OpenAILLM, AzureOpenAILLM, MistralLLM, BaseLLM, MistralLLM, AzureOpenAILLM
+from base_llm import OpenAILLM, AzureOpenAILLM, MistralLLM
 from typing import List, Dict, Tuple, Any, Optional
 import json
 import random
 from enum import Enum
 from io import StringIO
-from datetime import datetime
 
 from catanatron.models.player import Player
 from catanatron.game import Game
@@ -28,17 +27,6 @@ from catanatron.state_functions import (
     get_largest_army,
 )
 from catanatron.state import State
-
-from langchain_openai import AzureChatOpenAI
-from langgraph.graph import MessagesState, START, StateGraph
-from langchain_core.messages import HumanMessage, SystemMessage
-from langgraph.prebuilt import tools_condition, ToolNode
-from IPython.display import Image, display
-from langgraph.checkpoint.memory import MemorySaver
-from langchain_core.messages import RemoveMessage
-from langchain_community.tools.tavily_search import TavilySearchResults
-
-
 
 # Constants for pretty printing
 RESOURCE_EMOJI = {
@@ -71,32 +59,21 @@ DEV_CARD_DESCRIPTIONS = {
     "VICTORY_POINT": "Worth 1 victory point",
 }
 
-class ToolCallLLMPlayer(Player):
+
+class OldLLMPlayer(Player):
     """LLM-powered player that uses Claude API to make Catan game decisions."""
     # Class properties
     debug_mode = True
-    run_dir = None
 
-    def __init__(self, color, name=None):
+    def __init__(self, color, name=None, llm=None):
         super().__init__(color, name)
         # Get API key from environment variable
-        
-        #self.llm = AzureOpenAILLM(model_name="gpt-4o")
-        
-        self.llm_name = "gpt-4o"
-        self.llm = AzureChatOpenAI(
-            model="gpt-4o",
-            azure_endpoint="https://gpt-amayuelas.openai.azure.com/",
-            api_version = "2024-12-01-preview"
-        )
-
-        if ToolCallLLMPlayer.run_dir is None:
-            agent_dir = os.path.dirname(os.path.abspath(__file__))
-            runs_dir = os.path.join(agent_dir, "runs")
-            os.makedirs(runs_dir, exist_ok=True)
-            run_id = datetime.now().strftime("run_%Y%m%d_%H%M%S")
-            ToolCallLLMPlayer.run_dir = os.path.join(runs_dir, run_id)
-            os.makedirs(ToolCallLLMPlayer.run_dir, exist_ok=True)
+        if llm is None:
+            self.llm = AzureOpenAILLM(model_name="gpt-4o")
+        else:
+            self.llm = llm
+        self.is_bot = True
+        self.llm_name = self.llm.model
 
         # Initialize stats for the player
         self.api_calls = 0
@@ -108,57 +85,6 @@ class ToolCallLLMPlayer(Player):
         self.last_resources = None  # Resources from previous turn
         self.current_plan = None    # Current strategic plan
         self.last_turn_number = 0
-
-        # Langchain Addons
-        #self.memory_saver = MemorySaver()
-        self.memory_config = {"configurable": {"thread_id": "1"}}
-        self.num_memory_messages = 3        # Trim number of messages to keep in memory to limit API usage
-        self.react_graph = self.create_langchain_react_graph()
-        
-        self.test_count = 0
-
-
-    def create_langchain_react_graph(self):
-        """Create a react graph for the LLM to use."""
-        
-        tools = [web_search_tool_call]
-        llm_with_tools = self.llm.bind_tools(tools)
-        
-        def assistant(state: MessagesState):
-            return {"messages": [llm_with_tools.invoke(state["messages"])]}
-        
-        def trim_messages(state: MessagesState):
-            # Delete all but the 3 most recent messages
-            delete_messages = [RemoveMessage(id=m.id) for m in state["messages"][:-self.num_memory_messages]]
-            return {"messages": delete_messages}
-
-
-        builder = StateGraph(MessagesState)
-
-        # Define nodes: these do the work
-        builder.add_node("trim_messages", trim_messages)
-        builder.add_node("assistant", assistant)
-        builder.add_node("tools", ToolNode(tools))
-
-        # Define edges: these determine how the control flow moves
-        builder.add_edge(START, "trim_messages")
-        builder.add_edge("trim_messages", "assistant")
-        builder.add_conditional_edges(
-            "assistant",
-            # If the latest message (result) from assistant is a tool call -> tools_condition routes to tools
-            # If the latest message (result) from assistant is a not a tool call -> tools_condition routes to END
-            tools_condition,
-        )
-        builder.add_edge("tools", "assistant")
-        
-        return builder.compile(checkpointer=MemorySaver())
-
-    def print_react_graph(self):
-        """
-        Print the react graph for debugging purposes.
-        ONLY WORKS IN .IPYNB NOTEBOOKS
-        """
-        display(Image(self.react_graph.get_graph(xray=True).draw_mermaid_png()))
 
     def decide(self, game: Game, playable_actions: List[Action]) -> Action:
         """Use Claude API to analyze game state and choose an action.
@@ -190,8 +116,6 @@ class ToolCallLLMPlayer(Player):
         if self.debug_mode:
             pass
             #print(f"Game state prepared for LLM (length: {len(game_state_text)} chars)")
-            #print("Game state prepared for LLM")
-
 
         # Use LLM to choose an action
         try:
@@ -200,7 +124,6 @@ class ToolCallLLMPlayer(Player):
                 action = playable_actions[chosen_action_idx]
                 if self.debug_mode:
                     print(f"LLM chose action {chosen_action_idx}: {self._get_action_description(action)}")
-                    #print(f"LLM chose action {chosen_action_idx}")
 
                 # Record decision time
                 decision_time = time.time() - start_time
@@ -308,38 +231,22 @@ class ToolCallLLMPlayer(Player):
             "- Understanding the connectivity between nodes is crucial for road building strategy\n"
             "- Ports allow trading resources at better rates (2:1 or 3:1)\n\n"
             "Here is the current game state:\n\n"
-            #f"{game_state_text}\n\n"
-            "Available Tool Calls:\n"
-            "  - web_search_tool_call: USE THIS TOOL! Search the web for information. Use this as much as you like. You can search for game rules, ask for advice, or to choose the most optimal option. \n\n"
-
+            f"{game_state_text}\n\n"
             f"Based on this information, which action number do you choose? Think step by step about your options, then put the final action number in a box like \\boxed{{1}}."
         )
 
         try:
-
-
-            msg = HumanMessage(content=prompt)
-
-            # Lang Graph Client
-            messages = self.react_graph.invoke({"messages": [msg]}, self.memory_config)
-            response = ""
-            for m in messages['messages']:
-                m.pretty_print()
-                response = m.content # Get the content of the last message
-            
-            # Remove quotes
-            response = response.strip()
-
-            # Gather plan from the response
-            self._extract_plan_from_response(response)
-
-            log_path = os.path.join(ToolCallLLMPlayer.run_dir, f"llm_log_{self.llm_name}.txt")
-
+            response = self.llm.query(prompt)
+            # Use the model name for the log file
+            model_name = self.llm_name
+            safe_model_name = model_name.replace("/", "_").replace(":", "_").replace(" ", "_")
+            log_path = os.path.join(os.path.dirname(__file__), f"llm_log_{safe_model_name}.txt")
             with open(log_path, "a") as log_file:
-                for messages in messages['messages']:
-                    log_file.write(messages.pretty_repr())
-                log_file.write("\n\n" + "|"*40 + "NEW TURN" + "|"*40 + "\n\n")
-
+                log_file.write("PROMPT:\n")
+                log_file.write(prompt + "\n")
+                log_file.write("RESPONSE:\n")
+                log_file.write(str(response) + "\n")
+                log_file.write("="*40 + "\n")
             # Extract the first integer from a boxed answer or any number
             import re
             boxed_match = re.search(r'\\boxed\{(\d+)\}', str(response))
@@ -586,29 +493,8 @@ class ToolCallLLMPlayer(Player):
             dev_card_count = player_num_dev_cards(state, color)
             if is_current:
                 # Show current player's development cards
-                dev_cards = {}
-                played_dev_cards = {}
-                dev_card_types = ["KNIGHT", "YEAR_OF_PLENTY", "MONOPOLY", "ROAD_BUILDING", "VICTORY_POINT"]
-
-                # Check for unplayed development cards
-                for card_type in dev_card_types:
-                    card_key = f"{key}_{card_type}_IN_HAND"
-                    count = state.player_state.get(card_key, 0)
-                    if count > 0:
-                        dev_cards[card_type] = count
-
-                # Check for played cards
-                for card_type in dev_card_types:
-                    # if card_type == "VICTORY_POINT":
-                    #     continue  # VP cards aren't played
-                    card_key = f"{key}_PLAYED_{card_type}"
-                    count = state.player_state.get(card_key, 0)
-                    if count > 0:
-                        played_dev_cards[card_type] = count
-
-
-                # dev_cards = state.player_state.get(f"{key}_DEVELOPMENT_CARDS", {})
-                # played_dev_cards = state.player_state.get(f"{key}_PLAYED_DEV_CARDS", {})
+                dev_cards = state.player_state.get(f"{key}_DEVELOPMENT_CARDS", {})
+                played_dev_cards = state.player_state.get(f"{key}_PLAYED_DEV_CARDS", {})
 
                 # Format available dev cards
                 available_cards = []
@@ -627,42 +513,13 @@ class ToolCallLLMPlayer(Player):
                 if played_cards:
                     output.write(f"    Played Cards: {', '.join(played_cards)}\n")
             else:
-                # For other players, just show the count but check the actual keys
-                played_dev_cards = {}
-                dev_cards = {}
-                dev_card_types = ["KNIGHT", "YEAR_OF_PLENTY", "MONOPOLY", "ROAD_BUILDING", "VICTORY_POINT"]
-
-                 # Check for unplayed development cards
-                dev_card_count = 0
-                for card_type in dev_card_types:
-                    card_key = f"{key}_{card_type}_IN_HAND"
-                    count = state.player_state.get(card_key, 0)
-                    if count > 0:
-                        dev_cards[card_type] = count
-                        dev_card_count += count
-
-                
-                # Check for played cards
-                for card_type in dev_card_types:
-                    card_key = f"{key}_PLAYED_{card_type}"
-                    count = state.player_state.get(card_key, 0)
-                    if count > 0:  # VP cards aren't visibly played
-                        played_dev_cards[card_type] = count
-                            
-                # Show total dev cards (hidden from other players)
+                # For other players, just show the count
+                visible_played = state.player_state.get(f"{key}_PLAYED_DEV_CARDS", {})
+                knights_played = visible_played.get("KNIGHT", 0)
                 if dev_card_count > 0:
                     output.write(f"    Development Cards: {dev_card_count} (hidden)\n")
-                else:
-                    output.write(f"    Development Cards: None\n")
-                
-                # Show all played cards (these are public information)
-                played_cards = []
-                for card_type, count in played_dev_cards.items():
-                    if count > 0:
-                        played_cards.append(f"{count} {card_type}")
-                
-                if played_cards:
-                    output.write(f"    Played Cards: {', '.join(played_cards)}\n")
+                if knights_played > 0:
+                    output.write(f"    Knights Played: {knights_played}\n")
 
             # Building information (public)
             output.write(f"    Buildings:\n")
@@ -739,11 +596,11 @@ class ToolCallLLMPlayer(Player):
             return descriptions[action_type]
 
         if action_type == ActionType.BUILD_ROAD:
-            return f"Build a road at edge {value} (Cost: {self._format_cost('ROAD')})"
+            return f"Build a road at edge {value} ({self._format_cost('ROAD')})"
         elif action_type == ActionType.BUILD_SETTLEMENT:
-            return f"Build a settlement at node {value} (Cost: {self._format_cost('SETTLEMENT')})"
+            return f"Build a settlement at node {value} ({self._format_cost('SETTLEMENT')})"
         elif action_type == ActionType.BUILD_CITY:
-            return f"Upgrade settlement to city at node {value} (Cost: {self._format_cost('CITY')})"
+            return f"Upgrade settlement to city at node {value} ({self._format_cost('CITY')})"
         elif action_type == ActionType.MOVE_ROBBER:
             target_color = value[1]
             target_str = f" and steal from {target_color.name}" if target_color else ""
@@ -813,25 +670,5 @@ class ToolCallLLMPlayer(Player):
             if self.debug_mode:
                 print(f"Updated plan: {self.current_plan}")
 
-
-def web_search_tool_call(query: str) -> str:
-    """Perform a web search using the Tavily API.
-
-    Args:
-        query: The search query string.
-
-    Returns:
-        The search result as a string.
-    """
-    # Simulate a web search
-    tavily_search = TavilySearchResults(max_results=3)
-    search_docs = tavily_search.invoke(query)
-    formatted_search_docs = "\n\n---\n\n".join(
-        [
-            f'<Document href="{doc["url"]}"/>\n{doc["content"]}\n</Document>'
-            for doc in search_docs
-        ]
-    )
-
-    return formatted_search_docs
-
+# Manually register the LLMPlayer with the CLI system
+# register_player("vLLM")(VanillaLLMPlayer)
