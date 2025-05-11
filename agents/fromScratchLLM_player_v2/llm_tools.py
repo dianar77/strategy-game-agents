@@ -1,7 +1,9 @@
 import os
 from datetime import datetime
-from langchain_openai import AzureChatOpenAI
+#from langchain.chat_models import AzureChatOpenAI
 #from langchain_openai import AzureChatOpenAI
+from langchain_community.chat_models import AzureChatOpenAI
+
 from langchain_mistralai import ChatMistralAI
 from langchain_core.messages import HumanMessage
 from langchain_core.rate_limiters import InMemoryRateLimiter

@@ -40,8 +40,10 @@ LOCAL_SEARCH_BASE_DIR = (Path(__file__).parent.parent.parent / "catanatron").res
 FOO_TARGET_FILENAME = "foo_player.py"
 FOO_TARGET_FILE = Path(__file__).parent / FOO_TARGET_FILENAME    # absolute path
 FOO_MAX_BYTES   = 64_000                                     # context-friendly cap
+
+EVOLVE_COUNTER_MAX = 5
 # Set winning points to 5 for quicker game
-FOO_RUN_COMMAND = "catanatron-play --players=AB,R,FOO_LLM_S  --num=10 --config-map=MINI  --config-vps-to-win=10"
+FOO_RUN_COMMAND = "catanatron-play --players=AB,R  --num=5 --config-map=MINI  --config-vps-to-win=10"
 RUN_TEST_FOO_HAPPENED = False # Used to keep track of whether the testfoo tool has been called
 # -------------------------------------------------------------------------------------
 
@@ -93,10 +95,11 @@ class CreatorAgent():
             os.makedirs(CreatorAgent.run_dir, exist_ok=True)
 
         #Copy the Blank FooPlayer to the run directory
-        shutil.copy2(                           # ↩ copy with metadata
-            (Path(__file__).parent / ("__TEMPLATE__" + FOO_TARGET_FILENAME)).resolve(),  # ../foo_player.py
-            FOO_TARGET_FILE.resolve()          # ./foo_player.py
-        )
+        # shutil.copy2(                           # ↩ copy with metadata
+        #     (Path(__file__).parent / ("__TEMPLATE__" + FOO_TARGET_FILENAME)).resolve(),  # ../foo_player.py
+        #     FOO_TARGET_FILE.resolve()          # ./foo_player.py
+        # )
+
         self.memory_config = {
             "recursion_limit": 100, # set recursion limit for graph
             "configurable": {
@@ -113,11 +116,11 @@ class CreatorAgent():
 
         class CreatorGraphState(TypedDict):
             full_results: SystemMessage # Last results of running the game
-            analysis: AIMessage         # Output of Anlayzer, What Happend?
-            solution: AIMessage         # Ouput of Researcher, What should be done?
-            code_additions: AIMessage         # Output of Coder, What was added to the code?
-            test_results: SystemMessage # Running a test on code, to ensure correctness
-            validation: AIMessage       # Ouptut of Validator, Is the code correct?
+            #analysis: AIMessage         # Output of Anlayzer, What Happend?
+            #solution: AIMessage         # Ouput of Researcher, What should be done?
+            #code_additions: AIMessage         # Output of Coder, What was added to the code?
+            #test_results: SystemMessage # Running a test on code, to ensure correctness
+            #validation: AIMessage       # Ouptut of Validator, Is the code correct?
             tool_calling_messages: list[AnyMessage]     # Messages from the tool calling state graph (used for debugging)
 
             evolve_counter: int         # Counter for the number of evolutions
@@ -198,14 +201,14 @@ class CreatorAgent():
                 "tool_calling_messages": []
             }
 
-        def test_player_node(state: CreatorGraphState):
-            """
-            Tests Catanatron with the current Code
-            """
-            #print("In Test Player Node")
-            game_results = run_testfoo()
+        # def test_player_node(state: CreatorGraphState):
+        #     """
+        #     Tests Catanatron with the current Code
+        #     """
+        #     #print("In Test Player Node")
+        #     game_results = run_testfoo()
 
-            return {"test_results": SystemMessage(content=f"TEST GAME RESULTS (Not a Full Game):\n\n{game_results}")}
+        #     return {"test_results": SystemMessage(content=f"TEST GAME RESULTS (Not a Full Game):\n\n{game_results}")}
 
         def analyzer_node(state: CreatorGraphState):
             #print("In Analyzer Node")
@@ -216,255 +219,262 @@ class CreatorAgent():
             else:
                 evolve_counter = state["evolve_counter"] - 1
 
+            PROMPT_NEW_FILENAME = "TODO.txt"
 
-            sys_msg = SystemMessage(
-                content=f"""
-                    {multi_agent_prompt} ANALYZER
+            sys_msg = SystemMessage(content =
+                (
+                    f"""
+                    You are in charge of creating the prompt for the Catan Player PromptRefiningLLMPlayer in {FOO_TARGET_FILENAME}. 
                     
-                    Task: Your job is to analyze the results of how foo_player did in the game and create a report to the Researcher
+                    YOUR PRIMARY GOAL: Create a prompt that helps our AI player win at least 3/5 games against its opponent.
                     
-                    1. Analyze
-                        - Analyze on any errors or issues that occurred during the game
-                        - Analyze on the performance of the player, and how it did against other players
-                        - Analyze on any terminal ouput from the player
-
-                    2. Think
-                        - Think about what the researcher should look into for the next iteration
-                        - Think about what the coder should look into for the next iteration
+                    IMPROVEMENT PROCESS:
+                    1. Run test games with run_testfoo to evaluate current performance
+                    2. Carefully analyze game logs to identify key weaknesses in our player
+                    3. Research specific Catan strategies to address those weaknesses
+                    4. Enhance the prompt with targeted improvements
+                    5. Test again and iterate until we reach a 60%+ win rate
                     
-                    3. Decide
-                        - Decide if the player is is good enough to stop evolving, or if it should continue evolving
-                        - If the player is can beat the players consistently, just return the key "{analyzer_stop_key}" (Ignore Step 4)
-                        - If the player is not good enough, return the key "{analyzer_continue_key}" (defaults to not good enough)
-
-                    4. Report (Output)
-                        - Create a concise and efficient report with summarized results, analysis, thoughts, and action items for the researcher
-                        - Make sure to include any errors or issues that occurred during the game
-                        - Be sure a clear list of action items for the researcher to follow
-
+                    STRATEGY AREAS TO FOCUS ON:
+                    - Early game placement strategy
+                    - Mid-game resource management
+                    - Late-game victory point optimization
+                    - Effective trading and negotiation
+                    - Development card usage
+                    - Robber placement strategy
                     
-                    Utilize as many tool calls as necessary for you to get your job done. 
-
                     You Have the Following Tools at Your Disposal:
-                        - list_local_files: List all files in the current directory.
-                        - read_local_file: Read the content of a file in the current directory.
-                        - read_foo: Read the content of {FOO_TARGET_FILENAME}.
-                        - view_last_game_llm_query: View the LLM query from the last game to see performance. 
-
-                    Make sure to start your output with 'ANALYSIS:' and end with 'END ANALYSIS'.
-                    Respond with No Commentary, just the analysis.
-
-                """
+                    - list_local_files: List all files in the current directory.
+                    - read_local_file: Read the content of a file in the current directory.
+                    - read_foo: Read the content of {PROMPT_NEW_FILENAME}.
+                    - write_foo: Write the content of {PROMPT_NEW_FILENAME}. (Any text in brackets MUST remain in brackets)
+                    - run_testfoo: Test the {PROMPT_NEW_FILENAME} being used in a game and analyze results.
+                    - web_search_tool_call: Research strategies for specific aspects of Catan gameplay.
+                    
+                    PROCESS GUIDELINES:
+                    1. Start by running a game with the current prompt to establish a baseline
+                    2. After each game, analyze the game_output.txt to identify specific weaknesses
+                    3. Use web_search_tool_call to research strategies addressing those weaknesses
+                    4. Modify the prompt with these improvements, being specific and detailed
+                    5. Test again and repeat until you achieve 3/5 wins
+                    
+                    Keep iterating and improving your prompt until the player consistently wins.
+                    """
+                )
             )
-            msg = [state["code_additions"], state["full_results"]]
-            tools = [list_local_files, read_local_file, read_foo, view_last_game_llm_query]
+            
+            msg = [state["full_results"]]
+
+            # TODO: Add all tools Prompt Tools
+            tools = []
             output = tool_calling_state_graph(sys_msg, msg, tools)
 
             #print(output)
-            return {"analysis": output["messages"][-1], "evolve_counter": evolve_counter, "tool_calling_messages": output["messages"]}
+            return {"evolve_counter": evolve_counter, "tool_calling_messages": output["messages"]}
         
-        def researcher_node(state: CreatorGraphState):
+        # def researcher_node(state: CreatorGraphState):
             
-            #print("In Researcher Node")
-            # Add custom tools for researcher
+        #     #print("In Researcher Node")
+        #     # Add custom tools for researcher
 
-            sys_msg = SystemMessage(
-                content=f"""
-                    {multi_agent_prompt} RESEARCHER
+        #     sys_msg = SystemMessage(
+        #         content=f"""
+        #             {multi_agent_prompt} RESEARCHER
                      
-                    Task: Digest the analysis from the Analyzer, perform your own research, and create a solution for the Coder to implement
+        #             Task: Digest the analysis from the Analyzer, perform your own research, and create a solution for the Coder to implement
 
                     
-                    1. Digest
-                        - Digest the analysis and game summary from the Analyzer.
-                        - If needed, use the read_foo tool call to view the player to understand the code
-                        - Digest the recommended questions and action items from the Analyzer
+        #             1. Digest
+        #                 - Digest the analysis and game summary from the Analyzer.
+        #                 - If needed, use the read_foo tool call to view the player to understand the code
+        #                 - Digest the recommended questions and action items from the Analyzer
 
-                    2. Research
-                        - Perform research on the questions and action items from the Analyzer (or any other questions you have)
-                        - Use the web_search_tool_call to perform a web search for any questions you have
-                        - Use the list_local_files, and read_local_file to view any game files (which are very helpful for debugging)
-                        - Most Importantly: BE CREATIVE AND THINK OUTSIDE THE BOX (feel free to web search for anything you want)
+        #             2. Research
+        #                 - Perform research on the questions and action items from the Analyzer (or any other questions you have)
+        #                 - Use the web_search_tool_call to perform a web search for any questions you have
+        #                 - Use the list_local_files, and read_local_file to view any game files (which are very helpful for debugging)
+        #                 - Most Importantly: BE CREATIVE AND THINK OUTSIDE THE BOX (feel free to web search for anything you want)
                         
-                    3. Strategize
-                        - Think on a high level about what the coder should do to achieve the goal
-                        - Create a plan with instructions for the coder to implement the solution
+        #             3. Strategize
+        #                 - Think on a high level about what the coder should do to achieve the goal
+        #                 - Create a plan with instructions for the coder to implement the solution
                 
-                    4. Report (Output)
-                        - Create a concise and efficient report with the questions from the analyzer, and answers you gathered
-                        - Give clear instructions to the coder on what to do next
+        #             4. Report (Output)
+        #                 - Create a concise and efficient report with the questions from the analyzer, and answers you gathered
+        #                 - Give clear instructions to the coder on what to do next
 
 
-                    You Have the Following Tools at Your Disposal:
-                        - list_local_files: List all files in the current directory.
-                        - read_local_file: Read the content of a file in the current directory.
-                        - read_foo: Read the content of {FOO_TARGET_FILENAME}.
-                        - web_search_tool_call: Perform a web search using the Tavily API.
+        #             You Have the Following Tools at Your Disposal:
+        #                 - list_local_files: List all files in the current directory.
+        #                 - read_local_file: Read the content of a file in the current directory.
+        #                 - read_foo: Read the content of {FOO_TARGET_FILENAME}.
+        #                 - web_search_tool_call: Perform a web search using the Tavily API.
 
-                    Make sure to start your output with 'SOLUTION:' and end with 'END SOLUTION'.
-                    Respond with No Commentary, just the Research.
+        #             Make sure to start your output with 'SOLUTION:' and end with 'END SOLUTION'.
+        #             Respond with No Commentary, just the Research.
 
-                """
-            )
+        #         """
+        #     )
 
-            # Choose the input based on if coming from analyzer or from validator in graph
-            msg = [state["full_results"], state["analysis"]]
+        #     # Choose the input based on if coming from analyzer or from validator in graph
+        #     msg = [state["full_results"], state["analysis"]]
 
-            tools = [read_foo, list_local_files, read_local_file, web_search_tool_call]
-            output = tool_calling_state_graph(sys_msg, msg, tools)
-            return {"solution": output["messages"][-1], "tool_calling_messages": output["messages"]}
+        #     tools = [read_foo, list_local_files, read_local_file, web_search_tool_call]
+        #     output = tool_calling_state_graph(sys_msg, msg, tools)
+        #     return {"solution": output["messages"][-1], "tool_calling_messages": output["messages"]}
 
-        def coder_node(state: CreatorGraphState):
+        # def coder_node(state: CreatorGraphState):
 
-            #print("In Researcher Node")
-            # Add custom tools for researcher
+        #     #print("In Researcher Node")
+        #     # Add custom tools for researcher
 
-            sys_msg = SystemMessage(
-                content=f"""
-                    {multi_agent_prompt} CODER
+        #     sys_msg = SystemMessage(
+        #         content=f"""
+        #             {multi_agent_prompt} CODER
                     
-                    Task: Digest at the proposed solution from the Researcher and Analyzer, and implement it into the foo_player.py file.
+        #             Task: Digest at the proposed solution from the Researcher and Analyzer, and implement it into the foo_player.py file.
 
-                    1. Digest 
-                        - Digest the solution provided by the Researcher and the Analyzer, and Validator if applicatble
-                        - Look at the code from the foo_player.py file using the read_foo tool call
+        #             1. Digest 
+        #                 - Digest the solution provided by the Researcher and the Analyzer, and Validator if applicatble
+        #                 - Look at the code from the foo_player.py file using the read_foo tool call
 
-                    2. Implement
-                        - Use what you learned and digested to call write_foo tool call and write the entire new code for the foo_player.py file
-                        - Focus on making sure the code implementes the solution in the most correct way possible
+        #             2. Implement
+        #                 - Use what you learned and digested to call write_foo tool call and write the entire new code for the foo_player.py file
+        #                 - Focus on making sure the code implementes the solution in the most correct way possible
 
-                    3. Review
-                        - Run through the output of the write_foo tool call to make sure the code is correct, and contains now errors or bugs
-                        - If there are any errors or bugs, fix them and re-run the write_foo tool call
+        #             3. Review
+        #                 - Run through the output of the write_foo tool call to make sure the code is correct, and contains now errors or bugs
+        #                 - If there are any errors or bugs, fix them and re-run the write_foo tool call
                     
-                    4. Report (Output)
-                        - Create a concise and efficient report with the additions to the code you made, and why you made them for the validator
+        #             4. Report (Output)
+        #                 - Create a concise and efficient report with the additions to the code you made, and why you made them for the validator
 
-                    You Have the Following Tools at Your Disposal:
-                        - list_local_files: List all files in the current directory.
-                        - read_local_file: Read the content of a file in the current directory.
-                        - read_foo: Read the content of {FOO_TARGET_FILENAME}.
-                        - write_foo: Write the content of {FOO_TARGET_FILENAME}. (Make sure to keep imports) Note: print() commands will be visible in view_last_game_results
-
-                    
-                    Make sure to start your output with 'CODER' and end with 'END CODER'.
+        #             You Have the Following Tools at Your Disposal:
+        #                 - list_local_files: List all files in the current directory.
+        #                 - read_local_file: Read the content of a file in the current directory.
+        #                 - read_foo: Read the content of {FOO_TARGET_FILENAME}.
+        #                 - write_foo: Write the content of {FOO_TARGET_FILENAME}. (Make sure to keep imports) Note: print() commands will be visible in view_last_game_results
 
                     
-                """
-            )
+        #             Make sure to start your output with 'CODER' and end with 'END CODER'.
+
+                    
+        #         """
+        #     )
            
-            # Choose the input based on if coming from analyzer or from validator in graph
-            if state["validation"].content == "":
-                # If coming from analyzer, use the full_results, analusis, and solution
-                msg = [state["full_results"], state["analysis"], state["solution"]]
-            else:
-                # If coming from validator, usee the coder, test_results, and validation messages
-                msg = [state["code_additions"], state["test_results"], state["validation"]]
+        #     # Choose the input based on if coming from analyzer or from validator in graph
+        #     if state["validation"].content == "":
+        #         # If coming from analyzer, use the full_results, analusis, and solution
+        #         msg = [state["full_results"], state["analysis"], state["solution"]]
+        #     else:
+        #         # If coming from validator, usee the coder, test_results, and validation messages
+        #         msg = [state["code_additions"], state["test_results"], state["validation"]]
             
-            tools = [list_local_files, read_local_file, read_foo, write_foo]
+        #     tools = [list_local_files, read_local_file, read_foo, write_foo]
 
-            # Need to Return Anything?
-            output = tool_calling_state_graph(sys_msg, msg, tools)
+        #     # Need to Return Anything?
+        #     output = tool_calling_state_graph(sys_msg, msg, tools)
 
-            return {"code_additions": output["messages"][-1] ,"tool_calling_messages": output["messages"]}
+        #     return {"code_additions": output["messages"][-1] ,"tool_calling_messages": output["messages"]}
 
-        def validator_node(state: CreatorGraphState):
-            """
-            Validates the code
-            """
-            #print("In Validator Node")
-            # Add Custom Tools For Validator
+        # def validator_node(state: CreatorGraphState):
+        #     """
+        #     Validates the code
+        #     """
+        #     #print("In Validator Node")
+        #     # Add Custom Tools For Validator
             
-            sys_msg = SystemMessage(
-                content=f"""
-                    {multi_agent_prompt} VALIDATOR
+        #     sys_msg = SystemMessage(
+        #         content=f"""
+        #             {multi_agent_prompt} VALIDATOR
                     
-                    Task: Analyze the results of the test game and the new additions, and determine if the code is correct or not
+        #             Task: Analyze the results of the test game and the new additions, and determine if the code is correct or not
 
-                    1. Digest
-                        - Digest the test results from the new code that was writen by the coder node
-                        - Digest the code additions from the coder node, and use the read_foo tool call to view the actual player code if needed
-                        - If applicable, use the view_last_game_llm_query tool call to view the LLM query from the last game to see performance
+        #             1. Digest
+        #                 - Digest the test results from the new code that was writen by the coder node
+        #                 - Digest the code additions from the coder node, and use the read_foo tool call to view the actual player code if needed
+        #                 - If applicable, use the view_last_game_llm_query tool call to view the LLM query from the last game to see performance
 
-                    2. Validate
-                        - Validate the test results and determine if the code is correct or not
-                        - Validate to ensure there are no errors or bugs in the code
-                        - Validate to ensure the output of the test game is correct and matches the expected output
+        #             2. Validate
+        #                 - Validate the test results and determine if the code is correct or not
+        #                 - Validate to ensure there are no errors or bugs in the code
+        #                 - Validate to ensure the output of the test game is correct and matches the expected output
                     
-                    3. Recommend
-                        - You are ONLY checking to see if the code has correct execution and no errors
-                        - If validation is successful, return the key "{val_ok_key}", 
-                        - Otherwise, on a VERY limited time basis, return "{val_not_ok_key}".
-                        - Then, commentate on why you decided to return the key
-                        - Note: The ouptput will be parse for either keys, so make sure to only return one of them
+        #             3. Recommend
+        #                 - You are ONLY checking to see if the code has correct execution and no errors
+        #                 - If validation is successful, return the key "{val_ok_key}", 
+        #                 - Otherwise, on a VERY limited time basis, return "{val_not_ok_key}".
+        #                 - Then, commentate on why you decided to return the key
+        #                 - Note: The ouptput will be parse for either keys, so make sure to only return one of them
 
-                    You Have the Following Tools at Your Disposal:
-                        - read_foo: Read the content of {FOO_TARGET_FILENAME}.
-                        - view_last_game_llm_query: View the LLM query from the last game to see performance. 
+        #             You Have the Following Tools at Your Disposal:
+        #                 - read_foo: Read the content of {FOO_TARGET_FILENAME}.
+        #                 - view_last_game_llm_query: View the LLM query from the last game to see performance. 
 
                     
-                    Note: It is okay if the model is not perfect and is novel. 
-                    Your job is to make sure the model works and is correct so it can be tested in a full game.
-                    Only return "{val_not_ok_key}" if there is a trivial error that can be fixed easily by the Coder
+        #             Note: It is okay if the model is not perfect and is novel. 
+        #             Your job is to make sure the model works and is correct so it can be tested in a full game.
+        #             Only return "{val_not_ok_key}" if there is a trivial error that can be fixed easily by the Coder
                     
                     
-                    Make sure to start your output with 'VALIDATION:' and end with 'END VALIDATION'. 
-                    Respond with No Commentary, just the Validation.
+        #             Make sure to start your output with 'VALIDATION:' and end with 'END VALIDATION'. 
+        #             Respond with No Commentary, just the Validation.
                     
-                """
-            )
-            msg = [state["solution"], state["test_results"], state["code_additions"]]
-            tools = [read_foo, view_last_game_llm_query]
-            output = tool_calling_state_graph(sys_msg, msg, tools)
+        #         """
+        #     )
+        #     msg = [state["solution"], state["test_results"], state["code_additions"]]
+        #     tools = [read_foo, view_last_game_llm_query]
+        #     output = tool_calling_state_graph(sys_msg, msg, tools)
 
-            return {"validation": output["messages"][-1], "tool_calling_messages": output["messages"]}
+        #     return {"validation": output["messages"][-1], "tool_calling_messages": output["messages"]}
 
         def continue_evolving_analyzer(state: CreatorGraphState):
             """
             Conditional edge for Analyzer
             """
-            print("In Conditional Edge Analyzer")
+            print(f"In Analyzer Condition Edge Counter: {state['evolve_counter']}")
             
             # Get the content of the validation message
-            analyzer_message = state["analysis"].content
+            #analyzer_message = state["analysis"].content
             
             # Check for the presence of our defined result strings (Because analyzer node decrements the counter)
             if state["evolve_counter"] <= -1:
                 print("Evolve counter is 0 - ending workflow")
                 return END
-
-            if analyzer_stop_key in analyzer_message:
-                print("Validation passed - ending workflow")
-                return END
-            elif analyzer_continue_key in analyzer_message:  #
-                print("Validation failed - rerunning player")
-                return "researcher"
             else:
-                # Default case if neither string is found
-                print("Warning: Could not determine validation result, defaulting to researcher")
-                return END
+                return "run_player"
+            # if analyzer_stop_key in analyzer_message:
+            #     print("Validation passed - ending workflow")
+            #     return END
+            # elif analyzer_continue_key in analyzer_message:  #
+            #     print("Validation failed - rerunning player")
+            #     return "researcher"
+            # else:
+            #     # Default case if neither string is found
+            #     print("Warning: Could not determine validation result, defaulting to researcher")
+            #     return END
             
-        def code_ok_validator(state: CreatorGraphState):
-            """
-            Conditional edge for validator
-            """
-            print("In Conditional Edge Validator")
+        # def code_ok_validator(state: CreatorGraphState):
+        #     """
+        #     Conditional edge for validator
+        #     """
+        #     print("In Conditional Edge Validator")
             
-            # Get the content of the validation message
-            validation_message = state["validation"].content
+        #     # Get the content of the validation message
+        #     validation_message = state["validation"].content
             
-            # Check for the presence of our defined result strings
+        #     # Check for the presence of our defined result strings
 
-            if val_ok_key in validation_message:
-                print("Validation passed - ending workflow")
-                return "run_player"
-            elif val_not_ok_key in validation_message:  #
-                print("Validation failed - rerunning player")
-                return "coder"
-            else:
-                # Default case if neither string is found
-                print("Warning: Could not determine validation result, defaulting to running player")
-                return "run_player"
+        #     if val_ok_key in validation_message:
+        #         print("Validation passed - ending workflow")
+        #         return "run_player"
+        #     elif val_not_ok_key in validation_message:  #
+        #         print("Validation failed - rerunning player")
+        #         return "coder"
+        #     else:
+        #         # Default case if neither string is found
+        #         print("Warning: Could not determine validation result, defaulting to running player")
+        #         return "run_player"
 
         def construct_graph():
             graph = StateGraph(CreatorGraphState)
@@ -472,27 +482,27 @@ class CreatorAgent():
             graph.add_node("run_player", run_player_node)
             graph.add_node("analyzer", analyzer_node)
             #graph.add_node("tools", ToolNode(tools))
-            graph.add_node("researcher", researcher_node)
-            graph.add_node("coder", coder_node)
-            graph.add_node("test_player", test_player_node)
-            graph.add_node("validator", validator_node)
+            # graph.add_node("researcher", researcher_node)
+            # graph.add_node("coder", coder_node)
+            # graph.add_node("test_player", test_player_node)
+            # graph.add_node("validator", validator_node)
 
             graph.add_edge(START, "run_player")
             graph.add_edge("run_player", "analyzer")
             graph.add_conditional_edges(
                 "analyzer",
                 continue_evolving_analyzer,
-                {END, "researcher"}
+                {END, "run_player"}
             )
-            #graph.add_edge("analyzer", "researcher")
-            graph.add_edge("researcher", "coder")
-            graph.add_edge("coder", "test_player")
-            graph.add_edge("test_player", "validator")
-            graph.add_conditional_edges(
-                "validator",
-                code_ok_validator,
-                {"coder", "run_player"}
-            )
+            # #graph.add_edge("analyzer", "researcher")
+            # graph.add_edge("researcher", "coder")
+            # graph.add_edge("coder", "test_player")
+            # graph.add_edge("test_player", "validator")
+            # graph.add_conditional_edges(
+            #     "validator",
+            #     code_ok_validator,
+            #     {"coder", "run_player"}
+            # )
 
             return graph.compile()
     
@@ -567,7 +577,7 @@ class CreatorAgent():
             #                     print(line)
             #                     log_file.write(line + "\n")
             with open(log_path, "a") as log_file:                # Run the graph until the first interruption
-                for step in self.react_graph.stream({}, stream_mode="updates"):
+                for step in self.react_graph.stream({"evolve_counter": EVOLVE_COUNTER_MAX}, stream_mode="updates"):
                     #print(step)
                     #log_file.write(f"Step: {step.}\n")
                     for node, update in step.items():
@@ -575,21 +585,14 @@ class CreatorAgent():
                             print("In run_player node")
                         elif node == "analyzer":
                             print("In analyzer node")
-                        elif node == "researcher":
-                            print("In researcher node")
-                        elif node == "coder":
-                            print("In coder node")
-                        elif node == "test_player":
-                            print("In test_player node")
-                        elif node == "validator":
-                            print("In validator node")
+
                         
 
                         if "tool_calling_messages" in update:
                             count = 0
                             for msg in update["tool_calling_messages"]:
                                 #print(msg)
-                                #msg.pretty_print()
+                                msg.pretty_print()
                                 if isinstance(msg, ToolMessage):
                                     print("Tool Message: ", msg.name)
                                 count += 1
@@ -600,24 +603,9 @@ class CreatorAgent():
                             msg = update["analysis"]
                             msg.pretty_print()
                             log_file.write((msg).pretty_repr())
-                        if "solution" in update:
-                            msg = update["solution"]
-                            msg.pretty_print()
-                            log_file.write((msg).pretty_repr())
-                        if "code_additions" in update:
-                            msg = update["code_additions"]
-                            msg.pretty_print()
-                            log_file.write((msg).pretty_repr())
-                        if "validation" in update:
-                            msg = update["validation"]
-                            msg.pretty_print()
-                            log_file.write((msg).pretty_repr())
                         if "evolve_counter" in update:
                             print("ENVOLVE COUNTER: ", update["evolve_counter"])
                             log_file.write(f"Evolve Counter: {update['evolve_counter']}\n")
-                        if "test_results" in update:
-                            print("Test Results:", update["test_results"])
-                            log_file.write(f"Test Results: {update['test_results']}\n")
                         if "full_results" in update:
                             print("Full Results:", update["full_results"])
                             log_file.write(f"Full Results: {update['full_results']}\n")
