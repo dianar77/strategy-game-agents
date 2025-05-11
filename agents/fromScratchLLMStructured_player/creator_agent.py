@@ -40,7 +40,7 @@ FOO_TARGET_FILENAME = "foo_player.py"
 FOO_TARGET_FILE = Path(__file__).parent / FOO_TARGET_FILENAME    # absolute path
 FOO_MAX_BYTES   = 64_000                                     # context-friendly cap
 # Set winning points to 5 for quicker game
-FOO_RUN_COMMAND = "catanatron-play --players=AB,R,FOO_LLM_S  --num=10 --config-map=MINI  --config-vps-to-win=10"
+FOO_RUN_COMMAND = "catanatron-play --players=AB,R,FOO_LLM_S  --num=5 --config-map=MINI  --config-vps-to-win=10"
 RUN_TEST_FOO_HAPPENED = False # Used to keep track of whether the testfoo tool has been called
 # -------------------------------------------------------------------------------------
 
@@ -112,7 +112,7 @@ class CreatorAgent():
 
             evolve_counter: int         # Counter for the number of evolutions
 
-        multi_agent_prompt = f"""You are apart of a multi-agent system that is working to evolve the code in {FOO_TARGET_FILENAME} to become the best player in the Catanatron Minigame.\n\tYour specific role is the:"""
+        multi_agent_prompt = f"""You are apart of a multi-agent system that is working to evolve the code in {FOO_TARGET_FILENAME} to become the best player in the Catanatron Minigame. Get the highest score for the player by utilizing the LLM() class in foo_player.py\n\tYour specific role is the:"""
 
         #tools = [add, multiply, divide]
         DEFAULT_EVOLVE_COUNTER = 3
@@ -219,7 +219,7 @@ class CreatorAgent():
                         - Analyze on any terminal ouput from the player
 
                     2. Think
-                        - Think about what the researcher should look into for the next iteration
+                        - Think about what the researcher should look into for the next iteration (Note: The Researher can search the web)
                         - Think about what the coder should look into for the next iteration
                     
                     3. Decide
@@ -403,7 +403,7 @@ class CreatorAgent():
                     
                 """
             )
-            msg = [state["solution"], state["test_results"], state["code_additions"]]
+            msg = [state["solution"], state["code_additions"], state["test_results"]]
             tools = [read_foo, view_last_game_llm_query]
             output = tool_calling_state_graph(sys_msg, msg, tools)
 

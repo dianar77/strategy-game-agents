@@ -76,10 +76,11 @@ class CreatorAgent():
             os.makedirs(CreatorAgent.run_dir, exist_ok=True)
 
         #Copy the Blank FooPlayer to the run directory
-        shutil.copy2(                           # ↩ copy with metadata
-            (Path(__file__).parent / ("__TEMPLATE__" + FOO_TARGET_FILENAME)).resolve(),  # ../foo_player.py
-            FOO_TARGET_FILE.resolve()          # ./foo_player.py
-        )
+        # shutil.copy2(                           # ↩ copy with metadata
+        #     (Path(__file__).parent / ("__TEMPLATE__" + FOO_TARGET_FILENAME)).resolve(),  # ../foo_player.py
+        #     FOO_TARGET_FILE.resolve()          # ./foo_player.py
+        # )
+        
         self.memory_config = {
             "recursion_limit": 100, # set recursion limit for graph
             "configurable": {
