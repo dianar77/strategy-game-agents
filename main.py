@@ -8,6 +8,7 @@ sys.path.append(minimax_dir)
 from agents.base_llm import OpenAILLM, MistralLLM, AzureOpenAILLM, AnthropicLLM
 from catanatron import Game, RandomPlayer, Color
 from agents.llm_player.llm_player import LLMPlayer  # Import your LLMPlayer
+from agents.vanillaLLM_player.vanillaLLM_player import VanillaLLMPlayer
 from agents.basicLang_player.basicLang_player import BasicLangPlayer
 from agents.toolCallLLM_player.toolCallLLM_player import ToolCallLLMPlayer
 from agents.fromScratch_player.creator_agent import read_foo, write_foo, run_testfoo, list_local_files, read_local_file 
@@ -38,7 +39,7 @@ def main():
         #AlphaBetaPlayer(Color.BLUE),
         #ToolCallLLMPlayer(Color.ORANGE),
         #BasicLangPlayer(Color.BLUE),
-        LLMPlayer(Color.WHITE, llm=AnthropicLLM())
+        VanillaLLMPlayer(Color.WHITE, llm=MistralLLM("mistral-large-latest")),
     ]
     game = Game(players)
     #open_link(game)  # opens game in browser...not working yet

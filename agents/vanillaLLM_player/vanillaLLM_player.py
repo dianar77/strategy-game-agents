@@ -2,9 +2,11 @@ import time
 import os
 import sys, pathlib
 sys.path.insert(0, str(pathlib.Path(__file__).parent.parent))
-from base_llm import AzureOpenAILLM
+from base_llm import AzureOpenAILLM, MistralLLM
 from typing import List, Optional
 import random
+import json
+from datetime import datetime
 
 from catanatron.models.player import Player
 from catanatron.game import Game
@@ -22,15 +24,26 @@ from catanatron.state import State
 
 class VanillaLLMPlayer(Player):
     """Simplified LLM-powered player for Catan game decisions."""
+
+    run_dir = None
     
     def __init__(self, color, name=None, llm=None):
         super().__init__(color, name)
         if llm is None:
-            self.llm = AzureOpenAILLM(model_name="gpt-4o")
+            #self.llm = AzureOpenAILLM(model_name="gpt-4o")
+            self.llm = MistralLLM(model_name="mistral-large-latest")
         else:
             self.llm = llm
         self.is_bot = True
         self.llm_name = self.llm.model
+
+        if VanillaLLMPlayer.run_dir is None:
+            agent_dir = os.path.dirname(os.path.abspath(__file__))
+            runs_dir = os.path.join(agent_dir, "runs")
+            os.makedirs(runs_dir, exist_ok=True)
+            run_id = datetime.now().strftime("run_%Y%m%d_%H%M%S")
+            VanillaLLMPlayer.run_dir = os.path.join(runs_dir, run_id)
+            os.makedirs(VanillaLLMPlayer.run_dir, exist_ok=True)
 
     def decide(self, game: Game, playable_actions: List[Action]) -> Action:
         """Use LLM to analyze game state and choose an action."""
@@ -39,7 +52,9 @@ class VanillaLLMPlayer(Player):
             return playable_actions[0]
             
         # Create a string representation of the game state
-        game_state_text = self._format_game_state_for_llm(game, game.state, playable_actions)
+        #game_state_text = self._format_game_state_for_llm(game, game.state, playable_actions)
+        game_state_text = self.extract_game_state(game, playable_actions)
+        #game_state_text = json.dumps(game_state_data, default=str, indent=2)
         
         # Use LLM to choose an action
         try:
@@ -142,10 +157,10 @@ class VanillaLLMPlayer(Player):
         try:
             response = self.llm.query(prompt)
             
-            # Log request/response
+            # Log request/response to the run directory
             model_name = self.llm_name
             safe_model_name = model_name.replace("/", "_").replace(":", "_").replace(" ", "_")
-            log_path = os.path.join(os.path.dirname(__file__), f"llm_log_{safe_model_name}.txt")
+            log_path = os.path.join(VanillaLLMPlayer.run_dir, f"llm_log_{safe_model_name}.txt")
             with open(log_path, "a") as log_file:
                 log_file.write("PROMPT:\n")
                 log_file.write(prompt + "\n")
@@ -171,3 +186,136 @@ class VanillaLLMPlayer(Player):
             print(f"Error calling LLM: {e}")
             
         return None
+    
+    def extract_game_state(self, game: Game, playable_actions: List[Action]) -> str:
+        state = game.state
+        board = state.board
+
+        # Game‐level info
+        largest_army_color, largest_army_size = get_largest_army(state)
+        game_info = {
+            "turn": state.num_turns,
+            "current_player": state.current_color().name,
+            "current_prompt": state.current_prompt.name,
+        }
+
+        # Board info
+        board_info = {
+            "longest_road": {
+                "color": board.road_color.name if board.road_color else None,
+                "length": board.road_length
+            },
+            "largest_army": {
+                "color": largest_army_color.name if largest_army_color else None,
+                "size": largest_army_size
+            },
+            "robber_coordinate": board.robber_coordinate,
+            # adjacency: node_id -> list of tiles
+            "adjacent_tiles": {
+                str(node_id): [
+                    {
+                        "resource": tile.resource if tile.resource else None,
+                        "number": tile.number
+                    }
+                    for tile in board.map.adjacent_tiles[node_id]
+                    if tile.resource is not None
+                ]
+                for node_id in board.map.adjacent_tiles
+            },
+            # full list of land_tiles (if you still need them)
+            "land_tiles": [
+                {
+                    "coord": coord,
+                    "resource": tile.resource if tile.resource else None,
+                    "number": tile.number,
+                    "nodes": list(tile.nodes.values())
+                }
+                for coord, tile in board.map.land_tiles.items()
+            ],
+            # buildings on nodes
+            "buildings": [
+                {"node_id": nid, "color": col.name, "type": btype}
+                for nid, (col, btype) in board.buildings.items()
+            ],
+            # roads
+            "roads": [
+                {"edge": edge, "color": col.name}
+                for edge, col in board.roads.items()
+            ],
+            # ports
+            "ports": [
+                {"resource": res if res else None, "nodes": nodes}
+                for res, nodes in board.map.port_nodes.items()
+            ],
+        }
+
+        # Players info
+        players = []
+        for color in state.colors:
+            key = player_key(state, color)
+            hand = get_player_freqdeck(state, color)
+            vp = state.player_state.get(f"{key}_VICTORY_POINTS", 0)
+            lr = get_longest_road_length(state, color)
+            # Get settlements and cities (these might be sets)
+            settlements = list(map(str, get_player_buildings(state, color, SETTLEMENT)))
+            cities = list(map(str, get_player_buildings(state, color, CITY)))
+
+            # development cards
+            dev_card_types = ["KNIGHT", "YEAR_OF_PLENTY", "MONOPOLY", "ROAD_BUILDING", "VICTORY_POINT"]
+            dev_cards = {}
+            played_dev_cards = {}
+            for ct in dev_card_types:
+                in_hand = state.player_state.get(f"{key}_{ct}_IN_HAND", 0)
+                if in_hand: dev_cards[ct] = in_hand
+                played = state.player_state.get(f"{key}_PLAYED_{ct}", 0)
+                if played: played_dev_cards[ct] = played
+
+            roads_avail = state.player_state.get(f"{key}_ROADS_AVAILABLE", 0)
+            players.append({
+                "color": color.name,
+                "victory_points": vp,
+                "resources": hand,
+                "settlements": settlements,
+                "cities": cities,
+                "longest_road_length": lr,
+                "roads_built": 15 - roads_avail,
+                "has_longest_road": board.road_color == color,
+                "has_largest_army": largest_army_color == color,
+                "development_cards": dev_cards,
+                "played_development_cards": played_dev_cards
+            })
+
+        # Bank info
+        bank = {
+            "development_cards_remaining": len(state.development_listdeck)
+        }
+
+        # Available actions
+        actions = [
+            {
+                "index": i,
+                "type": act.action_type.name,
+                "value": act.value,
+                "color": act.color.name if act.color else None
+            }
+            for i, act in enumerate(playable_actions)
+        ]
+
+        full_state = {
+            "game_info": game_info,
+            "board": board_info,
+            "players": players,
+            "bank": bank,
+            "available_actions": actions,
+        }
+
+        # Use a custom JSON encoder to handle any remaining non-serializable types
+        class CatanEncoder(json.JSONEncoder):
+            def default(self, obj):
+                if isinstance(obj, set):
+                    return list(obj)
+                if hasattr(obj, '__dict__'):
+                    return obj.__dict__
+                return str(obj)  # Convert anything else to string as a fallback
+
+        return json.dumps(full_state, cls=CatanEncoder)
