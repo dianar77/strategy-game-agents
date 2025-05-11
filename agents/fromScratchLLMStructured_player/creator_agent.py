@@ -40,7 +40,7 @@ FOO_TARGET_FILENAME = "foo_player.py"
 FOO_TARGET_FILE = Path(__file__).parent / FOO_TARGET_FILENAME    # absolute path
 FOO_MAX_BYTES   = 64_000                                     # context-friendly cap
 # Set winning points to 5 for quicker game
-FOO_RUN_COMMAND = "catanatron-play --players=AB,R,FOO_LLM_S  --num=5 --config-map=MINI  --config-vps-to-win=10"
+FOO_RUN_COMMAND = "catanatron-play --players=AB,R,FOO_LLM_S  --num=1 --config-map=MINI  --config-vps-to-win=10"
 RUN_TEST_FOO_HAPPENED = False # Used to keep track of whether the testfoo tool has been called
 # -------------------------------------------------------------------------------------
 
@@ -83,15 +83,15 @@ class CreatorAgent():
             os.makedirs(CreatorAgent.run_dir, exist_ok=True)
 
         #Copy the Blank FooPlayer to the run directory
-        shutil.copy2(                           # ↩ copy with metadata
-            (Path(__file__).parent / ("__TEMPLATE__" + FOO_TARGET_FILENAME)).resolve(),  # ../foo_player.py
-            FOO_TARGET_FILE.resolve()          # ./foo_player.py
-        )
-        self.memory_config = {
-            "recursion_limit": 100, # set recursion limit for graph
-            "configurable": {
-                "thread_id": "1"
-            }
+        # shutil.copy2(                           # ↩ copy with metadata
+        #     (Path(__file__).parent / ("__TEMPLATE__" + FOO_TARGET_FILENAME)).resolve(),  # ../foo_player.py
+        #     FOO_TARGET_FILE.resolve()          # ./foo_player.py
+        # )
+        self.config = {
+            "recursion_limit": 50, # set recursion limit for graph
+            # "configurable": {
+            #     "thread_id": "1"
+            # }
         }
         #self.memory_config = {"configurable": {"thread_id": "1"}}
         self.num_memory_messages = 10        # Trim number of messages to keep in memory to limit API usage
@@ -103,11 +103,11 @@ class CreatorAgent():
 
         class CreatorGraphState(TypedDict):
             full_results: SystemMessage # Last results of running the game
-            analysis: AIMessage         # Output of Anlayzer, What Happend?
-            solution: AIMessage         # Ouput of Researcher, What should be done?
-            code_additions: AIMessage         # Output of Coder, What was added to the code?
+            analysis: HumanMessage         # Output of Anlayzer, What Happend?
+            solution: HumanMessage         # Ouput of Researcher, What should be done?
+            code_additions: HumanMessage         # Output of Coder, What was added to the code?
             test_results: SystemMessage # Running a test on code, to ensure correctness
-            validation: AIMessage       # Ouptut of Validator, Is the code correct?
+            validation: HumanMessage       # Ouptut of Validator, Is the code correct?
             tool_calling_messages: list[AnyMessage]     # Messages from the tool calling state graph (used for debugging)
 
             evolve_counter: int         # Counter for the number of evolutions
@@ -174,7 +174,7 @@ class CreatorAgent():
             #print("In Run Player Node")
 
             # Generate a test results (later will be running the game)
-            game_results = run_gamefoo()
+            game_results = run_testfoo(short_game=False)
             #output = llm.invoke([HumanMessage(content="Create me a complicated algebra math problem, without a solution. Return only the problem...NO COMMENTARY!!")])
             
             # Clear all past messages
@@ -193,7 +193,7 @@ class CreatorAgent():
             Tests Catanatron with the current Code
             """
             #print("In Test Player Node")
-            game_results = run_testfoo()
+            game_results = run_testfoo(short_game=True)
 
             return {"test_results": SystemMessage(content=f"TEST GAME RESULTS (Not a Full Game):\n\n{game_results}")}
 
@@ -249,9 +249,10 @@ class CreatorAgent():
             msg = [state["code_additions"], state["full_results"]]
             tools = [list_local_files, read_local_file, read_foo, view_last_game_llm_query]
             output = tool_calling_state_graph(sys_msg, msg, tools)
+            analysis = HumanMessage(content=output["messages"][-1].content)
 
             #print(output)
-            return {"analysis": output["messages"][-1], "evolve_counter": evolve_counter, "tool_calling_messages": output["messages"]}
+            return {"analysis": analysis, "evolve_counter": evolve_counter, "tool_calling_messages": output["messages"]}
         
         def researcher_node(state: CreatorGraphState):
             
@@ -272,7 +273,7 @@ class CreatorAgent():
 
                     2. Research
                         - Perform research on the questions and action items from the Analyzer (or any other questions you have)
-                        - Use the web_search_tool_call to perform a web search for any questions you have
+                        - Use the web_search_tool_call to perform a web search for any questions you have (REALLY BENEFICIAL TO USE THIS)
                         - Use the list_local_files, and read_local_file to view any game files (which are very helpful for debugging)
                         - Most Importantly: BE CREATIVE AND THINK OUTSIDE THE BOX (feel free to web search for anything you want)
                         
@@ -302,7 +303,8 @@ class CreatorAgent():
 
             tools = [read_foo, list_local_files, read_local_file, web_search_tool_call]
             output = tool_calling_state_graph(sys_msg, msg, tools)
-            return {"solution": output["messages"][-1], "tool_calling_messages": output["messages"]}
+            solution = HumanMessage(content=output["messages"][-1].content)
+            return {"solution": solution, "tool_calling_messages": output["messages"]}
 
         def coder_node(state: CreatorGraphState):
 
@@ -355,8 +357,9 @@ class CreatorAgent():
 
             # Need to Return Anything?
             output = tool_calling_state_graph(sys_msg, msg, tools)
+            code_additions = HumanMessage(content=output["messages"][-1].content)
 
-            return {"code_additions": output["messages"][-1] ,"tool_calling_messages": output["messages"]}
+            return {"code_additions": code_additions, "tool_calling_messages": output["messages"]}
 
         def validator_node(state: CreatorGraphState):
             """
@@ -406,8 +409,9 @@ class CreatorAgent():
             msg = [state["solution"], state["code_additions"], state["test_results"]]
             tools = [read_foo, view_last_game_llm_query]
             output = tool_calling_state_graph(sys_msg, msg, tools)
+            validation = HumanMessage(content=output["messages"][-1].content)
 
-            return {"validation": output["messages"][-1], "tool_calling_messages": output["messages"]}
+            return {"validation": validation, "tool_calling_messages": output["messages"]}
 
         def continue_evolving_analyzer(state: CreatorGraphState):
             """
@@ -488,14 +492,12 @@ class CreatorAgent():
     
         return construct_graph()
 
-
     def print_react_graph(self):
         """
         Print the react graph for debugging purposes.
         ONLY WORKS IN .IPYNB NOTEBOOKS
         """
         display(Image(self.react_graph.get_graph(xray=True).draw_mermaid_png()))
-
 
     def run_react_graph(self):
         
@@ -557,7 +559,7 @@ class CreatorAgent():
             #                     print(line)
             #                     log_file.write(line + "\n")
             with open(log_path, "a") as log_file:                # Run the graph until the first interruption
-                for step in self.react_graph.stream({}, stream_mode="updates"):
+                for step in self.react_graph.stream({}, self.config, stream_mode="updates"):
                     #print(step)
                     #log_file.write(f"Step: {step.}\n")
                     for node, update in step.items():
@@ -663,7 +665,6 @@ class CreatorAgent():
             print(f"Error calling LLM: {e}")
         return None
 
-
 def list_local_files(_: str = "") -> str:
     """Return all files beneath BASE_DIR, one per line."""
     return "\n".join(
@@ -671,7 +672,6 @@ def list_local_files(_: str = "") -> str:
         for p in LOCAL_SEARCH_BASE_DIR.glob("**/*")
         if p.is_file() and p.suffix in {".py", ".txt", ".md"}
     )
-
 
 def read_local_file(rel_path: str) -> str:
     """
@@ -688,7 +688,6 @@ def read_local_file(rel_path: str) -> str:
         raise ValueError("File too large")
     return candidate.read_text(encoding="utf-8", errors="ignore")
 
-
 def read_foo(_: str = "") -> str:
     """
     Return the UTF-8 content of Agent File (≤64 kB).
@@ -696,7 +695,6 @@ def read_foo(_: str = "") -> str:
     if FOO_TARGET_FILE.stat().st_size > FOO_MAX_BYTES:
         raise ValueError("File too large for the agent")
     return FOO_TARGET_FILE.read_text(encoding="utf-8", errors="ignore")  # pathlib API :contentReference[oaicite:2]{index=2}
-
 
 def write_foo(new_text: str) -> str:
     """
@@ -716,21 +714,45 @@ def write_foo(new_text: str) -> str:
 
     return f"{FOO_TARGET_FILENAME} updated successfully"
 
-
-def run_gamefoo(_: str = "") -> str:
+def run_testfoo(short_game: bool = False) -> str:
     """
     Run one Catanatron match (R vs Agent File) and return raw CLI output.
+    Input: short_game (bool): If True, run a short game with a 30 second timeout.
     """    
-    result = subprocess.run(
-        shlex.split(FOO_RUN_COMMAND),
-        capture_output=True,          # capture stdout+stderr :contentReference[oaicite:1]{index=1}
-        text=True,
-        timeout=3600,                  # avoids infinite-loop hangs
-        check=False                   # we’ll return non-zero output instead of raising
-    )
-    
-    game_results = (result.stdout + result.stderr).strip()
+    MAX_CHARS = 20_000                      
 
+    try:
+        if short_game:
+            result = subprocess.run(
+                shlex.split(FOO_RUN_COMMAND),
+                capture_output=True,
+                text=True,
+                timeout=30,
+                check=False
+            )
+        else:
+            result = subprocess.run(
+                shlex.split(FOO_RUN_COMMAND),
+                capture_output=True,
+                text=True,
+                timeout=3600,
+                check=False
+            )
+        stdout_limited  = result.stdout[-MAX_CHARS:]
+        stderr_limited  = result.stderr[-MAX_CHARS:]
+        game_results = (stdout_limited + stderr_limited).strip()
+    except subprocess.TimeoutExpired as e:
+        # Handle timeout case
+        stdout_output = e.stdout or ""
+        stderr_output = e.stderr or ""
+        if stdout_output and not isinstance(stdout_output, str):
+            stdout_output = stdout_output.decode('utf-8', errors='ignore')
+        if stderr_output and not isinstance(stderr_output, str):
+            stderr_output = stderr_output.decode('utf-8', errors='ignore')
+        stdout_limited  = stdout_output[-MAX_CHARS:]
+        stderr_limited  = stderr_output[-MAX_CHARS:]
+        game_results = "TIMEOUT: Game exceeded time limit.\n\n" + (stdout_output + stderr_output).strip()
+    
     # Update the run_test_foo flag to read game results
     global RUN_TEST_FOO_HAPPENED
     RUN_TEST_FOO_HAPPENED = True
@@ -753,58 +775,8 @@ def run_gamefoo(_: str = "") -> str:
         output_file.write(game_results)
         
     #print(game_results)
-
-    # limit the output to a certain number of characters
-    MAX_CHARS = 5_000                      
-    stdout_limited  = result.stdout[-MAX_CHARS:]
-    stderr_limited  = result.stderr[-MAX_CHARS:]
-    game_results = (stdout_limited + stderr_limited).strip()
+        # limit the output to a certain number of characters
     return game_results
-
-
-def run_testfoo(_: str = "") -> str:
-    """
-    Run one Catanatron match (R vs Agent File) and return raw CLI output.
-    """    
-    result = subprocess.run(
-        shlex.split(FOO_RUN_COMMAND),
-        capture_output=True,          # capture stdout+stderr :contentReference[oaicite:1]{index=1}
-        text=True,
-        timeout=30,                  # Limit Time To View Test Results
-        check=False                   # we’ll return non-zero output instead of raising
-    )
-    
-    game_results = (result.stdout + result.stderr).strip()
-
-    # Update the run_test_foo flag to read game results
-    global RUN_TEST_FOO_HAPPENED
-    RUN_TEST_FOO_HAPPENED = True
-
-    # Path to the runs directory
-    runs_dir = Path(__file__).parent / "runs"
-    
-    # Find all folders that start with game_run
-    game_run_folders = [f for f in runs_dir.glob("game_run*") if f.is_dir()]
-    
-    if not game_run_folders:
-        return "No game run folders found."
-    
-    # Sort folders by name (which includes datetime) to get the most recent one
-    latest_run_folder = sorted(game_run_folders)[-1]
-
-    # Add a file with the stdout and stderr called catanatron_output.txt
-    output_file_path = latest_run_folder / "catanatron_test_output.txt"
-    with open(output_file_path, "w") as output_file:
-        output_file.write(game_results)
-        
-    #print(game_results)
-    # limit the output to a certain number of characters
-    MAX_CHARS = 5_000                      
-    stdout_limited  = result.stdout[-MAX_CHARS:]
-    stderr_limited  = result.stderr[-MAX_CHARS:]
-    game_results = (stdout_limited + stderr_limited).strip()
-    return game_results
-
 
 def web_search_tool_call(query: str) -> str:
     """Perform a web search using the Tavily API.
@@ -826,7 +798,6 @@ def web_search_tool_call(query: str) -> str:
     )
 
     return formatted_search_docs
-
 
 def view_last_game_llm_query(query_number: int = -1) -> str:
     """
@@ -877,7 +848,6 @@ def view_last_game_llm_query(query_number: int = -1) -> str:
     except Exception as e:
         return f"Error reading file {target_file.name}: {str(e)}"
     
-
 def view_last_game_results(_: str = "") -> str:
     """
     View the game results from a specific run.
@@ -965,3 +935,92 @@ def view_last_game_results(_: str = "") -> str:
     #     builder.add_edge("trim_messages", "assistant")
         
     #     return builder.compile(checkpointer=MemorySaver())
+
+
+# def run_gamefoo(_: str = "") -> str:
+#     """
+#     Run one Catanatron match (R vs Agent File) and return raw CLI output.
+#     """    
+#     result = subprocess.run(
+#         shlex.split(FOO_RUN_COMMAND),
+#         capture_output=True,          # capture stdout+stderr :contentReference[oaicite:1]{index=1}
+#         text=True,
+#         timeout=3600,                  # avoids infinite-loop hangs
+#         check=False                   # we’ll return non-zero output instead of raising
+#     )
+    
+#     game_results = (result.stdout + result.stderr).strip()
+
+#     # Update the run_test_foo flag to read game results
+#     global RUN_TEST_FOO_HAPPENED
+#     RUN_TEST_FOO_HAPPENED = True
+
+#     # Path to the runs directory
+#     runs_dir = Path(__file__).parent / "runs"
+    
+#     # Find all folders that start with game_run
+#     game_run_folders = [f for f in runs_dir.glob("game_run*") if f.is_dir()]
+    
+#     if not game_run_folders:
+#         return "No game run folders found."
+    
+#     # Sort folders by name (which includes datetime) to get the most recent one
+#     latest_run_folder = sorted(game_run_folders)[-1]
+
+#     # Add a file with the stdout and stderr called catanatron_output.txt
+#     output_file_path = latest_run_folder / "catanatron_output.txt"
+#     with open(output_file_path, "w") as output_file:
+#         output_file.write(game_results)
+        
+#     #print(game_results)
+
+#     # limit the output to a certain number of characters
+#     MAX_CHARS = 5_000                      
+#     stdout_limited  = result.stdout[-MAX_CHARS:]
+#     stderr_limited  = result.stderr[-MAX_CHARS:]
+#     game_results = (stdout_limited + stderr_limited).strip()
+#     return game_results
+
+
+# def run_testfoo(_: str = "") -> str:
+#     """
+#     Run one Catanatron match (R vs Agent File) and return raw CLI output.
+#     """    
+#     result = subprocess.run(
+#         shlex.split(FOO_RUN_COMMAND),
+#         capture_output=True,          # capture stdout+stderr :contentReference[oaicite:1]{index=1}
+#         text=True,
+#         timeout=30,                  # Limit Time To View Test Results
+#         check=False                   # we’ll return non-zero output instead of raising
+#     )
+    
+#     game_results = (result.stdout + result.stderr).strip()
+
+#     # Update the run_test_foo flag to read game results
+#     global RUN_TEST_FOO_HAPPENED
+#     RUN_TEST_FOO_HAPPENED = True
+
+#     # Path to the runs directory
+#     runs_dir = Path(__file__).parent / "runs"
+    
+#     # Find all folders that start with game_run
+#     game_run_folders = [f for f in runs_dir.glob("game_run*") if f.is_dir()]
+    
+#     if not game_run_folders:
+#         return "No game run folders found."
+    
+#     # Sort folders by name (which includes datetime) to get the most recent one
+#     latest_run_folder = sorted(game_run_folders)[-1]
+
+#     # Add a file with the stdout and stderr called catanatron_output.txt
+#     output_file_path = latest_run_folder / "catanatron_test_output.txt"
+#     with open(output_file_path, "w") as output_file:
+#         output_file.write(game_results)
+        
+#     #print(game_results)
+#     # limit the output to a certain number of characters
+#     MAX_CHARS = 5_000                      
+#     stdout_limited  = result.stdout[-MAX_CHARS:]
+#     stderr_limited  = result.stderr[-MAX_CHARS:]
+#     game_results = (stdout_limited + stderr_limited).strip()
+#     return game_results

@@ -63,7 +63,7 @@ class LLM:
             #rate_limiter=rate_limiter,
         )
         self.model_name = "mistral-large-latest"
-        self.save_dir = f"agents/fromScratchLLM_player_v2/runs/game_run_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+        self.save_dir = f"agents/fromScratchLLMStructured_player/runs/game_run_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
 
         # Set the environment variable to disable tracing
         os.environ["LANGCHAIN_TRACING_V2"] = "false"
@@ -99,9 +99,9 @@ class LLM:
                     time.sleep(1)  # Add a small delay for rate limiting
                     continue
                 else:
-                    raise
+                    return f"LLM query error: {e.response.status_code} - {e.response.text}"
             except Exception as e:
-                raise
+                return f"LLM query error: {e}"
         
 
 # class LLM:

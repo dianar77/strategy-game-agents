@@ -1,6 +1,6 @@
 import os
 from catanatron import Player
-from datetime import datetime
+from catanatron.game import Game
 from agents.fromScratchLLMStructured_player.llm_tools import LLM
 
 class FooPlayer(Player):
