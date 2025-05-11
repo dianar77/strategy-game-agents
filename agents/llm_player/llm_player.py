@@ -70,9 +70,9 @@ class LLMPlayer(Player):
         super().__init__(color, name)
         # Get API key from environment variable
         if llm is None:
-            #self.llm = AzureOpenAILLM(model_name="gpt-4o")
+            self.llm = AzureOpenAILLM(model_name="gpt-4o")
             #self.llm = MistralLLM(model_name="mistral-large-latest")
-            self.llm = AnthropicLLM()
+            #self.llm = AnthropicLLM()
         else:
             self.llm = llm
         self.is_bot = True
