@@ -62,8 +62,13 @@ class CreatorAgent():
             (Path(__file__).parent / ("__TEMPLATE__" + FOO_TARGET_FILENAME)).resolve(),  # ../foo_player.py
             FOO_TARGET_FILE.resolve()          # ./foo_player.py
         )
-       
-        self.memory_config = {"configurable": {"thread_id": "1"}}
+        self.memory_config = {
+            "recursion_limit": 100, # set recursion limit for graph
+            "configurable": {
+                "thread_id": "1"
+            }
+        }
+        #self.memory_config = {"configurable": {"thread_id": "1"}}
         self.num_memory_messages = 10        # Trim number of messages to keep in memory to limit API usage
         self.react_graph = self.create_langchain_react_graph()
         
