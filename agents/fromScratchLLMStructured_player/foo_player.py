@@ -1,101 +1,102 @@
 import os
-import json
-from catanatron import Player
-from catanatron.game import Game
-from agents.fromScratchLLMStructured_player.llm_tools import LLM
-
+from catanatron.models.player import Player
+from catanatron.models.enums import ActionType
+from catanatron.models.decks import freqdeck_count
 
 class FooPlayer(Player):
     def __init__(self, color, name=None):
         super().__init__(color, name)
-        self.llm = LLM()  # Integrates the LLM for strategic decision-making.
 
-    def serialize_game_state(self, game_state):
+    def get_opponent_color(self, state):
         """
-        Extract and serialize key aspects of the game state into a simplified format
-        that the LLM can understand.
+        Infer opponent color from the known player info in the game state.
+        """
+        for player in state.players:
+            if player.color != self.color:
+                return player.color
+        return None
 
-        Args:
-            game_state (Game): The complete game state (read-only).
-
-        Returns:
-            dict: A dictionary containing simplified game state information.
-        """
-        # Example serialization of game state (customize as needed for Catanatron):
-        return {
-            "turn": game_state.turn,
-            "current_player": game_state.current_player.color,
-            "player_states": {
-                player.color: {
-                    "resources": player.resources,
-                    "victory_points": player.victory_points,
-                    "development_cards": player.development_cards,
-                }
-                for player in game_state.players
-            },
-            "board": {  # Represent board state minimally (customize as needed)
-                "roads": list(game_state.board.roads),
-                "settlements": list(game_state.board.settlements),
-                "cities": list(game_state.board.cities),
-            },
-        }
-
-    def evaluate_action(self, action, game_state):
-        """
-        Uses the LLM to evaluate an action based on the current game state.
-        
-        Args:
-            action (Action): An individual action from playable_actions.
-            game_state (Game): The complete game state (read-only).
-            
-        Returns:
-            score (float): The evaluated score of the action.
-        """
-        # Preprocess the game state
-        simplified_state = self.serialize_game_state(game_state)
-        
-        prompt = (
-            f"Evaluate the following action in the context of the current simplified game "
-            f"state for maximizing victory points:\n"
-            f"Action: {action}\nGame State: {json.dumps(simplified_state)}\n"
-            f"Give the action a score between 0 and 10 based on its potential impact."
-        )
-        response = self.llm.query_llm(prompt)
+    def score_action(self, action, game):
+        state = game.state
         try:
-            # Safely parse the response as JSON
-            parsed_response = json.loads(response)
-            score = float(parsed_response.get("score", 0))  # Extract the "score" if available
-        except (json.JSONDecodeError, ValueError, TypeError):
-            # Handle malformed or unexpected responses
-            score = 0  # Default to 0 if the response is invalid or unparseable
-        return score
+            if action.action_type == ActionType.BUILD_SETTLEMENT:
+                settlement_bonus = sum(getattr(tile, 'resource_probability', 0) for tile in state.board.map.get_adjacent_land_tiles(action.value)) if action.value else 0
+                return 10 + settlement_bonus
+
+            elif action.action_type == ActionType.BUILD_CITY:
+                return 12  # Cities provide advanced resource generation potential
+
+            elif action.action_type == ActionType.BUILD_ROAD:
+                opponent_color = self.get_opponent_color(state)
+                road_bonus = 5 + (5 if state.board.map.is_adjacent_to_player(action.value, opponent_color) else 0)
+                return road_bonus if action.value else 0
+
+            elif action.action_type == ActionType.MARITIME_TRADE:
+                if action.value and len(action.value) == 2:
+                    give_resources, receive_resource = action.value
+                    return freqdeck_count(state.resource_freqdeck.get(receive_resource, 0)) + (15 - 4 * len(give_resources))
+                return 0
+
+            elif action.action_type == ActionType.MOVE_ROBBER:
+                if action.value and len(action.value) >= 2:
+                    target_hex, target_player = action.value[:2]
+                    opponent_color = self.get_opponent_color(state)
+                    retaliation_penalty = -5 if target_player == opponent_color else 0
+                    return freqdeck_count(state.resource_freqdeck.get(target_hex.resource, 0)) + getattr(target_hex, 'probability', 0) + retaliation_penalty
+                return 0
+
+            elif action.action_type == ActionType.END_TURN:
+                return 0  # Lowest priority action
+
+            elif action.action_type == ActionType.BUY_DEVELOPMENT_CARD:
+                return 3  # Moderate scoring for potential long-term victory points
+
+            print(f"Unknown ActionType encountered: {action.action_type}")
+            return -1
+
+        except Exception as e:
+            print(f"Error scoring action {action}: {e}")
+            return -1
 
     def decide(self, game, playable_actions):
-        """
-        Determines the best action to take based on the current game state
-        and available actions.
+        scored_actions = [(action, self.score_action(action, game)) for action in playable_actions]
+        print(f"Evaluating actions: {scored_actions}")
+        max_score = max(scored_actions, key=lambda x: x[1])[1]
+        tied_actions = [action for action, score in scored_actions if score == max_score]
 
-        Args:
-            game (Game): The current game state (read-only).
-            playable_actions (Iterable[Action]): List of possible actions to choose from.
+        best_action = tied_actions[0] if len(tied_actions) == 1 else self.tie_break(game, tied_actions)
 
-        Returns:
-            Action: The highest-ranked action from the evaluation.
-        """
-        if not playable_actions:
-            raise ValueError("No actions are available to play.")
-
-        # Evaluate all playable actions and select the best one based on scores.
-        print("Evaluating available actions...")
-        best_action = None
-        best_score = float('-inf')  # Start with a very low score.
-        
-        for action in playable_actions:
-            score = self.evaluate_action(action, game)
-            print(f"Action: {action}, Score: {score}")
-            if score > best_score:
-                best_action = action
-                best_score = score
-
-        print(f"Chosen Action: {best_action} with score: {best_score}")
+        print(f"Chosen action: {best_action}")
         return best_action
+
+    def tie_break(self, game, tied_actions):
+        def secondary_score(action):
+            try:
+                state = game.state
+                opponent_color = self.get_opponent_color(state)
+
+                if action.action_type == ActionType.BUILD_ROAD:
+                    return 10 if state.board.map.is_adjacent_to_player(action.value, opponent_color) else 0
+
+                elif action.action_type == ActionType.MARITIME_TRADE:
+                    if action.value and len(action.value) == 2:
+                        _, receive_resource = action.value
+                        return freqdeck_count(state.resource_freqdeck.get(receive_resource, 0))
+                    return 0
+
+                elif action.action_type == ActionType.MOVE_ROBBER:
+                    if action.value and len(action.value) >= 1:
+                        target_hex = action.value[0]
+                        return getattr(target_hex, 'probability', 0)
+                    return 0
+
+                elif action.action_type == ActionType.BUY_DEVELOPMENT_CARD:
+                    return 3  # Opportunity to gain special cards or victory points
+
+                print(f"Undefined ActionType during tie-breaking: {action.action_type}")
+                return -1
+            except Exception as e:
+                print(f"Error during secondary scoring: {e}")
+                return -1
+
+        return max(tied_actions, key=secondary_score)

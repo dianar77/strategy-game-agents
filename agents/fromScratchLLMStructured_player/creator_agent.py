@@ -18,7 +18,7 @@ import subprocess, shlex
 from langchain_openai import AzureChatOpenAI
 from langchain_mistralai import ChatMistralAI
 from langgraph.graph import MessagesState, START, END, StateGraph
-from langchain_core.messages import HumanMessage, SystemMessage, AIMessage, AnyMessage, ToolMessage
+from langchain_core.messages import HumanMessage, SystemMessage, AIMessage, AnyMessage, ToolMessage, BaseMessage
 from langgraph.prebuilt import tools_condition, ToolNode
 from IPython.display import Image, display
 from langgraph.checkpoint.memory import MemorySaver
@@ -42,7 +42,7 @@ FOO_TARGET_FILENAME = "foo_player.py"
 FOO_TARGET_FILE = Path(__file__).parent / FOO_TARGET_FILENAME    # absolute path
 FOO_MAX_BYTES   = 64_000                                     # context-friendly cap
 # Set winning points to 5 for quicker game
-FOO_RUN_COMMAND = "catanatron-play --players=AB,FOO_LLM_S  --num=10 --config-map=MINI  --config-vps-to-win=10"
+FOO_RUN_COMMAND = "catanatron-play --players=AB,FOO_LLM_S  --num=10  --config-vps-to-win=10"
 RUN_TEST_FOO_HAPPENED = False # Used to keep track of whether the testfoo tool has been called
 # -------------------------------------------------------------------------------------
 
@@ -53,36 +53,38 @@ class CreatorAgent():
 
     def __init__(self):
         # Get API key from environment variable
-        # self.llm_name = "gpt-4o"
-        # self.llm = AzureChatOpenAI(
-        #     model="gpt-4o",
-        #     azure_endpoint="https://gpt-amayuelas.openai.azure.com/",
-        #     api_version = "2024-12-01-preview"
-        # )
-
-        self.llm_name = "claude-3.7"
-        self.llm = ChatBedrockConverse(
-            aws_access_key_id = os.environ["AWS_ACESS_KEY"],
-            aws_secret_access_key = os.environ["AWS_SECRET_KEY"],
-            region_name = "us-east-2",
-            provider = "anthropic",
-            model_id="arn:aws:bedrock:us-east-2:288380904485:inference-profile/us.anthropic.claude-3-7-sonnet-20250219-v1:0"
+        self.llm_name = "gpt-4o"
+        self.llm = AzureChatOpenAI(
+            model="gpt-4o",
+            azure_endpoint="https://gpt-amayuelas.openai.azure.com/",
+            api_version = "2024-12-01-preview"
         )
-        os.environ["LANGCHAIN_TRACING_V2"] = "false"
+        
+
+        # self.llm_name = "claude-3.7"
+        # self.llm = ChatBedrockConverse(
+        #     aws_access_key_id = os.environ["AWS_ACESS_KEY"],
+        #     aws_secret_access_key = os.environ["AWS_SECRET_KEY"],
+        #     region_name = "us-east-2",
+        #     provider = "anthropic",
+        #     model_id="arn:aws:bedrock:us-east-2:288380904485:inference-profile/us.anthropic.claude-3-7-sonnet-20250219-v1:0"
+        # )
 
 
         # self.llm_name = "mistral-large-latest"
         # rate_limiter = InMemoryRateLimiter(
-        #     requests_per_second=0.5,    # Adjust based on your API tier
+        #     requests_per_second=0.2,    # Adjust based on your API tier
         #     check_every_n_seconds=0.1,
-        #     max_bucket_size=10        # Allows for burst handling
         # )
         # self.llm = ChatMistralAI(
         #     model="mistral-large-latest",
         #     temperature=0,
-        #     max_retries=2,
+        #     max_retries=3,
         #     rate_limiter=rate_limiter,
         # )
+
+
+        os.environ["LANGCHAIN_TRACING_V2"] = "false"
 
         # Create run directory if it doesn't exist
         if CreatorAgent.run_dir is None:
@@ -94,18 +96,18 @@ class CreatorAgent():
             os.makedirs(CreatorAgent.run_dir, exist_ok=True)
 
         #Copy the Blank FooPlayer to the run directory
-        # shutil.copy2(                           # ↩ copy with metadata
-        #     (Path(__file__).parent / ("__TEMPLATE__" + FOO_TARGET_FILENAME)).resolve(),  # ../foo_player.py
-        #     FOO_TARGET_FILE.resolve()          # ./foo_player.py
-        # )
+        shutil.copy2(                           # ↩ copy with metadata
+            (Path(__file__).parent / ("__TEMPLATE__" + FOO_TARGET_FILENAME)).resolve(),  # ../foo_player.py
+            FOO_TARGET_FILE.resolve()          # ./foo_player.py
+        )
+
         self.config = {
-            "recursion_limit": 50, # set recursion limit for graph
+            "recursion_limit": 100, # set recursion limit for graph
             # "configurable": {
             #     "thread_id": "1"
             # }
         }
         #self.memory_config = {"configurable": {"thread_id": "1"}}
-        self.num_memory_messages = 10        # Trim number of messages to keep in memory to limit API usage
         self.react_graph = self.create_langchain_react_graph()
 
     def create_langchain_react_graph(self):
@@ -113,20 +115,23 @@ class CreatorAgent():
         
 
         class CreatorGraphState(TypedDict):
-            full_results: SystemMessage # Last results of running the game
+            full_results: HumanMessage # Last results of running the game
             analysis: HumanMessage         # Output of Anlayzer, What Happend?
             solution: HumanMessage         # Ouput of Researcher, What should be done?
             code_additions: HumanMessage         # Output of Coder, What was added to the code?
-            test_results: SystemMessage # Running a test on code, to ensure correctness
+            test_results: HumanMessage # Running a test on code, to ensure correctness
             validation: HumanMessage       # Ouptut of Validator, Is the code correct?
             tool_calling_messages: list[AnyMessage]     # Messages from the tool calling state graph (used for debugging)
 
-            evolve_counter: int         # Counter for the number of evolutions
+            evolve_counter: int             # Counter for the number of evolutions
+            validator_counter: int          # Counter for the number of validator (set max of 3)
+            summary: AIMessage              # Summary of the conversation
 
-        multi_agent_prompt = f"""You are apart of a multi-agent system that is working to evolve the code in {FOO_TARGET_FILENAME} to become the best player in the Catanatron Minigame. Get the highest score for the player by utilizing the LLM() class in foo_player.py\n\tYour specific role is the:"""
+        multi_agent_prompt = f"""You are apart of a multi-agent system that is working to evolve the code in {FOO_TARGET_FILENAME} to become the best player in the Catanatron Minigame. You started with the foo_player.py file that only has decide function that returns playable_actions[0]. Your specific role is the:"""
 
         #tools = [add, multiply, divide]
-        DEFAULT_EVOLVE_COUNTER = 3
+        DEFAULT_EVOLVE_COUNTER = 10
+        MAX_VALIDATOR_COUNTER = 4
 
         analyzer_continue_key = "CONTINUE_EVOLVING"
         analyzer_stop_key = "STOP_EVOLVING"
@@ -135,19 +140,39 @@ class CreatorAgent():
         val_ok_key = "PASSSED_VALIDATION"
         val_not_ok_key = "FAILED_VALIDATION"
 
+        def _is_non_empty(msg: BaseMessage) -> bool:
+            """
+            Return True if the message should stay in history.
+            Handles str, list, None, and messages with no 'content' attr.
+            """
+            if not hasattr(msg, "content"):           # tool_result or custom types
+                return True
 
+            content = msg.content
+            if content is None:                       # explicit null
+                return False
 
-        llm = AzureChatOpenAI(
-            model="gpt-4o",
-            azure_endpoint="https://gpt-amayuelas.openai.azure.com/",
-            api_version = "2024-12-01-preview"
-        )
+            if isinstance(content, str):
+                return bool(content.strip())          # keep non‑blank strings
+
+            if isinstance(content, (list, tuple)):    # content blocks
+                return len(content) > 0               # keep if any block exists
+
+            # Fallback: keep anything we don't explicitly reject
+            return True
 
         def tool_calling_state_graph(sys_msg: SystemMessage, msgs: list[AnyMessage], tools):
-            # Node
 
-            # Bind Tools to the LLM
-            llm_with_tools = llm.bind_tools(tools, parallel_tool_calls=False)
+            # Filter out empty messages
+            msgs = [m for m in msgs if _is_non_empty(m)]
+
+            # print(f"Num Messages: {len(msgs)}")
+            # for m in msgs:
+            #     m.pretty_print()
+
+            # Bind Tools 
+            llm_with_tools = self.llm.bind_tools(tools)
+            #llm_with_tools = self.llm.bind_tools(tools, parallel_tool_calls=False)
 
             def assistant(state: MessagesState):
                 return {"messages": [llm_with_tools.invoke([sys_msg] + state["messages"])]}
@@ -171,12 +196,37 @@ class CreatorAgent():
             react_graph = builder.compile()
             
             
-            messages = react_graph.invoke({"messages": msgs})
+            #messages = react_graph.invoke({"messages": msgs})
+            messages: dict | None = None
+
+
+            for event in react_graph.stream({"messages": msgs}, stream_mode="values"):
+                msg = event['messages'][-1]
+                msg.pretty_print()
+                messages = event
             
             # for m in messages['messages']:
             #     m.pretty_print()
 
             return messages
+
+        def initialization_node(state: CreatorGraphState):
+            """
+            Initializes the state of the graph
+            """
+            #print("In Initialization Node")
+            return {
+                "full_results": HumanMessage(content=""),
+                "analysis": HumanMessage(content=""),
+                "solution": HumanMessage(content=""),
+                "code_additions": HumanMessage(content=""),
+                "test_results": HumanMessage(content=""),
+                "validation": HumanMessage(content=""),
+                "tool_calling_messages": [],
+                "evolve_counter": DEFAULT_EVOLVE_COUNTER,
+                "validator_counter": MAX_VALIDATOR_COUNTER,
+                "summary": HumanMessage(content="")
+            }
 
         def run_player_node(state: CreatorGraphState):
             """
@@ -190,12 +240,12 @@ class CreatorAgent():
             
             # Clear all past messages
             return {
-                "full_results": SystemMessage(content=f"GAME RESULTS:\n\n{game_results}"),
-                "analysis": AIMessage(content=""),
-                "solution": AIMessage(content=""),
-                "code_additions": AIMessage(content=""),
-                "test_results": SystemMessage(content=""),
-                "validation": AIMessage(content=""),
+                "full_results": HumanMessage(content=f"GAME RESULTS:\n\n{game_results}"),
+                "analysis": HumanMessage(content=""),
+                "solution": HumanMessage(content=""),
+                #"code_additions": HumanMessage(content=""),
+                "test_results": HumanMessage(content=""),
+                "validation": HumanMessage(content=""),
                 "tool_calling_messages": [],
             }
 
@@ -206,16 +256,13 @@ class CreatorAgent():
             #print("In Test Player Node")
             game_results = run_testfoo(short_game=True)
 
-            return {"test_results": SystemMessage(content=f"TEST GAME RESULTS (Not a Full Game):\n\n{game_results}")}
+            return {"test_results": HumanMessage(content=f"TEST GAME RESULTS (Not a Full Game):\n\n{game_results}")}
 
         def analyzer_node(state: CreatorGraphState):
             #print("In Analyzer Node")
 
-            # If evolve_counter isnt initialized, set it to 0. If it is, increment it
-            if "evolve_counter" not in state:
-                evolve_counter = DEFAULT_EVOLVE_COUNTER
-            else:
-                evolve_counter = state["evolve_counter"] - 1
+            # Decrement the evolve counter
+            evolve_counter = state["evolve_counter"] - 1
 
 
             sys_msg = SystemMessage(
@@ -226,12 +273,13 @@ class CreatorAgent():
                     
                     1. Analyze
                         - Analyze on any errors or issues that occurred during the game
-                        - Analyze on the performance of the player, and how it did against other players
+                        - Analyze on the strategic performance of the player, and how it did against other players
                         - Analyze on any terminal ouput from the player
+                        - Analyze the summary to view your progress as a Multi-Agent-System in updating the player
 
                     2. Think
-                        - Think about what the researcher should look into for the next iteration (Note: The Researher can search the web)
-                        - Think about what the coder should look into for the next iteration
+                        - Think about what caused the player to perform well or poorly
+                        - Think about what the researcher should research (Note: The Researher can search the web)
                     
                     3. Decide
                         - Decide if the player is is good enough to stop evolving, or if it should continue evolving
@@ -243,22 +291,22 @@ class CreatorAgent():
                         - Make sure to include any errors or issues that occurred during the game
                         - Be sure a clear list of action items for the researcher to follow
 
-                    
-                    Utilize as many tool calls as necessary for you to get your job done. 
-
                     You Have the Following Tools at Your Disposal:
                         - list_local_files: List all files in the current directory.
                         - read_local_file: Read the content of a file in the current directory.
                         - read_foo: Read the content of {FOO_TARGET_FILENAME}.
-                        - view_last_game_llm_query: View the LLM query from the last game to see performance. 
 
                     Make sure to start your output with 'ANALYSIS:' and end with 'END ANALYSIS'.
                     Respond with No Commentary, just the analysis.
 
                 """
             )
-            msg = [state["code_additions"], state["full_results"]]
-            tools = [list_local_files, read_local_file, read_foo, view_last_game_llm_query]
+            
+            #- view_last_game_llm_query: View the LLM query from the last game to see performance. 
+
+
+            msg = [state["summary"], state["code_additions"], state["full_results"]]
+            tools = [list_local_files, read_local_file, read_foo]
             output = tool_calling_state_graph(sys_msg, msg, tools)
             analysis = HumanMessage(content=output["messages"][-1].content)
 
@@ -278,7 +326,8 @@ class CreatorAgent():
 
                     
                     1. Digest
-                        - Digest the analysis and game summary from the Analyzer.
+                        - Digest the analysis and game results from the Analyzer.
+                        - Analyze the summary to view your progress as a Multi-Agent-System in updating the player
                         - If needed, use the read_foo tool call to view the player to understand the code
                         - Digest the recommended questions and action items from the Analyzer
 
@@ -295,6 +344,7 @@ class CreatorAgent():
                     4. Report (Output)
                         - Create a concise and efficient report with the questions from the analyzer, and answers you gathered
                         - Give clear instructions to the coder on what to do next
+                        - Note the coder does not have your tool messages, so include any syntax information explicitly
 
 
                     You Have the Following Tools at Your Disposal:
@@ -310,12 +360,12 @@ class CreatorAgent():
             )
 
             # Choose the input based on if coming from analyzer or from validator in graph
-            msg = [state["full_results"], state["analysis"]]
+            msg = [state["summary"], state["full_results"], state["analysis"]]
 
             tools = [read_foo, list_local_files, read_local_file, web_search_tool_call]
             output = tool_calling_state_graph(sys_msg, msg, tools)
             solution = HumanMessage(content=output["messages"][-1].content)
-            return {"solution": solution, "tool_calling_messages": output["messages"]}
+            return {"solution": solution, "tool_calling_messages": output["messages"], "validator_counter": MAX_VALIDATOR_COUNTER}
 
         def coder_node(state: CreatorGraphState):
 
@@ -329,26 +379,31 @@ class CreatorAgent():
                     Task: Digest at the proposed solution from the Researcher and Analyzer, and implement it into the foo_player.py file.
 
                     1. Digest 
-                        - Digest the solution provided by the Researcher and the Analyzer, and Validator if applicable
-                        - Look at the code from the foo_player.py file using the read_foo tool call
+                        - Digest the solution provided by the Researcher and the Analyzer
+                        - Analyze the summary to view your progress as a Multi-Agent-System in updating the player
+                        - Digest the previous Coder's code addttions to see what your previously implemented
+                        - If needed, Look at the code from the foo_player.py file using the read_foo tool call
                         - Utilize the list_local_file and read_local_file to view any game files (Very helpful for debugging!)
 
                     2. Implement
                         - Use what you learned and digested to call write_foo tool call and write the entire new code for the foo_player.py file
                         - Focus on making sure the code implementes the solution in the most correct way possible
+                        - If you are unsure about any class variables, methods, or functions, view the local files, and if needed, return questions to the analyzer
 
                     3. Review
                         - Run through the output of the write_foo tool call to make sure the code is correct, and contains now errors or bugs
                         - If there are any errors or bugs, fix them and re-run the write_foo tool call
                     
                     4. Report (Output)
-                        - Create a concise and efficient report with the additions to the code you made, and why you made them for the validator
+                        - Create a concise and efficient report with the additions to the code you made, and why you made them
+                        - Include any questions or feedback for the analyer or the researcher
 
                     You Have the Following Tools at Your Disposal:
                         - list_local_files: List all files in the current directory.
                         - read_local_file: Read the content of a file in the current directory.
                         - read_foo: Read the content of {FOO_TARGET_FILENAME}.
                         - write_foo: Write the content of {FOO_TARGET_FILENAME}. (Make sure to keep imports) Note: print() commands will be visible in view_last_game_results
+                        - web_search_tool_call: Perform a web search using the Tavily API. (Can be utilized to debug errors or bugs you arent sure how to solve)
 
                     
                     Make sure to start your output with 'CODER' and end with 'END CODER'.
@@ -357,15 +412,19 @@ class CreatorAgent():
                 """
             )
            
+            # Give coder FooPlayer code so it does not have to call tool read-foo
+
             # Choose the input based on if coming from analyzer or from validator in graph
-            if state["validation"].content == "":
-                # If coming from analyzer, use the full_results, analusis, and solution
-                msg = [state["full_results"], state["analysis"], state["solution"]]
-            else:
-                # If coming from validator, usee the coder, test_results, and validation messages
-                msg = [state["code_additions"], state["test_results"], state["validation"]]
+            # if state["validation"].content == "":
+            #     # If coming from analyzer, use the full_results, analusis, and solution
+            #     msg = [state["full_results"], state["analysis"], state["solution"]]
+            # else:
+            #     # If coming from validator, usee the coder, test_results, and validation messages
+            #     msg = [state["full_results"], state["analysis"], state["solution"], state["code_additions"], state["test_results"], state["validation"]]
             
-            tools = [list_local_files, read_local_file, read_foo, write_foo]
+            msg = [state["summary"], state["code_additions"], state["full_results"], state["analysis"], state["solution"]]
+
+            tools = [list_local_files, read_local_file, read_foo, write_foo, web_search_tool_call]
 
             # Need to Return Anything?
             output = tool_calling_state_graph(sys_msg, msg, tools)
@@ -418,12 +477,12 @@ class CreatorAgent():
                     
                 """
             )
-            msg = [state["solution"], state["code_additions"], state["test_results"]]
+            msg = [state["summary"], state["solution"], state["code_additions"], state["test_results"]]
             tools = [read_foo, view_last_game_llm_query]
             output = tool_calling_state_graph(sys_msg, msg, tools)
             validation = HumanMessage(content=output["messages"][-1].content)
 
-            return {"validation": validation, "tool_calling_messages": output["messages"]}
+            return {"validation": validation, "tool_calling_messages": output["messages"], "validator_counter": state["validator_counter"] - 1}
 
         def continue_evolving_analyzer(state: CreatorGraphState):
             """
@@ -434,6 +493,8 @@ class CreatorAgent():
             # Get the content of the validation message
             analyzer_message = state["analysis"].content
             
+            next_node_continue = "researcher"
+            
             # Check for the presence of our defined result strings (Because analyzer node decrements the counter)
             if state["evolve_counter"] <= -1:
                 print("Evolve counter is 0 - ending workflow")
@@ -443,12 +504,12 @@ class CreatorAgent():
                 print("Validation passed - ending workflow")
                 return END
             elif analyzer_continue_key in analyzer_message:  #
-                print("Validation failed - rerunning player")
-                return "researcher"
+                print(f"Validation failed - going to {next_node_continue}")
+                return next_node_continue
             else:
                 # Default case if neither string is found
-                print("Warning: Could not determine validation result, defaulting to researcher")
-                return END
+                print(f"Warning: Could not determine validation result, {next_node_continue}")
+                return next_node_continue
             
         def code_ok_validator(state: CreatorGraphState):
             """
@@ -456,34 +517,69 @@ class CreatorAgent():
             """
             print("In Conditional Edge Validator")
             
-            # Get the content of the validation message
+            # Get the content of the validation message, and number of times validator has been called in current loop
             validation_message = state["validation"].content
+            validator_counter = state["validator_counter"]
             
-            # Check for the presence of our defined result strings
+            next_ok_node = "summarizer"
+            next_not_ok_node = "coder"
+
+            if validator_counter <= -1:
+                print(f"Validator counter is 0 - defaulting to {next_ok_node} to get out of loop")
+                return next_ok_node
 
             if val_ok_key in validation_message:
-                print("Validation passed - ending workflow")
-                return "run_player"
+                print(f"Validation passed - going to {next_ok_node}")
+                return next_ok_node
             elif val_not_ok_key in validation_message:  #
-                print("Validation failed - rerunning player")
-                return "coder"
+                print(f"Validation failed - going to {next_not_ok_node}")
+                return next_not_ok_node
             else:
                 # Default case if neither string is found
-                print("Warning: Could not determine validation result, defaulting to running player")
-                return "run_player"
+                print(f"Warning: Could not determine validation result, going to {next_ok_node}")
+                return next_ok_node
+        
+        def summarize_conversation(state: CreatorGraphState):
+    
+            print("In Summarizer Node")
+            # First, we get any existing summary
+            summary = state["summary"].content
+
+            # Create our summarization prompt 
+            if summary:
+                # A summary already exists
+                summary_message = (
+                    f"This is summary of the conversation to date: {summary}\n\n"
+                    "Extend the summary by taking into account the new messages above:\n"
+                    "Use minimal tokens, but keep track of each sequence of runs (Game->Analyzer->Researcher->Coder)\n"
+                    "Make sure to start your output with 'SUMMARY:' and end with 'SUMMARY'" 
+                )
+                
+            else:
+                summary_message = "Create a summary of the conversation above:"
+
+            print("Summary")
+            state_msgs = [state["full_results"], state["analysis"], state["solution"], state["code_additions"]]
+            messages = state_msgs + [HumanMessage(content=summary_message)]
+            response = self.llm.invoke(messages)
+            
+            return {"summary": response}
 
         def construct_graph():
             graph = StateGraph(CreatorGraphState)
 
+            graph.add_node("initialization", initialization_node)
             graph.add_node("run_player", run_player_node)
             graph.add_node("analyzer", analyzer_node)
             #graph.add_node("tools", ToolNode(tools))
             graph.add_node("researcher", researcher_node)
             graph.add_node("coder", coder_node)
-            graph.add_node("test_player", test_player_node)
-            graph.add_node("validator", validator_node)
+            #graph.add_node("test_player", test_player_node)
+            #graph.add_node("validator", validator_node)
+            graph.add_node("summarizer", summarize_conversation)
 
-            graph.add_edge(START, "run_player")
+            graph.add_edge(START, "initialization")
+            graph.add_edge("initialization", "run_player")
             graph.add_edge("run_player", "analyzer")
             graph.add_conditional_edges(
                 "analyzer",
@@ -492,16 +588,20 @@ class CreatorAgent():
             )
             #graph.add_edge("analyzer", "researcher")
             graph.add_edge("researcher", "coder")
-            graph.add_edge("coder", "test_player")
-            graph.add_edge("test_player", "validator")
-            graph.add_conditional_edges(
-                "validator",
-                code_ok_validator,
-                {"coder", "run_player"}
-            )
+            graph.add_edge("coder", "summarizer")
+            graph.add_edge("summarizer", "run_player")
+            # graph.add_edge("coder", "test_player")
+            # graph.add_edge("test_player", "validator")
+            # graph.add_conditional_edges(
+            #     "validator",
+            #     code_ok_validator,
+            #     {"coder", "summarizer"}
+            # )
+            # graph.add_edge("summarizer", "run_player")
 
             return graph.compile()
     
+
         return construct_graph()
 
     def print_react_graph(self):
@@ -517,65 +617,14 @@ class CreatorAgent():
 
             log_path = os.path.join(CreatorAgent.run_dir, f"llm_log_{self.llm_name}.txt")
 
-            #initial_state: CreatorGraphState = {}
-
-            # class CreatorGraphState(TypedDict):
-            #     full_results: SystemMessage # Last results of running the game
-            #     analysis: AIMessage         # Output of Anlayzer, What Happend?
-            #     solution: AIMessage         # Ouput of Researcher, What should be done?
-            #     code_additions: AIMessage         # Output of Coder, What was added to the code?
-            #     test_results: SystemMessage # Running a test on code, to ensure correctness
-            #     validation: AIMessage       # Ouptut of Validator, Is the code correct?
-            #     tool_calling_messages: list[AnyMessage]     # Messages from the tool calling state graph (used for debugging)
-
-            #     evolve_counter: int         # Counter for the number of evolutions
-
-            CREATOR_STATE_KEYS = {
-                "full_results",
-                "analysis",
-                "solution",
-                "code_additions",
-                "test_results",
-                "validation",
-                "tool_calling_messages",
-                "evolve_counter",
-            }
-
-            # def _pretty_message(msg, indent="  "):
-            #     """Return a human‑readable one‑liner for any BaseMessage instance."""
-            #     # BaseMessage subclasses all expose .type (str) and .content (str | list)
-            #     role = getattr(msg, "type", msg.__class__.__name__)
-            #     return f"{indent}[{role}] {msg.content}"
-
-            # # --- streaming ------------------------------------------------------------- #
-            # with open(log_path, "a", encoding="utf‑8") as log_file:              # ❶
-            #     for chunk in self.react_graph.stream({}, stream_mode="updates"):   # ❷
-            #         # `chunk` looks like {"node_name": {"state_key": value, ...}}
-            #         for node, update in chunk.items():                             # ❸
-            #             for key, value in update.items():
-            #                 if key not in CREATOR_STATE_KEYS:
-            #                     continue                                           # skip everything else
-
-            #                 # ---- normal state fields --------------------------------- #
-            #                 if key != "tool_calling_messages":
-            #                     line = f"{node}.{key}: {value}"
-            #                     print(line)
-            #                     log_file.write(line + "\n")
-            #                     continue
-
-            #                 # ---- tool_calling_messages (list[AnyMessage]) ------------ #
-            #                 print(f"{node}.tool_calling_messages:")
-            #                 log_file.write(f"{node}.tool_calling_messages:\n")
-            #                 for i, msg in enumerate(value):
-            #                     line = _pretty_message(msg, indent="    ")
-            #                     print(line)
-            #                     log_file.write(line + "\n")
             with open(log_path, "a") as log_file:                # Run the graph until the first interruption
                 for step in self.react_graph.stream({}, self.config, stream_mode="updates"):
                     #print(step)
                     #log_file.write(f"Step: {step.}\n")
                     for node, update in step.items():
-                        if node == "run_player":
+                        if node == "initialization":
+                            print("In Initialization Node")
+                        elif node == "run_player":
                             print("In run_player node")
                         elif node == "analyzer":
                             print("In analyzer node")
@@ -587,6 +636,8 @@ class CreatorAgent():
                             print("In test_player node")
                         elif node == "validator":
                             print("In validator node")
+                        elif node == "summarizer":
+                            print("In summarizer node")
                         
 
                         if "tool_calling_messages" in update:
@@ -596,72 +647,28 @@ class CreatorAgent():
                                 #msg.pretty_print()
                                 if isinstance(msg, ToolMessage):
                                     print("Tool Message: ", msg.name)
+                                    log_file.write((msg).pretty_repr())
                                 count += 1
                                 log_file.write((msg).pretty_repr())
                             print(f"Number of Tool Calling Messages: {count}")
 
-                        if "analysis" in update:
-                            msg = update["analysis"]
-                            msg.pretty_print()
-                            log_file.write((msg).pretty_repr())
-                        if "solution" in update:
-                            msg = update["solution"]
-                            msg.pretty_print()
-                            log_file.write((msg).pretty_repr())
-                        if "code_additions" in update:
-                            msg = update["code_additions"]
-                            msg.pretty_print()
-                            log_file.write((msg).pretty_repr())
-                        if "validation" in update:
-                            msg = update["validation"]
-                            msg.pretty_print()
-                            log_file.write((msg).pretty_repr())
+                        message_keys = ["analysis", "solution", "code_additions", "validation", "test_results", "full_results", "summary"]
+
+                        # Iterate through all message keys
+                        for key in message_keys:
+                            if key in update:
+                                msg = update[key]
+                                msg.pretty_print()
+                                log_file.write((msg).pretty_repr())
+
                         if "evolve_counter" in update:
                             print("ENVOLVE COUNTER: ", update["evolve_counter"])
                             log_file.write(f"Evolve Counter: {update['evolve_counter']}\n")
-                        if "test_results" in update:
-                            print("Test Results:", update["test_results"])
-                            log_file.write(f"Test Results: {update['test_results']}\n")
-                        if "full_results" in update:
-                            print("Full Results:", update["full_results"])
-                            log_file.write(f"Full Results: {update['full_results']}\n")
+                        if "validator_counter" in update:
+                            print("VALIDATOR COUNTER: ", update["validator_counter"])
+                            log_file.write(f"Validator Counter: {update['validator_counter']}\n")
 
                         
-        # if "run_player" in step:
-            
-        # if "tool_calling_messages" in step:
-        #     for msg in step["tool_calling_messages"]:
-        #         #print(msg)
-        #         msg.pretty_print()
-        #         log_file.write((msg).pretty_repr())
-        # if "analysis" in step:
-        #     #print(step["analysis"])
-        #     msg = step["analysis"]
-        #     msg.pretty_print()
-        #     log_file.write((msg).pretty_repr())
-
-
-            # with open(log_path, "a") as log_file:                # Run the graph until the first interruption
-            #     for step in self.react_graph.stream({}, stream_mode="updates"):
-            #         #print(step)
-            #         #log_file.write(f"Step: {step.}\n")
-            #         if "tool_calling_messages" in step:
-            #             for msg in step["tool_calling_messages"]:
-            #                 #print(msg)
-            #                 msg.pretty_print()
-            #                 log_file.write((msg).pretty_repr())
-            #         if "analysis" in step:
-            #             #print(step["analysis"])
-            #             msg = step["analysis"]
-            #             msg.pretty_print()
-            #             log_file.write((msg).pretty_repr())
-
-
-                    #msg = step['messages'][-1]
-                    #msg.pretty_print()
-                    #log_file.write((msg).pretty_repr())
-
-
             print("✅  graph finished")
 
             # Copy Result File to the new directory

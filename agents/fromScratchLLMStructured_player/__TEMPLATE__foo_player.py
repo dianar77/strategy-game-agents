@@ -1,12 +1,26 @@
 import os
-from catanatron import Player
+from catanatron.models.player import Player
 from catanatron.game import Game
-from agents.fromScratchLLMStructured_player.llm_tools import LLM
+from catanatron.models.player import Color
+from catanatron.models.board import Board
+from catanatron.models.enums import Action, ActionType, ActionPrompt, RESOURCES, SETTLEMENT, CITY
+from catanatron.models.map import CatanMap, LandTile, Port
+from catanatron.models.decks import freqdeck_count
+from catanatron.state_functions import (
+    get_player_buildings,
+    player_key,
+    player_num_resource_cards,
+    player_num_dev_cards,
+    get_player_freqdeck,
+    get_longest_road_length,
+    get_largest_army,
+)
+from catanatron.state import State
+
 
 class FooPlayer(Player):
     def __init__(self, color, name=None):
         super().__init__(color, name)
-        self.llm = LLM()  # Includes LLM class with llm.query_llm(prompt: str) -> str method
 
     def decide(self, game, playable_actions):
         """Should return one of the playable_actions.
