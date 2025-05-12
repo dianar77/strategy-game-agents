@@ -18,7 +18,7 @@ import subprocess, shlex
 from langchain_openai import AzureChatOpenAI
 from langchain_mistralai import ChatMistralAI
 from langgraph.graph import MessagesState, START, END, StateGraph
-from langchain_core.messages import HumanMessage, SystemMessage, AIMessage, AnyMessage, ToolMessage
+from langchain_core.messages import HumanMessage, SystemMessage, AIMessage, AnyMessage, ToolMessage, BaseMessage
 from langgraph.prebuilt import tools_condition, ToolNode
 from IPython.display import Image, display
 from langgraph.checkpoint.memory import MemorySaver
@@ -98,14 +98,13 @@ class CreatorAgent():
         #     (Path(__file__).parent / ("__TEMPLATE__" + FOO_TARGET_FILENAME)).resolve(),  # ../foo_player.py
         #     FOO_TARGET_FILE.resolve()          # ./foo_player.py
         # )
+
         self.config = {
             "recursion_limit": 50, # set recursion limit for graph
             # "configurable": {
             #     "thread_id": "1"
             # }
         }
-        #self.memory_config = {"configurable": {"thread_id": "1"}}
-        self.num_memory_messages = 10        # Trim number of messages to keep in memory to limit API usage
         self.react_graph = self.create_langchain_react_graph()
 
     def create_langchain_react_graph(self):
@@ -113,7 +112,7 @@ class CreatorAgent():
         
 
         class CreatorGraphState(TypedDict):
-            full_results: SystemMessage # Last results of running the game
+            full_results: HumanMessage # Last results of running the game
             analysis: HumanMessage         # Output of Anlayzer, What Happend?
             solution: HumanMessage         # Ouput of Researcher, What should be done?
             code_additions: HumanMessage         # Output of Coder, What was added to the code?
@@ -123,7 +122,7 @@ class CreatorAgent():
 
             evolve_counter: int         # Counter for the number of evolutions
 
-        multi_agent_prompt = f"""You are apart of a multi-agent system that is working to evolve the code in {FOO_TARGET_FILENAME} to become the best player in the Catanatron Minigame. Get the highest score for the player by utilizing the LLM() class in foo_player.py\n\tYour specific role is the:"""
+        multi_agent_prompt = f"""You are apart of a multi-agent system that is working to evolve the code in {FOO_TARGET_FILENAME} to become the best player in the Catanatron Minigame. Get the highest score for the player by class in foo_player.py\n\tYour specific role is the:"""
 
         #tools = [add, multiply, divide]
         DEFAULT_EVOLVE_COUNTER = 3
@@ -135,22 +134,72 @@ class CreatorAgent():
         val_ok_key = "PASSSED_VALIDATION"
         val_not_ok_key = "FAILED_VALIDATION"
 
+        def _is_non_empty(msg: BaseMessage) -> bool:
+            """
+            Return True if the message should stay in history.
+            Handles str, list, None, and messages with no 'content' attr.
+            """
+            if not hasattr(msg, "content"):           # tool_result or custom types
+                return True
 
+            content = msg.content
+            if content is None:                       # explicit null
+                return False
 
-        llm = AzureChatOpenAI(
-            model="gpt-4o",
-            azure_endpoint="https://gpt-amayuelas.openai.azure.com/",
-            api_version = "2024-12-01-preview"
-        )
+            if isinstance(content, str):
+                return bool(content.strip())          # keep non‑blank strings
+
+            if isinstance(content, (list, tuple)):    # content blocks
+                return len(content) > 0               # keep if any block exists
+
+            # Fallback: keep anything we don't explicitly reject
+            return True
 
         def tool_calling_state_graph(sys_msg: SystemMessage, msgs: list[AnyMessage], tools):
-            # Node
+
+            # Filter out empty messages
+            msgs = [m for m in msgs if _is_non_empty(m)]
 
             # Bind Tools to the LLM
-            llm_with_tools = llm.bind_tools(tools, parallel_tool_calls=False)
+            #llm_with_tools = self.llm.bind_tools(tools, parallel_tool_calls=False)
+            llm_with_tools = self.llm.bind_tools(tools)
 
             def assistant(state: MessagesState):
                 return {"messages": [llm_with_tools.invoke([sys_msg] + state["messages"])]}
+            
+            def trim_messages(state, keep_last_n: int = 10):
+                """
+                Keep the last `keep_last_n` conversational turns (assistant/user/system),
+                preserve assistant–tool pairs, **and guarantee at least one SystemMessage**.
+                """
+                messages = state["messages"]
+
+                kept, count = [], 0
+                for m in reversed(messages):
+                    # --- preserve assistant/tool pairs -----------------------------
+                    if isinstance(m, ToolMessage):
+                        kept.append(m)                            # tool itself
+                        count += 1
+                    elif isinstance(m, AIMessage) and m.tool_calls:
+                        kept.append(m)
+                        count += 1                # paired assistant
+                    else:                                         # human or system
+                        kept.append(m)
+                        count += 1
+
+                    if count >= keep_last_n:
+                        break
+
+                kept = list(reversed(kept))  # restore chronological order
+
+                # -------- ensure at least one SystemMessage ------------------------
+                if not any(isinstance(m, SystemMessage) for m in kept):
+                    # try to recycle the *oldest* system message still in history
+                    recycled = next((m for m in messages if isinstance(m, SystemMessage)), None)
+                    kept.insert(0, recycled or sys_msg)
+
+                return {"messages": kept}
+
             
             # Graph
             builder = StateGraph(MessagesState)
@@ -158,6 +207,7 @@ class CreatorAgent():
             # Define nodes: these do the work
             builder.add_node("assistant", assistant)
             builder.add_node("tools", ToolNode(tools))
+            builder.add_node("trim_messages", trim_messages)
 
             # Define edges: these determine how the control flow moves
             builder.add_edge(START, "assistant")
@@ -167,11 +217,18 @@ class CreatorAgent():
                 # If the latest message (result) from assistant is a not a tool call -> tools_condition routes to END
                 tools_condition,
             )
-            builder.add_edge("tools", "assistant")
+            builder.add_edge("tools", "trim_messages")
+            builder.add_edge("trim_messages", "assistant")
+
             react_graph = builder.compile()
             
             
-            messages = react_graph.invoke({"messages": msgs})
+            #messages = react_graph.invoke({"messages": msgs})
+            for event in react_graph.stream({"messages": msgs}, stream_mode="values"):
+                msg = event['messages'][-1]
+                msg.pretty_print()
+                print("\n")
+                messages = event
             
             # for m in messages['messages']:
             #     m.pretty_print()
@@ -190,7 +247,7 @@ class CreatorAgent():
             
             # Clear all past messages
             return {
-                "full_results": SystemMessage(content=f"GAME RESULTS:\n\n{game_results}"),
+                "full_results": HumanMessage(content=f"GAME RESULTS:\n\n{game_results}"),
                 "analysis": AIMessage(content=""),
                 "solution": AIMessage(content=""),
                 "code_additions": AIMessage(content=""),
@@ -251,14 +308,15 @@ class CreatorAgent():
                         - read_local_file: Read the content of a file in the current directory.
                         - read_foo: Read the content of {FOO_TARGET_FILENAME}.
                         - view_last_game_llm_query: View the LLM query from the last game to see performance. 
-
+                    
+                    KEEP YOUR TOOL CALLS TO A MINIMUM!
                     Make sure to start your output with 'ANALYSIS:' and end with 'END ANALYSIS'.
                     Respond with No Commentary, just the analysis.
 
                 """
             )
             msg = [state["code_additions"], state["full_results"]]
-            tools = [list_local_files, read_local_file, read_foo, view_last_game_llm_query]
+            tools = [list_local_files, read_local_file, read_foo]
             output = tool_calling_state_graph(sys_msg, msg, tools)
             analysis = HumanMessage(content=output["messages"][-1].content)
 
@@ -303,6 +361,7 @@ class CreatorAgent():
                         - read_foo: Read the content of {FOO_TARGET_FILENAME}.
                         - web_search_tool_call: Perform a web search using the Tavily API.
 
+                    KEEP YOUR TOOL CALLS TO A MINIMUM!
                     Make sure to start your output with 'SOLUTION:' and end with 'END SOLUTION'.
                     Respond with No Commentary, just the Research.
 
@@ -350,7 +409,7 @@ class CreatorAgent():
                         - read_foo: Read the content of {FOO_TARGET_FILENAME}.
                         - write_foo: Write the content of {FOO_TARGET_FILENAME}. (Make sure to keep imports) Note: print() commands will be visible in view_last_game_results
 
-                    
+                    KEEP YOUR TOOL CALLS TO A MINIMUM!
                     Make sure to start your output with 'CODER' and end with 'END CODER'.
 
                     
@@ -360,9 +419,11 @@ class CreatorAgent():
             # Choose the input based on if coming from analyzer or from validator in graph
             if state["validation"].content == "":
                 # If coming from analyzer, use the full_results, analusis, and solution
+                print("Coder Coming from Analyzer")
                 msg = [state["full_results"], state["analysis"], state["solution"]]
             else:
                 # If coming from validator, usee the coder, test_results, and validation messages
+                print("Coder Coming from Validator")
                 msg = [state["code_additions"], state["test_results"], state["validation"]]
             
             tools = [list_local_files, read_local_file, read_foo, write_foo]
@@ -419,7 +480,7 @@ class CreatorAgent():
                 """
             )
             msg = [state["solution"], state["code_additions"], state["test_results"]]
-            tools = [read_foo, view_last_game_llm_query]
+            tools = [read_foo]
             output = tool_calling_state_graph(sys_msg, msg, tools)
             validation = HumanMessage(content=output["messages"][-1].content)
 
@@ -517,59 +578,6 @@ class CreatorAgent():
 
             log_path = os.path.join(CreatorAgent.run_dir, f"llm_log_{self.llm_name}.txt")
 
-            #initial_state: CreatorGraphState = {}
-
-            # class CreatorGraphState(TypedDict):
-            #     full_results: SystemMessage # Last results of running the game
-            #     analysis: AIMessage         # Output of Anlayzer, What Happend?
-            #     solution: AIMessage         # Ouput of Researcher, What should be done?
-            #     code_additions: AIMessage         # Output of Coder, What was added to the code?
-            #     test_results: SystemMessage # Running a test on code, to ensure correctness
-            #     validation: AIMessage       # Ouptut of Validator, Is the code correct?
-            #     tool_calling_messages: list[AnyMessage]     # Messages from the tool calling state graph (used for debugging)
-
-            #     evolve_counter: int         # Counter for the number of evolutions
-
-            CREATOR_STATE_KEYS = {
-                "full_results",
-                "analysis",
-                "solution",
-                "code_additions",
-                "test_results",
-                "validation",
-                "tool_calling_messages",
-                "evolve_counter",
-            }
-
-            # def _pretty_message(msg, indent="  "):
-            #     """Return a human‑readable one‑liner for any BaseMessage instance."""
-            #     # BaseMessage subclasses all expose .type (str) and .content (str | list)
-            #     role = getattr(msg, "type", msg.__class__.__name__)
-            #     return f"{indent}[{role}] {msg.content}"
-
-            # # --- streaming ------------------------------------------------------------- #
-            # with open(log_path, "a", encoding="utf‑8") as log_file:              # ❶
-            #     for chunk in self.react_graph.stream({}, stream_mode="updates"):   # ❷
-            #         # `chunk` looks like {"node_name": {"state_key": value, ...}}
-            #         for node, update in chunk.items():                             # ❸
-            #             for key, value in update.items():
-            #                 if key not in CREATOR_STATE_KEYS:
-            #                     continue                                           # skip everything else
-
-            #                 # ---- normal state fields --------------------------------- #
-            #                 if key != "tool_calling_messages":
-            #                     line = f"{node}.{key}: {value}"
-            #                     print(line)
-            #                     log_file.write(line + "\n")
-            #                     continue
-
-            #                 # ---- tool_calling_messages (list[AnyMessage]) ------------ #
-            #                 print(f"{node}.tool_calling_messages:")
-            #                 log_file.write(f"{node}.tool_calling_messages:\n")
-            #                 for i, msg in enumerate(value):
-            #                     line = _pretty_message(msg, indent="    ")
-            #                     print(line)
-            #                     log_file.write(line + "\n")
             with open(log_path, "a") as log_file:                # Run the graph until the first interruption
                 for step in self.react_graph.stream({}, self.config, stream_mode="updates"):
                     #print(step)
@@ -626,41 +634,6 @@ class CreatorAgent():
                             print("Full Results:", update["full_results"])
                             log_file.write(f"Full Results: {update['full_results']}\n")
 
-                        
-        # if "run_player" in step:
-            
-        # if "tool_calling_messages" in step:
-        #     for msg in step["tool_calling_messages"]:
-        #         #print(msg)
-        #         msg.pretty_print()
-        #         log_file.write((msg).pretty_repr())
-        # if "analysis" in step:
-        #     #print(step["analysis"])
-        #     msg = step["analysis"]
-        #     msg.pretty_print()
-        #     log_file.write((msg).pretty_repr())
-
-
-            # with open(log_path, "a") as log_file:                # Run the graph until the first interruption
-            #     for step in self.react_graph.stream({}, stream_mode="updates"):
-            #         #print(step)
-            #         #log_file.write(f"Step: {step.}\n")
-            #         if "tool_calling_messages" in step:
-            #             for msg in step["tool_calling_messages"]:
-            #                 #print(msg)
-            #                 msg.pretty_print()
-            #                 log_file.write((msg).pretty_repr())
-            #         if "analysis" in step:
-            #             #print(step["analysis"])
-            #             msg = step["analysis"]
-            #             msg.pretty_print()
-            #             log_file.write((msg).pretty_repr())
-
-
-                    #msg = step['messages'][-1]
-                    #msg.pretty_print()
-                    #log_file.write((msg).pretty_repr())
-
 
             print("✅  graph finished")
 
@@ -675,6 +648,8 @@ class CreatorAgent():
         
         except Exception as e:
             print(f"Error calling LLM: {e}")
+            import traceback
+            traceback.print_exc()
         return None
 
 def list_local_files(_: str = "") -> str:
@@ -763,7 +738,7 @@ def run_testfoo(short_game: bool = False) -> str:
             stderr_output = stderr_output.decode('utf-8', errors='ignore')
         stdout_limited  = stdout_output[-MAX_CHARS:]
         stderr_limited  = stderr_output[-MAX_CHARS:]
-        game_results = "Game Ended From Timeout (As Expected).\n\n" + (stdout_output + stderr_output).strip()
+        game_results = "Game Ended From Timeout (As Expected).\n\n" + (stdout_limited + stderr_limited).strip()
     
     # Update the run_test_foo flag to read game results
     global RUN_TEST_FOO_HAPPENED
@@ -947,92 +922,3 @@ def view_last_game_results(_: str = "") -> str:
     #     builder.add_edge("trim_messages", "assistant")
         
     #     return builder.compile(checkpointer=MemorySaver())
-
-
-# def run_gamefoo(_: str = "") -> str:
-#     """
-#     Run one Catanatron match (R vs Agent File) and return raw CLI output.
-#     """    
-#     result = subprocess.run(
-#         shlex.split(FOO_RUN_COMMAND),
-#         capture_output=True,          # capture stdout+stderr :contentReference[oaicite:1]{index=1}
-#         text=True,
-#         timeout=3600,                  # avoids infinite-loop hangs
-#         check=False                   # we’ll return non-zero output instead of raising
-#     )
-    
-#     game_results = (result.stdout + result.stderr).strip()
-
-#     # Update the run_test_foo flag to read game results
-#     global RUN_TEST_FOO_HAPPENED
-#     RUN_TEST_FOO_HAPPENED = True
-
-#     # Path to the runs directory
-#     runs_dir = Path(__file__).parent / "runs"
-    
-#     # Find all folders that start with game_run
-#     game_run_folders = [f for f in runs_dir.glob("game_run*") if f.is_dir()]
-    
-#     if not game_run_folders:
-#         return "No game run folders found."
-    
-#     # Sort folders by name (which includes datetime) to get the most recent one
-#     latest_run_folder = sorted(game_run_folders)[-1]
-
-#     # Add a file with the stdout and stderr called catanatron_output.txt
-#     output_file_path = latest_run_folder / "catanatron_output.txt"
-#     with open(output_file_path, "w") as output_file:
-#         output_file.write(game_results)
-        
-#     #print(game_results)
-
-#     # limit the output to a certain number of characters
-#     MAX_CHARS = 5_000                      
-#     stdout_limited  = result.stdout[-MAX_CHARS:]
-#     stderr_limited  = result.stderr[-MAX_CHARS:]
-#     game_results = (stdout_limited + stderr_limited).strip()
-#     return game_results
-
-
-# def run_testfoo(_: str = "") -> str:
-#     """
-#     Run one Catanatron match (R vs Agent File) and return raw CLI output.
-#     """    
-#     result = subprocess.run(
-#         shlex.split(FOO_RUN_COMMAND),
-#         capture_output=True,          # capture stdout+stderr :contentReference[oaicite:1]{index=1}
-#         text=True,
-#         timeout=30,                  # Limit Time To View Test Results
-#         check=False                   # we’ll return non-zero output instead of raising
-#     )
-    
-#     game_results = (result.stdout + result.stderr).strip()
-
-#     # Update the run_test_foo flag to read game results
-#     global RUN_TEST_FOO_HAPPENED
-#     RUN_TEST_FOO_HAPPENED = True
-
-#     # Path to the runs directory
-#     runs_dir = Path(__file__).parent / "runs"
-    
-#     # Find all folders that start with game_run
-#     game_run_folders = [f for f in runs_dir.glob("game_run*") if f.is_dir()]
-    
-#     if not game_run_folders:
-#         return "No game run folders found."
-    
-#     # Sort folders by name (which includes datetime) to get the most recent one
-#     latest_run_folder = sorted(game_run_folders)[-1]
-
-#     # Add a file with the stdout and stderr called catanatron_output.txt
-#     output_file_path = latest_run_folder / "catanatron_test_output.txt"
-#     with open(output_file_path, "w") as output_file:
-#         output_file.write(game_results)
-        
-#     #print(game_results)
-#     # limit the output to a certain number of characters
-#     MAX_CHARS = 5_000                      
-#     stdout_limited  = result.stdout[-MAX_CHARS:]
-#     stderr_limited  = result.stderr[-MAX_CHARS:]
-#     game_results = (stdout_limited + stderr_limited).strip()
-#     return game_results
