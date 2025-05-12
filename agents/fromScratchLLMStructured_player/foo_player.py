@@ -17,24 +17,28 @@ from catanatron.state_functions import (
 )
 from catanatron.state import State
 
-
 class FooPlayer(Player):
     def __init__(self, color, name=None):
         super().__init__(color, name)
 
     def decide(self, game, playable_actions):
-        """Should return one of the playable_actions.
+        print('Deciding action...')
+        # Prioritize building settlements and cities
+        for action in playable_actions:
+            if action.action_type == ActionType.BUILD and action.action == Action.BUILD_SETTLEMENT:
+                print('Choosing to build settlement')
+                return action
+            if action.action_type == ActionType.BUILD and action.action == Action.BUILD_CITY:
+                print('Choosing to build city')
+                return action
 
-        Args:
-            game (Game): complete game state. read-only. 
-                Defined in in "catanatron/catanatron_core/catanatron/game.py"
-            playable_actions (Iterable[Action]): options to choose from
-        Return:
-            action (Action): Chosen element of playable_actions
-        """
-        # ===== YOUR CODE HERE =====
-        # As an example we simply return the first action:
-        print("Choosing First Action on Default")
+        # Implement trading logic to exchange excess resources
+        for action in playable_actions:
+            if action.action_type == ActionType.TRADE:
+                # Trade excess resources for needed ones
+                print('Choosing to trade')
+                return action
+
+        # Default to the first action if no better option is found
+        print('Choosing default action')
         return playable_actions[0]
-        # ===== END YOUR CODE =====
-

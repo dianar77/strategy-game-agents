@@ -53,12 +53,12 @@ class CreatorAgent():
 
     def __init__(self):
         # Get API key from environment variable
-        self.llm_name = "gpt-4o"
-        self.llm = AzureChatOpenAI(
-            model="gpt-4o",
-            azure_endpoint="https://gpt-amayuelas.openai.azure.com/",
-            api_version = "2024-12-01-preview"
-        )
+        # self.llm_name = "gpt-4o"
+        # self.llm = AzureChatOpenAI(
+        #     model="gpt-4o",
+        #     azure_endpoint="https://gpt-amayuelas.openai.azure.com/",
+        #     api_version = "2024-12-01-preview"
+        # )
         
 
         # self.llm_name = "claude-3.7"
@@ -71,17 +71,17 @@ class CreatorAgent():
         # )
 
 
-        # self.llm_name = "mistral-large-latest"
-        # rate_limiter = InMemoryRateLimiter(
-        #     requests_per_second=0.2,    # Adjust based on your API tier
-        #     check_every_n_seconds=0.1,
-        # )
-        # self.llm = ChatMistralAI(
-        #     model="mistral-large-latest",
-        #     temperature=0,
-        #     max_retries=3,
-        #     rate_limiter=rate_limiter,
-        # )
+        self.llm_name = "mistral-large-latest"
+        rate_limiter = InMemoryRateLimiter(
+            requests_per_second=0.2,    # Adjust based on your API tier
+            check_every_n_seconds=0.1,
+        )
+        self.llm = ChatMistralAI(
+            model="mistral-large-latest",
+            temperature=0,
+            max_retries=3,
+            rate_limiter=rate_limiter,
+        )
 
 
         os.environ["LANGCHAIN_TRACING_V2"] = "false"
@@ -119,8 +119,8 @@ class CreatorAgent():
             analysis: HumanMessage         # Output of Anlayzer, What Happend?
             solution: HumanMessage         # Ouput of Researcher, What should be done?
             code_additions: HumanMessage         # Output of Coder, What was added to the code?
-            test_results: HumanMessage # Running a test on code, to ensure correctness
-            validation: HumanMessage       # Ouptut of Validator, Is the code correct?
+            # test_results: HumanMessage # Running a test on code, to ensure correctness
+            # validation: HumanMessage       # Ouptut of Validator, Is the code correct?
             tool_calling_messages: list[AnyMessage]     # Messages from the tool calling state graph (used for debugging)
 
             evolve_counter: int             # Counter for the number of evolutions
@@ -203,6 +203,7 @@ class CreatorAgent():
             for event in react_graph.stream({"messages": msgs}, stream_mode="values"):
                 msg = event['messages'][-1]
                 msg.pretty_print()
+                print("\n")
                 messages = event
             
             # for m in messages['messages']:
@@ -244,8 +245,8 @@ class CreatorAgent():
                 "analysis": HumanMessage(content=""),
                 "solution": HumanMessage(content=""),
                 #"code_additions": HumanMessage(content=""),
-                "test_results": HumanMessage(content=""),
-                "validation": HumanMessage(content=""),
+                # "test_results": HumanMessage(content=""),
+                # "validation": HumanMessage(content=""),
                 "tool_calling_messages": [],
             }
 
@@ -279,11 +280,11 @@ class CreatorAgent():
 
                     
                 Your Output Should include
-                    1.  A ANALYSIS Report on your Input's for the Analyzer
-                    2.  If the player is good enough to stop evolving, return "{analyzer_stop_key}"
+                    1.  An ANALYSIS Report on your Input's for the Analyzer with Very specific details
+                    2.  If the player is good enough to stop evolving, return in the output "{analyzer_stop_key}", otherwise return "{analyzer_continue_key}"
 
-
-                You Have the Following Tools at Your Disposal:
+                
+                You Have the Following Tools at Your Disposal (Use Less Than 10 Tool Calls):
                     - list_local_files: List all files in the current directory.
                     - read_local_file: Read the content of a file in the current directory.
                     - read_foo: Read the content of {FOO_TARGET_FILENAME}.
@@ -314,7 +315,7 @@ class CreatorAgent():
                 content=f"""
                     {multi_agent_prompt} RESEARCHER
                      
-                Task: Digest the analysis from the Analyzer, perform your own research, and create a solution for the Coder to implement
+                Task: Your job is to answer the question "What should the solution be?" for the Coder
 
                 
                 List of Input Messages:
@@ -326,10 +327,10 @@ class CreatorAgent():
                     
                 Your Output Should include
                     1. Your research findings and observations
-                    2. A Detailed SOLUTION Report on what the coder should implement
+                    2. A Detailed SOLUTION Report on what the coder should implement with very specific details
 
 
-                You Have the Following Tools at Your Disposal:
+                You Have the Following Tools at Your Disposal (Use Less Than 10 Tool Calls):
                     - list_local_files: List all files in the current directory.
                     - read_local_file: Read the content of a file in the current directory.
                     - read_foo: Read the content of {FOO_TARGET_FILENAME}.
@@ -368,12 +369,21 @@ class CreatorAgent():
                     Solution includes the solution from the Researcher, with a report meant for you
                     Tool Call Messages that are added on as you progress through your research
 
-                    
+                Actions:
+                    Make sure to digest all your inputs
+                    Write to foo_player.py file with write_foo tool call.
+                        MAKE SURE TO NOT PUT BACKSLASHES BEFORE QUOTES
+                            INCORRECT: print(\\'Choosing First Action on Default\')
+                            CORRECT: print('Choosing First Action on Default')
+                    If you want to debug, feel free to have print statements that will be visible in the game results message
+                
                 Your Output Should include
                     1. Your research findings and observations
                     2. A Detailed SOLUTION Report on what the coder should implement
 
-                You Have the Following Tools at Your Disposal:
+                
+
+                You Have the Following Tools at Your Disposal (Use Less Than 10 Tool Calls):
                     - list_local_files: List all files in the current directory.
                     - read_local_file: Read the content of a file in the current directory.
                     - read_foo: Read the content of {FOO_TARGET_FILENAME}.
@@ -524,12 +534,34 @@ class CreatorAgent():
             if summary:
                 # A summary already exists
                 summary_message = (
-                    f"{multi_agent_prompt} SUMMARIZER\n"
-                    f"This is the current summary of the agent system to date: {summary}\n\n"
-                    "YOUR GOAL:\n"
-                    "Extend the summary by taking into account the new messages\n"
-                    "Use minimal tokens, but keep track of each sequence of runs (Game Results->Analyzer->Researcher->Coder)\n"
-                    "RETURN THE FULL SUMMARY, and make sure to start your output with 'SUMMARY:' and end with 'SUMMARY'" 
+                    f"""You are tasked with summarizing an Multi-Agent Workflow with the steps Full_Results, Analysis, Solution, Code Additions
+                    This workflow will iterate until the code is correct and the game is won
+                    This is your current summary of the workflow steps:
+                    
+                    {summary}
+
+                    Above, you have new Full_Results, Analysis, Solution, Code Additions Messages for a new step in the Multi-Agent Workflow
+                    Your Summary should look like the following:
+
+                    Turm 0: <Short High Level Description>
+                        Game Results Summary: <summary of the game results>
+                        Analysis: <summary of the analysis>
+                        Solution: <summary of the solution>
+                        Code Additions: <summary of the code additions>
+                    
+                    Turn 1: Short High Level Description
+                        Game Results Summary: <summary of the game results>
+                        Analysis: <summary of the analysis>
+                        Solution: <summary of the solution>
+                        Code Additions: <summary of the code additions>
+
+                    ...... And so on
+                    
+
+                    Please update the summary to include the new messages.
+                    Make sure to include the previous summary contents, and the new summary content in your output
+
+                    """
                 )
                 
             else:
@@ -624,7 +656,7 @@ class CreatorAgent():
                                 #msg.pretty_print()
                                 if isinstance(msg, ToolMessage):
                                     print("Tool Message: ", msg.name)
-                                    log_file.write((msg).pretty_repr())
+                                    log_file.write((msg).pretty_repr() + "\n")
                                 count += 1
                                 log_file.write((msg).pretty_repr())
                             print(f"Number of Tool Calling Messages: {count}")
@@ -662,6 +694,7 @@ class CreatorAgent():
         return None
 
 def list_local_files(_: str = "") -> str:
+
     """Return all files beneath BASE_DIR, one per line."""
     return "\n".join(
         str(p.relative_to(LOCAL_SEARCH_BASE_DIR))
@@ -872,7 +905,7 @@ def view_last_game_results(_: str = "") -> str:
     
     # Read and return the content of the file
     try:
-        with open(output_file_path, "w") as file:
+        with open(output_file_path, "r") as file:
             return f"Content of {output_file_path.name}:\n\n{file.read()}"
     except Exception as e:
         return f"Error reading file {output_file_path.name}: {str(e)}"
