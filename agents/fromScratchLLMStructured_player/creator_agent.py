@@ -267,37 +267,29 @@ class CreatorAgent():
 
             sys_msg = SystemMessage(
                 content=f"""
-                    {multi_agent_prompt} ANALYZER
+                {multi_agent_prompt} ANALYZER
+                
+                Task: Your job is to answer the question "What happened?" and analyze the results of the game
+                
+                List of Input Messages:
+                    Summary Message includes your status as a Multi-Agent-System, and the results of the game
+                    Code Additions includes the code that was added to the by the coder foo_player.py file
+                    Full Results includes the results of the game, and any errors or issues that occurred during the game
+                    Tool Call Messages that are added on as you progress through your analysis
+
                     
-                    Task: Your job is to analyze the results of how foo_player did in the game and create a report to the Researcher
-                    
-                    1. Analyze
-                        - Analyze on any errors or issues that occurred during the game
-                        - Analyze on the strategic performance of the player, and how it did against other players
-                        - Analyze on any terminal ouput from the player
-                        - Analyze the summary to view your progress as a Multi-Agent-System in updating the player
+                Your Output Should include
+                    1.  A ANALYSIS Report on your Input's for the Analyzer
+                    2.  If the player is good enough to stop evolving, return "{analyzer_stop_key}"
 
-                    2. Think
-                        - Think about what caused the player to perform well or poorly
-                        - Think about what the researcher should research (Note: The Researher can search the web)
-                    
-                    3. Decide
-                        - Decide if the player is is good enough to stop evolving, or if it should continue evolving
-                        - If the player is can beat the players consistently, just return the key "{analyzer_stop_key}" (Ignore Step 4)
-                        - If the player is not good enough, return the key "{analyzer_continue_key}" (defaults to not good enough)
 
-                    4. Report (Output)
-                        - Create a concise and efficient report with summarized results, analysis, thoughts, and action items for the researcher
-                        - Make sure to include any errors or issues that occurred during the game
-                        - Be sure a clear list of action items for the researcher to follow
+                You Have the Following Tools at Your Disposal:
+                    - list_local_files: List all files in the current directory.
+                    - read_local_file: Read the content of a file in the current directory.
+                    - read_foo: Read the content of {FOO_TARGET_FILENAME}.
 
-                    You Have the Following Tools at Your Disposal:
-                        - list_local_files: List all files in the current directory.
-                        - read_local_file: Read the content of a file in the current directory.
-                        - read_foo: Read the content of {FOO_TARGET_FILENAME}.
-
-                    Make sure to start your output with 'ANALYSIS:' and end with 'END ANALYSIS'.
-                    Respond with No Commentary, just the analysis.
+                Make sure to start your output with 'ANALYSIS:' and end with 'END ANALYSIS'.
+                Respond with No Commentary, just the analysis.
 
                 """
             )
@@ -322,39 +314,29 @@ class CreatorAgent():
                 content=f"""
                     {multi_agent_prompt} RESEARCHER
                      
-                    Task: Digest the analysis from the Analyzer, perform your own research, and create a solution for the Coder to implement
+                Task: Digest the analysis from the Analyzer, perform your own research, and create a solution for the Coder to implement
+
+                
+                List of Input Messages:
+                    Summary Message includes your status as a Multi-Agent-System, and the results of the game
+                    Full Results includes the results of the game, and any errors or issues that occurred during the game
+                    Analysis includes the analysis from the Analyzer, with a report meant for you
+                    Tool Call Messages that are added on as you progress through your research
 
                     
-                    1. Digest
-                        - Digest the analysis and game results from the Analyzer.
-                        - Analyze the summary to view your progress as a Multi-Agent-System in updating the player
-                        - If needed, use the read_foo tool call to view the player to understand the code
-                        - Digest the recommended questions and action items from the Analyzer
-
-                    2. Research
-                        - Perform research on the questions and action items from the Analyzer (or any other questions you have)
-                        - Use the web_search_tool_call to perform a web search for any questions you have (REALLY BENEFICIAL TO USE THIS)
-                        - Use the list_local_files, and read_local_file to view any game files (which are very helpful for debugging)
-                        - Most Importantly: BE CREATIVE AND THINK OUTSIDE THE BOX (feel free to web search for anything you want)
-                        
-                    3. Strategize
-                        - Think on a high level about what the coder should do to achieve the goal
-                        - Create a plan with instructions for the coder to implement the solution
-                
-                    4. Report (Output)
-                        - Create a concise and efficient report with the questions from the analyzer, and answers you gathered
-                        - Give clear instructions to the coder on what to do next
-                        - Note the coder does not have your tool messages, so include any syntax information explicitly
+                Your Output Should include
+                    1. Your research findings and observations
+                    2. A Detailed SOLUTION Report on what the coder should implement
 
 
-                    You Have the Following Tools at Your Disposal:
-                        - list_local_files: List all files in the current directory.
-                        - read_local_file: Read the content of a file in the current directory.
-                        - read_foo: Read the content of {FOO_TARGET_FILENAME}.
-                        - web_search_tool_call: Perform a web search using the Tavily API.
+                You Have the Following Tools at Your Disposal:
+                    - list_local_files: List all files in the current directory.
+                    - read_local_file: Read the content of a file in the current directory.
+                    - read_foo: Read the content of {FOO_TARGET_FILENAME}.
+                    - web_search_tool_call: Perform a web search using the Tavily API.
 
-                    Make sure to start your output with 'SOLUTION:' and end with 'END SOLUTION'.
-                    Respond with No Commentary, just the Research.
+                Make sure to start your output with 'SOLUTION:' and end with 'END SOLUTION'.
+                Respond with No Commentary, just the Research.
 
                 """
             )
@@ -376,34 +358,27 @@ class CreatorAgent():
                 content=f"""
                     {multi_agent_prompt} CODER
                     
-                    Task: Digest at the proposed solution from the Researcher and Analyzer, and implement it into the foo_player.py file.
+                Task: Digest at the proposed solution from the Researcher and Analyzer, and implement it into the foo_player.py file.
 
-                    1. Digest 
-                        - Digest the solution provided by the Researcher and the Analyzer
-                        - Analyze the summary to view your progress as a Multi-Agent-System in updating the player
-                        - Digest the previous Coder's code addttions to see what your previously implemented
-                        - If needed, Look at the code from the foo_player.py file using the read_foo tool call
-                        - Utilize the list_local_file and read_local_file to view any game files (Very helpful for debugging!)
+                List of Input Messages:
+                    Summary Message includes your status as a Multi-Agent-System, and the results of the last game
+                    Code Addtitions includes the code that was added to the by the coder foo_player.py file last round
+                    Full Results includes the results of the game as a result of last CODER, and any errors or issues that occurred during the game
+                    Analysis includes the analysis from the Analyzer, with a report meant for Analyzer
+                    Solution includes the solution from the Researcher, with a report meant for you
+                    Tool Call Messages that are added on as you progress through your research
 
-                    2. Implement
-                        - Use what you learned and digested to call write_foo tool call and write the entire new code for the foo_player.py file
-                        - Focus on making sure the code implementes the solution in the most correct way possible
-                        - If you are unsure about any class variables, methods, or functions, view the local files, and if needed, return questions to the analyzer
-
-                    3. Review
-                        - Run through the output of the write_foo tool call to make sure the code is correct, and contains now errors or bugs
-                        - If there are any errors or bugs, fix them and re-run the write_foo tool call
                     
-                    4. Report (Output)
-                        - Create a concise and efficient report with the additions to the code you made, and why you made them
-                        - Include any questions or feedback for the analyer or the researcher
+                Your Output Should include
+                    1. Your research findings and observations
+                    2. A Detailed SOLUTION Report on what the coder should implement
 
-                    You Have the Following Tools at Your Disposal:
-                        - list_local_files: List all files in the current directory.
-                        - read_local_file: Read the content of a file in the current directory.
-                        - read_foo: Read the content of {FOO_TARGET_FILENAME}.
-                        - write_foo: Write the content of {FOO_TARGET_FILENAME}. (Make sure to keep imports) Note: print() commands will be visible in view_last_game_results
-                        - web_search_tool_call: Perform a web search using the Tavily API. (Can be utilized to debug errors or bugs you arent sure how to solve)
+                You Have the Following Tools at Your Disposal:
+                    - list_local_files: List all files in the current directory.
+                    - read_local_file: Read the content of a file in the current directory.
+                    - read_foo: Read the content of {FOO_TARGET_FILENAME}.
+                    - write_foo: Write the content of {FOO_TARGET_FILENAME}. (Make sure to keep imports) Note: print() commands will be visible in view_last_game_results
+                    - web_search_tool_call: Perform a web search using the Tavily API. (Can be utilized to debug errors or bugs you arent sure how to solve)
 
                     
                     Make sure to start your output with 'CODER' and end with 'END CODER'.
@@ -549,10 +524,12 @@ class CreatorAgent():
             if summary:
                 # A summary already exists
                 summary_message = (
-                    f"This is summary of the conversation to date: {summary}\n\n"
-                    "Extend the summary by taking into account the new messages above:\n"
-                    "Use minimal tokens, but keep track of each sequence of runs (Game->Analyzer->Researcher->Coder)\n"
-                    "Make sure to start your output with 'SUMMARY:' and end with 'SUMMARY'" 
+                    f"{multi_agent_prompt} SUMMARIZER\n"
+                    f"This is the current summary of the agent system to date: {summary}\n\n"
+                    "YOUR GOAL:\n"
+                    "Extend the summary by taking into account the new messages\n"
+                    "Use minimal tokens, but keep track of each sequence of runs (Game Results->Analyzer->Researcher->Coder)\n"
+                    "RETURN THE FULL SUMMARY, and make sure to start your output with 'SUMMARY:' and end with 'SUMMARY'" 
                 )
                 
             else:
