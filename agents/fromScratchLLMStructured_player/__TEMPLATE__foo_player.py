@@ -1,6 +1,7 @@
 import os
 from catanatron import Player
 from catanatron.game import Game
+from agents.fromScratchLLMStructured_player.llm_tools import LLM  # Assuming LLM is defined in a separate module
 
 class FooPlayer(Player):
     def __init__(self, color, name=None):

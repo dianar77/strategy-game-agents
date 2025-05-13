@@ -23,7 +23,7 @@ class FooPlayer(Player):
             ActionType.END_TURN: -50,  # Stronger penalty for passive gameplay
             ActionType.ROLL: -40,     # Stronger penalty for passive gameplay
         }
-
+ 
         action_type = action.action_type
         base_score = priorities.get(action_type, 0)
 
