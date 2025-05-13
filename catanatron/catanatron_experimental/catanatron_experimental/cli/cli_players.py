@@ -30,6 +30,9 @@ from agents.llm_player.llm_player import LLMPlayer
 from agents.vanillaLLM_player.vanillaLLM_player import VanillaLLMPlayer
 from agents.basicLang_player.basicLang_player import BasicLangPlayer
 from agents.toolCallLLM_player.toolCallLLM_player import ToolCallLLMPlayer
+from agents.promptRefiningLLM_player_C.promptRefiningLLM_player_C import PromptRefiningLLMPlayer_C
+from agents.promptRefiningLLM_player_G.promptRefiningLLM_player_G import PromptRefiningLLMPlayer_G
+from agents.promptRefiningLLM_player_M.promptRefiningLLM_player_M import PromptRefiningLLMPlayer_M
 from agents.promptRefiningLLM_player.promptRefiningLLM_player import PromptRefiningLLMPlayer
 from agents.codeRefiningLLM_player.codeRefiningLLM_player import CodeRefiningLLMPlayer
 
@@ -159,6 +162,24 @@ CLI_PLAYERS = [
         "FooPlayer_LLM_V2",
         "Player being created by creator agent that has more tools to edit FooPlayer's code. FooPlayer has access to query the LLM",
         FooLLMPlayerV2
+    ),
+    CliPlayer(
+        "PR_LLM_G",
+        "PromptRefiningLLMPlayer_G",
+        "LLM Player That has had the prompt refined by the creator agent",
+        PromptRefiningLLMPlayer_G,
+    ),
+    CliPlayer(
+        "PR_LLM_M",
+        "PromptRefiningLLMPlayer_M",
+        "LLM Player That has had the prompt refined by the creator agent",
+        PromptRefiningLLMPlayer_M,
+    ),
+    CliPlayer(
+        "PR_LLM_C",
+        "PromptRefiningLLMPlayer_C",
+        "LLM Player That has had the prompt refined by the creator agent",
+        PromptRefiningLLMPlayer_C,
     ),
     CliPlayer(
         "PR_LLM",

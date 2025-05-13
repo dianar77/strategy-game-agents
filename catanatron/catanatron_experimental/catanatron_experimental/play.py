@@ -12,6 +12,8 @@ from rich import box
 from rich.console import Console
 from rich.theme import Theme
 from rich.text import Text
+import json
+from pathlib import Path
 
 from catanatron.game import Game
 from catanatron.models.player import Color
@@ -341,6 +343,7 @@ def play_batch(
         progress.refresh()
     console.print(table)
 
+
     # ===== PLAYER SUMMARY
     table = Table(title="Player Summary", box=box.MINIMAL)
     table.add_column("", no_wrap=True)
@@ -385,11 +388,58 @@ def play_batch(
     if output_options.output and output_options.csv:
         console.print(f"GZIP CSVs saved at: [green]{output_options.output}[/green]")
 
+
+
+    ### BEGIN NB ADDITIONS ###
+    from datetime import datetime
+    results_dir = Path(__file__).resolve().parents[3] / "run_results"
+    results_dir.mkdir(exist_ok=True, parents=True)
+
+    # Create timestamp for filename
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    results_file = results_dir / f"game_results_{timestamp}.json"
+
+    # Build JSON structure
+    results = {
+        "Player Summary": {},
+        "Game Summary": {
+            "AVG TICKS": float(statistics_accumulator.get_avg_ticks()),
+            "AVG TURNS": float(statistics_accumulator.get_avg_turns()),
+            "AVG DURATION": statistics_accumulator.get_avg_duration()
+        }
+    }
+    
+    # Add player data
+    for player in players:
+        vps = statistics_accumulator.results_by_player[player.color]
+        avg_vps = sum(vps) / len(vps)
+        
+        results["Player Summary"][f"{player}"] = {
+            "WINS": statistics_accumulator.wins[player.color],
+            "AVG VP": avg_vps,
+            "AVG SETTLES": vp_accumulator.get_avg_settlements(player.color),
+            "AVG CITIES": vp_accumulator.get_avg_cities(player.color),
+            "AVG ROAD": vp_accumulator.get_avg_longest(player.color),
+            "AVG ARMY": vp_accumulator.get_avg_largest(player.color),
+            "AVG DEV VP": vp_accumulator.get_avg_devvps(player.color)
+        }
+
+    # Save to file
+    with open(results_file, 'w') as f:
+        json.dump(results, f, indent=2, default=str)
+
+    if not quiet:
+        console.print(f"results_file_path:{results_file}")
+    
+    ### END NB ADDITIONS ###
+
+
     return (
         dict(statistics_accumulator.wins),
         dict(statistics_accumulator.results_by_player),
         statistics_accumulator.games,
     )
+
 
 
 if __name__ == "__main__":

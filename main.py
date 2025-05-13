@@ -14,8 +14,14 @@ from agents.basicLang_player.basicLang_player import BasicLangPlayer
 from agents.toolCallLLM_player.toolCallLLM_player import ToolCallLLMPlayer
 from agents.fromScratch_player.creator_agent import read_foo, write_foo, run_testfoo, list_local_files, read_local_file 
 from agents.fromScratch_player.creator_agent import CreatorAgent as ScratchCreatorAgent 
+from agents.promptRefiningLLM_player_M.creator_agent import CreatorAgent as PromptRefiningCreatorAgent_M
+from agents.promptRefiningLLM_player_M.creator_agent import read_prompt, write_prompt, list_local_files, read_local_file
+from agents.promptRefiningLLM_player_G.creator_agent import CreatorAgent as PromptRefiningCreatorAgent_G
+from agents.promptRefiningLLM_player_G.creator_agent import read_prompt, write_prompt, list_local_files, read_local_file 
+from agents.promptRefiningLLM_player_C.creator_agent import CreatorAgent as PromptRefiningCreatorAgent_C
+from agents.promptRefiningLLM_player_C.creator_agent import read_prompt, write_prompt, list_local_files, read_local_file 
 from agents.promptRefiningLLM_player.creator_agent import CreatorAgent as PromptRefiningCreatorAgent
-from agents.promptRefiningLLM_player.creator_agent import read_foo, write_foo, list_local_files, read_local_file 
+from agents.promptRefiningLLM_player.creator_agent import read_prompt, write_prompt, list_local_files, read_local_file 
 from agents.codeRefiningLLM_player.creator_agent import CreatorAgent as CodeRefiningCreatorAgent
 from agents.codeRefiningLLM_player.creator_agent import read_foo, write_foo, list_local_files, read_local_file
 # from agents.base_llm import OpenAILLM, MistralLLM, AzureOpenAILLM
@@ -45,7 +51,7 @@ def main():
 
 
     # # run prompt refining (should loop until it wins 3/5 of games in a run)
-    cA = PromptRefiningCreatorAgent(opponent="AB")
+    cA = PromptRefiningCreatorAgent_M()
     cA.run_react_graph()
 
     # run code refining (should loop until it wins 3/5 of games in a run)
@@ -63,10 +69,10 @@ def main():
 
     # players = [
     #     RandomPlayer(Color.RED),
-    #     #AlphaBetaPlayer(Color.BLUE),
+    #     AlphaBetaPlayer(Color.BLUE),
     #     #ToolCallLLMPlayer(Color.ORANGE),
     #     #BasicLangPlayer(Color.BLUE),
-    #     LLMPlayer(Color.WHITE, llm=MistralLLM(model_name="mistral-large-latest"))
+    #     #LLMPlayer(Color.WHITE, llm=MistralLLM(model_name="mistral-large-latest"))
     # ]
     # game = Game(players)
     # #open_link(game)  # opens game in browser...not working yet

@@ -3,7 +3,7 @@ import os
 import sys, pathlib
 sys.path.insert(0, str(pathlib.Path(__file__).parent.parent))
 import base_llm
-from base_llm import OpenAILLM, AzureOpenAILLM, MistralLLM, BaseLLM, MistralLLM, AzureOpenAILLM
+from base_llm import OpenAILLM, AzureOpenAILLM, MistralLLM, BaseLLM, MistralLLM, AzureOpenAILLM, AnthropicLLM
 from typing import List, Dict, Tuple, Any, Optional
 import json
 import random
@@ -72,6 +72,7 @@ class PromptRefiningLLMPlayer(Player):
         if llm is None:
             self.llm = AzureOpenAILLM(model_name="gpt-4o")
             #self.llm = MistralLLM(model_name="mistral-large-latest")
+            #self.llm = AnthropicLLM()
         else:
             self.llm = llm
         self.is_bot = True
@@ -128,7 +129,7 @@ class PromptRefiningLLMPlayer(Player):
 
         if len(playable_actions) == 1:
             if self.debug_mode:
-                print("Only one action available. Selecting it automatically without API call.")
+                print(f"Turn {state.num_turns}: Only one action available. Automatically selecting: {self._get_action_description(playable_actions[0])}")
             return playable_actions[0]
 
         # Create a string representation of the game state for Claude
@@ -137,7 +138,8 @@ class PromptRefiningLLMPlayer(Player):
         # print(game_state_text)
 
         if self.debug_mode:
-            print(f"Game state prepared for LLM (length: {len(game_state_text)} chars)")
+            pass
+            #print(f"Game state prepared for LLM (length: {len(game_state_text)} chars)")
 
         # Use LLM to choose an action
         try:
@@ -145,7 +147,7 @@ class PromptRefiningLLMPlayer(Player):
             if chosen_action_idx is not None and 0 <= chosen_action_idx < len(playable_actions):
                 action = playable_actions[chosen_action_idx]
                 if self.debug_mode:
-                    print(f"LLM chose action {chosen_action_idx}: {self._get_action_description(action)}")
+                    print(f"Turn {state.num_turns}: LLM chose action {chosen_action_idx}: {self._get_action_description(action)}")
 
                 # Record decision time
                 decision_time = time.time() - start_time
@@ -743,7 +745,8 @@ class PromptRefiningLLMPlayer(Player):
         if plan_match:
             self.current_plan = plan_match.group(1).strip()
             if self.debug_mode:
-                print(f"Updated plan: {self.current_plan}")
+                pass
+                # print(f"Updated plan: {self.current_plan}")
 
 
 
