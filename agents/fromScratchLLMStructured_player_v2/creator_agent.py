@@ -104,7 +104,7 @@ class CreatorAgent():
         )
 
         self.config = {
-            "recursion_limit": 75, # set recursion limit for graph
+            "recursion_limit": 150, # set recursion limit for graph
             # "configurable": {
             #     "thread_id": "1"
             # }
@@ -132,9 +132,9 @@ class CreatorAgent():
         multi_agent_prompt = f"""You are apart of a multi-agent system that is working to evolve the code in {FOO_TARGET_FILENAME} to become the best player in the Catanatron Minigame. Get the highest score for the player by class in foo_player.py. Your performance history on this trial is saved in the json\n\tYour specific role is the:"""
 
         #tools = [add, multiply, divide]
-        DEFAULT_EVOLVE_COUNTER = 5
+        DEFAULT_EVOLVE_COUNTER = 10
         DEFAULT_VALIDATOR_COUNTER = 2
-        MAX_MESSAGES_TOOL_CALLING = 4
+        MAX_MESSAGES_TOOL_CALLING = 5
 
         analyzer_continue_key = "CONTINUE_EVOLVING"
         analyzer_stop_key = "STOP_EVOLVING"
@@ -383,9 +383,10 @@ class CreatorAgent():
                     Task: Your job is to analyze the results of how {FOO_TARGET_FILENAME} did in the game and create a report to the Strategizer
                     
                     1. Analyze
-                        - 1st Message:  Analyze your current performance history (1st message) with how you are evolving the player
-                        - 2nd Message:  Analyze the CODER additions to the code
-                        - 3rd Message: Analyze the results of the new player
+                        - 1st Message Given to You:  Analyze your current performance history (1st message) with how you are evolving the player
+                            If you need to view the game output, call read_local_file with the filepath in "full_game_log_path" variable
+                        - 2nd Message Given to You:  Analyze the CODER additions to the code
+                        - 3rd Message Given to You: Analyze the results of the new player
                             - Analyze on any errors or issues that occurred during the game
                             - Analyze the results of the player, and how it did against other players
                         - If needed, analyze on any ouput from the player
@@ -447,6 +448,7 @@ class CreatorAgent():
                         - Formulate your thoughts into a plan that the researcher can research, and the coder can implement
                         - Focus on small iterative changes that can be made to the code
                         - PRIORITIZE FIXING BUGS AND ERRORS THAT ARISE
+                        - If needed, revert to a previous version of the player that is avilable in the performance history
 
                     3. Report (Output)
                         - Create a concise and efficient report with a strategy for the Researcher and the coder
@@ -491,28 +493,32 @@ class CreatorAgent():
                     Task: Digest the analysis from the Strategizer, perform research, and create a detailed solution for the Coder to follow and implement
 
                     1. Digest
-                        - 1nd Message: Digest the analysis and game summary from the Analyzer.
-                        - 2nd Message: Digest the strategy from the Strategizer
+                        - 1nd Message you Receive: Digest the analysis and game summary from the Analyzer.
+                        - 2nd Message you Receive: Digest the strategy from the Strategizer
                         - If needed, use the read_foo tool call to view the player to understand the code
                         - If needed, use the read_local_file tool call to view any game files in the performance history (1st message)
 
                     2. Research
                         - Perform research on the questions from the and action items from the Strategizer
                         - If needed, Use the web_search_tool_call to perform a web search for any questions you have (REALLY BENEFICIAL TO USE THIS)
-                        - If needed, Use the list_local_files, and read_local_file to view any game files (which are very helpful for debugging)
+                        - For fixing references to Catanatron API/Objects, view local game files, for syntax bugs, query the web
+                        - For implementing new code, se the list_local_files, and read_local_file to view any game files (which are very helpful for debugging)
                         - Determine why the other player is winning, and how to beat it
                         - PRIORITIZE FIXING BUGS AND ERRORS THAT ARISE
 
 
                     3. Report (Output)
                         - Create a concise and efficient report with strategizer questions and answers, your resarch, and plan for the coder
+                        - Use FACTS you found from your research to back up your claims
+                        - If you are fixing syntax errors, provide the correct syntax
                         - Include anything you learned from your tools calls
                         - Give clear instructions to the coder on what to implement
                         - Include any code snippets that are needed or you discovered to be helpful
+                        - Note: The Coder Can Only Read and Write Foo....so give it all the information it needs
 
 
                     You Have the Following Tools at Your Disposal:
-                        - list_catanatron_files: List all files beneath the Catanatron base directory.
+                        - list_catanatron_files: List all files beneath the Catanatron base directory. (Includes Player, Game, State classes etc.)
                         - read_local_file: Read the content of a catanatron file, or a performance history file in the run directory. (DO NOT CALL MORE THAN TWICE)
                         - read_full_performance_history: Return the entire performance history as a JSON string.
                         - read_foo: Read the content of {FOO_TARGET_FILENAME}.
@@ -529,6 +535,17 @@ class CreatorAgent():
 
             # Choose the input based on if coming from analyzer or from validator in graph
             msg = [state["analysis"], state["strategy"]]
+
+            if state["validation"].content == "":
+                # If coming from analyzer, use the full_results, analusis, and solution
+                print("Researcher Coming from Researcher")
+                #msg = [state["full_results"], state["analysis"], state["solution"]]
+                msg = [state["analysis"], state["strategy"]]
+            else:
+                # If coming from validator, usee the coder, test_results, and validation messages
+                print("Researcher Coming from Validator")
+                #msg = [state["code_additions"], state["test_results"], state["validation"]]
+                msg = [state["test_results"], state["validation"]]
 
             tools = [list_catanatron_files, read_local_file, read_full_performance_history, read_foo, web_search_tool_call]
             output = tool_calling_state_graph(sys_msg, msg, tools)
@@ -549,7 +566,7 @@ class CreatorAgent():
                     1. Digest 
                         - Digest the solution provided by the Researcher and the Analyzer
                         - OR Digest the Code Problems from the Test Results and the Validator
-                        - Digest the current player code given for {FOO_TARGET_FILENAME} in the most recent message
+                        - Digest the current player code given for {FOO_TARGET_FILENAME}
                         - If needed: Utilize the list_local_file and read_local_file to view any game files (Very helpful for debugging!)
 
                     2. Implement
@@ -558,12 +575,13 @@ class CreatorAgent():
                         - Focus on making sure the code implementes the solution in the most correct way possible
                         - Make Sure to not add backslashes to comments, ONLY OUTPUT VALID PYTHON CODE
                             WRONG:        print(\\'Choosing First Action on Default\\')
-                            CORRECT:      print('Choosing First Action on Defaul')
+                            CORRECT:      print('Choosing First Action on Default')
                         - Give plenty of comments in the code to explain what you are doing, and what you have learned (along with syntax help)
                         - Use print statement to usefully debug the output of the code
                         - DO NOT MAKE UP VARIABLES OR FUNCTIONS RELATING TO THE GAME
                         - Note: You will have multiple of iterations to evolve, so make sure the syntax is correct
                         - PRIORITIZE FIXING BUGS AND ERRORS THAT ARISE
+                        - Make sure to follow **python 3.12** syntax!!
 
                     
                     3. Report (Output)
@@ -572,9 +590,7 @@ class CreatorAgent():
                         - Include anything you learned from your tools calls
 
                     You Have the Following Tools at Your Disposal:
-                        - list_catanatron_files: List all files beneath the Catanatron base directory.
-                        - read_local_file: Read the content of a catanatron file, or a performance history file in the run directory. (DO NOT CALL MORE THAN TWICE)
-                        - read_foo: Read the content of {FOO_TARGET_FILENAME}.
+                        - read_foo: Read the content of {FOO_TARGET_FILENAME}. MUST BE CALLED BEFORE the {MAX_MESSAGES_TOOL_CALLING}th tool call
                         - write_foo: Write the content of {FOO_TARGET_FILENAME}. (Make sure to keep imports) Note: print() commands will be visible in view_last_game_results
 
                     KEEP YOUR TOOL CALLS TO A MINIMUM!
@@ -583,24 +599,116 @@ class CreatorAgent():
                 """
             )
            
-            msg_code = HumanMessage(content=read_foo())
-            # Choose the input based on if coming from analyzer or from validator in graph
+            # p1_sys_msg = SystemMessage(
+            #     content =  
+            #     f"""
+            #     {multi_agent_prompt} CODER PLANNER
+                    
+            #         Task: Digest at the proposed solution from the Strategizer and Researcher, and create and outline with #TODO statements in the code
+
+            #         1. Digest 
+            #             - Digest the solution provided by the Researcher and the Analyzer
+            #             - OR Digest the Code Problems from the Test Results and the Validator
+            #             - Digest the current player code given for {FOO_TARGET_FILENAME}
+            #             - If needed: Utilize the list_local_file and read_local_file to view any game files (Very helpful for debugging!)
+
+            #         2. Implement
+            #             - CALL THE **write_foo** tool call to write the new code to the foo_player.py file with the new code
+            #              -ONLY WRITE PLACE HOLDERS AND COMMENTS FOR THE CODE. DO NOT ACTUAL IMPLEMENT ANYTHING
+            #             - Focus on making sure the code implementes the solution in the most correct way possible
+            #             - Make Sure to not add backslashes to comments, ONLY OUTPUT VALID PYTHON CODE
+            #                 WRONG:        print(\\'Choosing First Action on Default\\')
+            #                 CORRECT:      print('Choosing First Action on Default')
+            #             - Give plenty of comments in the code to explain what you are doing, and what you have learned (along with syntax help)
+            #             - Use print statement to usefully debug the output of the code
+            #             - DO NOT MAKE UP VARIABLES OR FUNCTIONS RELATING TO THE GAME
+            #             - Note: You will have multiple of iterations to evolve, so make sure the syntax is correct
+            #             - PRIORITIZE FIXING BUGS AND ERRORS THAT ARISE
+            #             - Make sure to follow **python 3.12** syntax!!
+
+                    
+            #         3. Report (Output)
+            #             - After you do the write_foo tool call, create a report
+            #             - Take concise and efficient notes with the additions to the code you made, and why you made them for the validator
+            #             - Include anything you learned from your tools calls
+
+            #         You Have the Following Tools at Your Disposal:
+            #             - read_foo: Read the content of {FOO_TARGET_FILENAME}. MUST BE CALLED BEFORE the {MAX_MESSAGES_TOOL_CALLING}th tool call
+            #             - write_foo: Write the content of {FOO_TARGET_FILENAME}. (Make sure to keep imports) Note: print() commands will be visible in view_last_game_results
+
+            #         KEEP YOUR TOOL CALLS TO A MINIMUM!
+            #         YOU ARE LIMITED TO {MAX_MESSAGES_TOOL_CALLING} TOOL CALLS
+            #         Make sure to start your output with 'CODER' and end with 'END CODER'.                    
+            #     """
+            # )
+            
+            #Choose the input based on if coming from analyzer or from validator in graph
             if state["validation"].content == "":
                 # If coming from analyzer, use the full_results, analusis, and solution
-                print("Coder Coming from Analyzer")
+                print("Coder Coming from Researcher")
                 #msg = [state["full_results"], state["analysis"], state["solution"]]
-                msg = [state["strategy"], state["solution"], msg_code]
+                msg = [state["full_results"], state["strategy"], state["solution"]]
             else:
                 # If coming from validator, usee the coder, test_results, and validation messages
                 print("Coder Coming from Validator")
                 #msg = [state["code_additions"], state["test_results"], state["validation"]]
-                msg = [state["test_results"], state["validation"], msg_code]
+                msg = [state["test_results"], state["validation"], state["solution"]]
+        
             
-            tools = [list_catanatron_files, read_local_file, read_foo, write_foo]
+            tools = [read_foo, write_foo]
 
-            # Need to Return Anything?
+            # Update the Code the first time
             output = tool_calling_state_graph(sys_msg, msg, tools)
             code_additions = HumanMessage(content=output["messages"][-1].content)
+
+            # p2_sys_msg = SystemMessage(
+            #     content =  
+            #     f"""
+            #         {multi_agent_prompt} IMPLEMENTER CODER
+                    
+            #         Task: Digest at the proposed solution PLANNER CODER, and implement it into the foo_player.py file.
+
+            #         1. Digest 
+            #             - Digest the solution from the PLANNER CODER and what has been outlined for you
+            #             - OR Digest the Code Problems from the Test Results and the Validator
+            #             - Digest the current player code given for {FOO_TARGET_FILENAME}
+            #             - If needed: Utilize the list_local_file and read_local_file to view any game files (Very helpful for debugging!)
+
+            #         2. Implement
+            #             - CALL THE **write_foo** tool call to write the new code to the foo_player.py file with the new code
+            #             - YOUR JOB IS TO IMPLEMENT ALL THE COMMENTS AND PLACEHOLDERS FROM THE PLANNER CODER
+            #             - Use what you learned and write the entire new code for the foo_player.py file
+            #             - Focus on making sure the code implementes the solution in the most correct way possible
+            #             - Make Sure to not add backslashes to comments, ONLY OUTPUT VALID PYTHON CODE
+            #                 WRONG:        print(\\'Choosing First Action on Default\\')
+            #                 CORRECT:      print('Choosing First Action on Default')
+            #             - Give plenty of comments in the code to explain what you are doing, and what you have learned (along with syntax help)
+            #             - Use print statement to usefully debug the output of the code
+            #             - DO NOT MAKE UP VARIABLES OR FUNCTIONS RELATING TO THE GAME
+            #             - Note: You will have multiple of iterations to evolve, so make sure the syntax is correct
+            #             - PRIORITIZE FIXING BUGS AND ERRORS THAT ARISE
+            #             - Make sure to follow **python 3.12** syntax!!
+
+                    
+            #         3. Report (Output)
+            #             - After you do the write_foo tool call, create a report
+            #             - Take concise and efficient notes with the additions to the code you made, and why you made them for the validator
+            #             - Include anything you learned from your tools calls
+
+            #         You Have the Following Tools at Your Disposal:
+            #             - read_foo: Read the content of {FOO_TARGET_FILENAME}. MUST BE CALLED BEFORE the {MAX_MESSAGES_TOOL_CALLING}th tool call
+            #             - write_foo: Write the content of {FOO_TARGET_FILENAME}. (Make sure to keep imports) Note: print() commands will be visible in view_last_game_results
+
+            #         KEEP YOUR TOOL CALLS TO A MINIMUM!
+            #         YOU ARE LIMITED TO {MAX_MESSAGES_TOOL_CALLING} TOOL CALLS
+            #         Make sure to start your output with 'CODER' and end with 'END CODER'.                    
+            #     """
+            # )
+
+            # # update the Code the second time
+            # msg.append(code_additions)
+            # output = tool_calling_state_graph(p2_sys_msg, msg, tools)
+            # code_additions = HumanMessage(content=code_additions.content + output["messages"][-1].content)
 
             return {"code_additions": code_additions, "tool_calling_messages": output["messages"]}
 
@@ -632,6 +740,7 @@ class CreatorAgent():
                         - Otherwise, on a VERY limited time basis, return "{val_not_ok_key}".
                         - Then, commentate on why you decided to return the key
                         - Note: The ouptput will be parse for either keys, so make sure to only return one of them
+                    
 
                     You Have the Following Tools at Your Disposal:
                         - read_full_performance_history: Return the entire performance history as a JSON string.
@@ -650,7 +759,7 @@ class CreatorAgent():
             )
             msg_code = HumanMessage(content=read_foo())
             msg = [state["solution"], state["code_additions"], msg_code, state["test_results"]]
-            tools = [read_local_file, read_full_performance_history,]
+            tools = [read_local_file, read_full_performance_history]
             output = tool_calling_state_graph(sys_msg, msg, tools)
             validation = HumanMessage(content=output["messages"][-1].content)
 
@@ -701,8 +810,8 @@ class CreatorAgent():
                 print("Validation passed - rerunning player")
                 return "run_player"
             elif val_not_ok_key in validation_message:  #
-                print("Validation failed - going back to coder")
-                return "coder"
+                print("Validation failed - going back to researcher")
+                return "researcher"
             else:
                 # Default case if neither string is found
                 print("Warning: Could not determine validation result, defaulting to running player")
@@ -737,7 +846,7 @@ class CreatorAgent():
             graph.add_conditional_edges(
                 "validator",
                 code_ok_validator,
-                {"coder", "run_player"}
+                {"researcher", "run_player"}
             )
 
             return graph.compile()
