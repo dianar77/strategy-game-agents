@@ -56,24 +56,24 @@ class CreatorAgent():
 
     def __init__(self):
         # Get API key from environment variable
-        # self.llm_name = "gpt-4o"
-        # self.llm = AzureChatOpenAI(
-        #     model="gpt-4o",
-        #     azure_endpoint="https://gpt-amayuelas.openai.azure.com/",
-        #     api_version = "2024-12-01-preview"
-        # )
+        self.llm_name = "gpt-4o"
+        self.llm = AzureChatOpenAI(
+            model="gpt-4o",
+            azure_endpoint="https://gpt-amayuelas.openai.azure.com/",
+            api_version = "2024-12-01-preview"
+        )
 
         # config = Config(read_timeout=1000)
         # bedrock_client = client(service_name='bedrock-runtime', region_name='us-east-2', config=config)
-        self.llm_name = "claude-3.7"
-        self.llm = ChatBedrockConverse(
-            aws_access_key_id = os.environ["AWS_ACESS_KEY"],
-            aws_secret_access_key = os.environ["AWS_SECRET_KEY"],
-            region_name = "us-east-2",
-            provider = "anthropic",
-            model_id="arn:aws:bedrock:us-east-2:288380904485:inference-profile/us.anthropic.claude-3-7-sonnet-20250219-v1:0"
-        )
-        os.environ["LANGCHAIN_TRACING_V2"] = "false"
+        # self.llm_name = "claude-3.7"
+        # self.llm = ChatBedrockConverse(
+        #     aws_access_key_id = os.environ["AWS_ACESS_KEY"],
+        #     aws_secret_access_key = os.environ["AWS_SECRET_KEY"],
+        #     region_name = "us-east-2",
+        #     provider = "anthropic",
+        #     model_id="arn:aws:bedrock:us-east-2:288380904485:inference-profile/us.anthropic.claude-3-7-sonnet-20250219-v1:0"
+        # )
+        # os.environ["LANGCHAIN_TRACING_V2"] = "false"
 
 
         # self.llm_name = "mistral-large-latest"
@@ -118,7 +118,8 @@ class CreatorAgent():
         class CreatorGraphState(TypedDict):
             full_results: HumanMessage # Last results of running the game
             analysis: HumanMessage         # Output of Anlayzer, What Happend?
-            solution: HumanMessage         # Ouput of Researcher, What should be done?
+            strategy: HumanMessage         # Output of Strategizer, What should be done?
+            solution: HumanMessage         # Ouput of Researcher, How should it be implemented?
             code_additions: HumanMessage         # Output of Coder, What was added to the code?
             test_results: HumanMessage # Running a test on code, to ensure correctness
             validation: HumanMessage       # Ouptut of Validator, Is the code correct?
@@ -131,9 +132,9 @@ class CreatorAgent():
         multi_agent_prompt = f"""You are apart of a multi-agent system that is working to evolve the code in {FOO_TARGET_FILENAME} to become the best player in the Catanatron Minigame. Get the highest score for the player by class in foo_player.py. Your performance history on this trial is saved in the json\n\tYour specific role is the:"""
 
         #tools = [add, multiply, divide]
-        DEFAULT_EVOLVE_COUNTER = 3
+        DEFAULT_EVOLVE_COUNTER = 5
         DEFAULT_VALIDATOR_COUNTER = 2
-        MAX_MESSAGES_TOOL_CALLING = 5
+        MAX_MESSAGES_TOOL_CALLING = 4
 
         analyzer_continue_key = "CONTINUE_EVOLVING"
         analyzer_stop_key = "STOP_EVOLVING"
@@ -260,7 +261,15 @@ class CreatorAgent():
                 evolve_counter = state["evolve_counter"]
 
 
-            return {"evolve_counter": evolve_counter,"summary": HumanMessage(content="No Summary Yet"), "performance_history": HumanMessage(content="No Performance History Yet")}
+            return {
+                "evolve_counter": evolve_counter,
+                "performance_history": HumanMessage(content="No Performance History Yet"),
+                "analysis": HumanMessage(content=""),
+                "strategy": HumanMessage(content=""),
+                "solution": HumanMessage(content=""),
+                "validation": HumanMessage(content=""),
+                "code_additions": HumanMessage(content=""),
+            }
 
         def run_player_node(state: CreatorGraphState):
             """
@@ -275,12 +284,6 @@ class CreatorAgent():
             # Clear all past messages
             return {
                 "full_results": HumanMessage(content=f"GAME RESULTS:\n\n{game_results}"),
-                "analysis": HumanMessage(content=""),
-                "solution": HumanMessage(content=""),
-                "code_additions": HumanMessage(content=""),
-                "test_results": HumanMessage(content=""),
-                "validation": HumanMessage(content=""),
-                "tool_calling_messages": [],
                 "validator_counter": DEFAULT_VALIDATOR_COUNTER,
             }
 
@@ -292,7 +295,79 @@ class CreatorAgent():
             game_results = run_testfoo(short_game=True)
 
             return {"test_results": HumanMessage(content=f"TEST GAME RESULTS (Not a Full Game):\n\n{game_results}")}
+        
+        def summarizer_node(state: CreatorGraphState):
+    
+            print("In Summarizer Node")
+            sys_msg = SystemMessage(content=
+                f"""You are tasked with summarizing an Multi-Agent Workflow with the steps Full_Results, Analysis, Strategy, Solution, Code Additions, and Validation
+                This workflow will iterate until the code is correct and the game is won. 
 
+                Above, you have new Full_Results, Analysis, Solution, Code Additions Messages for a new step in the Multi-Agent Workflow
+                Your Summary should look like the following:
+
+                <Short High Level Description>
+                    Game Results Summary: <summary of the game results>
+                    Analysis: <summary of the analysis>
+                    Strategy: <summary of the strategy>
+                    Solution: <summary of the solution>
+                    Code Additions: <summary of the code additions>
+                    Validation: <summary of the validation>
+                
+
+                Do not make anything up. Only write what you are given, or nothing at all
+
+                IMPORTANT: Only include the summary in the output, no other commentary or information
+                Make sure to keep the summary concise and to the point
+
+                """
+            )
+            
+            print("Summary")
+            state_msgs = [state["full_results"], state["analysis"], state["strategy"], state["solution"], state["code_additions"], state["validation"]]
+            tools = []
+            output = tool_calling_state_graph(sys_msg, state_msgs, tools)
+            summary = output["messages"][-1].content
+            
+            performance_history = {}
+            # Update the performance history JSON with the summary
+            try:
+                # Load the performance history
+                performance_history_path = Path(CreatorAgent.run_dir) / "performance_history.json"
+                if performance_history_path.exists():
+                    with open(performance_history_path, 'r') as f:
+                        performance_history = json.load(f)
+                    
+                    # Find the entry for the current evolution
+                    # The current evolution key should be for the current iteration
+                    evolution_key = f"Evolution {CreatorAgent.current_evolution - 1}"  # -1 because it's incremented after running
+                    
+                    if evolution_key in performance_history:
+                        # Update the summary field
+                        performance_history[evolution_key]["summary"] = summary
+                        
+                        # Write the updated performance history back to the file
+                        with open(performance_history_path, 'w') as f:
+                            json.dump(performance_history, f, indent=2)
+                            
+                        print(f"Updated performance history with summary for {evolution_key}")
+                    else:
+                        print(f"Warning: Could not find {evolution_key} in performance history")
+            except Exception as e:
+                print(f"Error updating performance history with summary: {e}")
+                import traceback
+                traceback.print_exc()
+            return {
+                "performance_history": HumanMessage(content=json.dumps(performance_history)),
+                "analysis": HumanMessage(content=""),
+                "strategy": HumanMessage(content=""),
+                "solution": HumanMessage(content=""),
+                "code_additions": HumanMessage(content=""),
+                "test_results": HumanMessage(content=""),
+                "validation": HumanMessage(content=""),
+                "tool_calling_messages": [],
+            }
+        
         def analyzer_node(state: CreatorGraphState):
             #print("In Analyzer Node")
 
@@ -305,32 +380,29 @@ class CreatorAgent():
                 content=f"""
                     {multi_agent_prompt} ANALYZER
                     
-                    Task: Your job is to analyze the results of how foo_player did in the game and create a report to the Researcher
+                    Task: Your job is to analyze the results of how {FOO_TARGET_FILENAME} did in the game and create a report to the Strategizer
                     
                     1. Analyze
-                        - Analyze on any errors or issues that occurred during the game
-                        - Analyze on the performance of the player, and how it did against other players
-                        - Analyze on any terminal ouput from the player
+                        - 1st Message:  Analyze your current performance history (1st message) with how you are evolving the player
+                        - 2nd Message:  Analyze the CODER additions to the code
+                        - 3rd Message: Analyze the results of the new player
+                            - Analyze on any errors or issues that occurred during the game
+                            - Analyze the results of the player, and how it did against other players
+                        - If needed, analyze on any ouput from the player
+                        - Look for evidence of any flaws in the code or the player
 
-                    2. Think
-                        - Think about what the researcher should look into for the next iteration (Note: The Researher can search the web)
-                        - Think about what the coder should look into for the next iteration
-                        - Think about why the other player is winning, and how to beat it
                     
-                    3. Decide
+                    2. Decide
                         - Decide if the player is is good enough to stop evolving, or if it should continue evolving
                         - If the player is can beat the players consistently, just return the key "{analyzer_stop_key}" (Ignore Step 4)
                         - If the player is not good enough, return the key "{analyzer_continue_key}" (defaults to not good enough)
 
-                    4. Report (Output)
-                        - Create a concise and efficient report with summarized results, analysis, thoughts, and action items for the researcher
+                    3. Report (Output)
+                        - Create a concise and efficient report with your summary and analysis of the previous game
+                        - PRIORITIZE FIXING BUGS AND ERRORS THAT ARISE
                         - Include anything you learned from your tools calls
-                        - Make sure to include any errors or issues that occurred during the game
-                        - Be sure a clear list of action items for the researcher to follow
-
+                        - Include questions for the strategizer to research
                     
-                    Utilize as many tool calls as necessary for you to get your job done. 
-
                     You Have the Following Tools at Your Disposal:
                         - list_catanatron_files: List all files beneath the Catanatron base directory.
                         - read_full_performance_history: Return the entire performance history as a JSON string.
@@ -339,6 +411,7 @@ class CreatorAgent():
                     
                     KEEP YOUR TOOL CALLS TO A MINIMUM!
                     YOU ARE LIMITED TO {MAX_MESSAGES_TOOL_CALLING} TOOL CALLS
+
                     Make sure to start your output with 'ANALYSIS:' and end with 'END ANALYSIS'.
                     Respond with No Commentary, just the analysis.
 
@@ -352,6 +425,60 @@ class CreatorAgent():
             #print(output)
             return {"analysis": analysis, "evolve_counter": evolve_counter, "tool_calling_messages": output["messages"]}
         
+        def strategizer_node(state: CreatorGraphState):
+            
+            #print("In Strategizer Node")
+            # Add custom tools for strategizer
+
+            sys_msg = SystemMessage(
+                content=f"""
+                    {multi_agent_prompt} STRATEGIZER
+                     
+                    Task: Digest the analysis from the Analyzer, and devise a STRATEGY that the Researcher can research, and the coder can implement
+
+                    
+                    1. Digest
+                        - 1st Message: Digest the performance history with how you are evolving the player 
+                        - 2nd Message: Digest the analysis and game summary from the Analyzer.
+
+                    3. Strategize
+                        - Think on a high level about what the coder should do to achieve the goal of becoming the Master of Catan
+                        - Most Importantly: BE CREATIVE AND THINK OUTSIDE THE BOX (feel free to web search for anything you want)
+                        - Formulate your thoughts into a plan that the researcher can research, and the coder can implement
+                        - Focus on small iterative changes that can be made to the code
+                        - PRIORITIZE FIXING BUGS AND ERRORS THAT ARISE
+
+                    3. Report (Output)
+                        - Create a concise and efficient report with a strategy for the Researcher and the coder
+                        - Include One Sentence that goes like "The current strategic advice is to ___, and we will achieve this by ___".
+                        - Stick to one or two main points that are the most important
+                        - Give Very SPECIFIC Advice...with clear instructinos
+                        - Include anything you learned from your tools calls
+                        - Give clear instructions
+
+
+                    You Have the Following Tools at Your Disposal:
+                        - read_local_file: Read the content of a catanatron file, or a performance history file in the run directory. (DO NOT CALL MORE THAN TWICE)
+                        - read_full_performance_history: Return the entire performance history as a JSON string.
+                        - read_foo: Read the content of {FOO_TARGET_FILENAME}.
+                        - web_search_tool_call: Perform a web search using the Tavily API.
+
+                    KEEP YOUR TOOL CALLS TO A MINIMUM!
+                    YOU ARE LIMITED TO {MAX_MESSAGES_TOOL_CALLING} TOOL CALLS
+                    Make sure to start your output with 'STRATEGY:' and end with 'END STRATEGY'.
+                    Respond with No Commentary, just the Strategy.
+
+                """
+            )
+
+            # Choose the input based on if coming from analyzer or from validator in graph
+            msg = [state["performance_history"], state["analysis"]]
+
+            tools = [read_local_file, read_full_performance_history, read_foo, web_search_tool_call]
+            output = tool_calling_state_graph(sys_msg, msg, tools)
+            strategy = HumanMessage(content=output["messages"][-1].content)
+            return {"strategy": strategy, "tool_calling_messages": output["messages"]}
+
         def researcher_node(state: CreatorGraphState):
             
             #print("In Researcher Node")
@@ -361,31 +488,27 @@ class CreatorAgent():
                 content=f"""
                     {multi_agent_prompt} RESEARCHER
                      
-                    Task: Digest the analysis from the Analyzer, perform your own research, STRATEGIZE!!, and create a solution for the Coder to implement
+                    Task: Digest the analysis from the Strategizer, perform research, and create a detailed solution for the Coder to follow and implement
 
-                    
                     1. Digest
-                        - Digest the analysis and game summary from the Analyzer.
+                        - 1nd Message: Digest the analysis and game summary from the Analyzer.
+                        - 2nd Message: Digest the strategy from the Strategizer
                         - If needed, use the read_foo tool call to view the player to understand the code
-                        - Digest the recommended questions and action items from the Analyzer
+                        - If needed, use the read_local_file tool call to view any game files in the performance history (1st message)
 
                     2. Research
-                        - Perform research on the questions and action items from the Analyzer (or any other questions you have)
-                        - Use the web_search_tool_call to perform a web search for any questions you have (REALLY BENEFICIAL TO USE THIS)
-                        - Use the list_local_files, and read_local_file to view any game files (which are very helpful for debugging)
+                        - Perform research on the questions from the and action items from the Strategizer
+                        - If needed, Use the web_search_tool_call to perform a web search for any questions you have (REALLY BENEFICIAL TO USE THIS)
+                        - If needed, Use the list_local_files, and read_local_file to view any game files (which are very helpful for debugging)
                         - Determine why the other player is winning, and how to beat it
-                        
-                    3. Strategize
-                        - Think on a high level about what the coder should do to achieve the goal
-                        - Create a plan with instructions for the coder to implement the solution
-                        - Most Importantly: BE CREATIVE AND THINK OUTSIDE THE BOX (feel free to web search for anything you want)
-                        - You must find a way to beat the other player
+                        - PRIORITIZE FIXING BUGS AND ERRORS THAT ARISE
 
-                
-                    4. Report (Output)
-                        - Create a concise and efficient report with analyzer questions and answers, your resarch, the strategy, and plan for the coder
+
+                    3. Report (Output)
+                        - Create a concise and efficient report with strategizer questions and answers, your resarch, and plan for the coder
                         - Include anything you learned from your tools calls
-                        - Give clear instructions to the coder on what to implement (including any code snippets or syntax help)
+                        - Give clear instructions to the coder on what to implement
+                        - Include any code snippets that are needed or you discovered to be helpful
 
 
                     You Have the Following Tools at Your Disposal:
@@ -397,6 +520,7 @@ class CreatorAgent():
 
                     KEEP YOUR TOOL CALLS TO A MINIMUM!
                     YOU ARE LIMITED TO {MAX_MESSAGES_TOOL_CALLING} TOOL CALLS
+
                     Make sure to start your output with 'SOLUTION:' and end with 'END SOLUTION'.
                     Respond with No Commentary, just the Research.
 
@@ -404,7 +528,7 @@ class CreatorAgent():
             )
 
             # Choose the input based on if coming from analyzer or from validator in graph
-            msg = [state["performance_history"], state["full_results"], state["analysis"]]
+            msg = [state["analysis"], state["strategy"]]
 
             tools = [list_catanatron_files, read_local_file, read_full_performance_history, read_foo, web_search_tool_call]
             output = tool_calling_state_graph(sys_msg, msg, tools)
@@ -420,15 +544,17 @@ class CreatorAgent():
                 content=f"""
                     {multi_agent_prompt} CODER
                     
-                    Task: Digest at the proposed solution from the Researcher and Analyzer, and implement it into the foo_player.py file.
+                    Task: Digest at the proposed solution from the Strategizer and Researcher, and implement it into the foo_player.py file.
 
                     1. Digest 
-                        - Digest the solution provided by the Researcher and the Analyzer, and Validator if applicable
-                        - Look at the code from the foo_player.py file using the read_foo tool call
-                        - Utilize the list_local_file and read_local_file to view any game files (Very helpful for debugging!)
+                        - Digest the solution provided by the Researcher and the Analyzer
+                        - OR Digest the Code Problems from the Test Results and the Validator
+                        - Digest the current player code given for {FOO_TARGET_FILENAME} in the most recent message
+                        - If needed: Utilize the list_local_file and read_local_file to view any game files (Very helpful for debugging!)
 
                     2. Implement
-                        - Use what you learned and digested to call write_foo tool call and write the entire new code for the foo_player.py file
+                        - CALL THE **write_foo** tool call to write the new code to the foo_player.py file with the new code
+                        - Use what you learned and write the entire new code for the foo_player.py file
                         - Focus on making sure the code implementes the solution in the most correct way possible
                         - Make Sure to not add backslashes to comments, ONLY OUTPUT VALID PYTHON CODE
                             WRONG:        print(\\'Choosing First Action on Default\\')
@@ -437,13 +563,12 @@ class CreatorAgent():
                         - Use print statement to usefully debug the output of the code
                         - DO NOT MAKE UP VARIABLES OR FUNCTIONS RELATING TO THE GAME
                         - Note: You will have multiple of iterations to evolve, so make sure the syntax is correct
+                        - PRIORITIZE FIXING BUGS AND ERRORS THAT ARISE
 
-                    3. Review
-                        - Run through the output of the write_foo tool call to make sure the code is correct, and contains now errors or bugs
-                        - If there are any errors or bugs, fix them and re-run the write_foo tool call
                     
-                    4. Report (Output)
-                        - Create a concise and efficient report with the additions to the code you made, and why you made them for the validator
+                    3. Report (Output)
+                        - After you do the write_foo tool call, create a report
+                        - Take concise and efficient notes with the additions to the code you made, and why you made them for the validator
                         - Include anything you learned from your tools calls
 
                     You Have the Following Tools at Your Disposal:
@@ -454,23 +579,22 @@ class CreatorAgent():
 
                     KEEP YOUR TOOL CALLS TO A MINIMUM!
                     YOU ARE LIMITED TO {MAX_MESSAGES_TOOL_CALLING} TOOL CALLS
-                    Make sure to start your output with 'CODER' and end with 'END CODER'.
-
-                    
+                    Make sure to start your output with 'CODER' and end with 'END CODER'.                    
                 """
             )
            
+            msg_code = HumanMessage(content=read_foo())
             # Choose the input based on if coming from analyzer or from validator in graph
             if state["validation"].content == "":
                 # If coming from analyzer, use the full_results, analusis, and solution
                 print("Coder Coming from Analyzer")
                 #msg = [state["full_results"], state["analysis"], state["solution"]]
-                msg = [state["solution"]]
+                msg = [state["strategy"], state["solution"], msg_code]
             else:
                 # If coming from validator, usee the coder, test_results, and validation messages
                 print("Coder Coming from Validator")
                 #msg = [state["code_additions"], state["test_results"], state["validation"]]
-                msg = [state["test_results"], state["validation"]]
+                msg = [state["test_results"], state["validation"], msg_code]
             
             tools = [list_catanatron_files, read_local_file, read_foo, write_foo]
 
@@ -510,10 +634,11 @@ class CreatorAgent():
                         - Note: The ouptput will be parse for either keys, so make sure to only return one of them
 
                     You Have the Following Tools at Your Disposal:
-                        - read_foo: Read the content of {FOO_TARGET_FILENAME}.
-
+                        - read_full_performance_history: Return the entire performance history as a JSON string.
+                        - read_local_file: Read the content of a catanatron file, or a performance history file in the run directory. (DO NOT CALL MORE THAN TWICE)
                     
                     Note: It is okay if the model is not perfect and is novel. 
+
                     Your job is to make sure the model works and is correct so it can be tested in a full game.
                     Only return "{val_not_ok_key}" if there is a trivial error that can be fixed easily by the Coder
                     
@@ -523,74 +648,15 @@ class CreatorAgent():
                     
                 """
             )
-            msg = [state["solution"], state["code_additions"], state["test_results"]]
-            tools = [read_foo]
+            msg_code = HumanMessage(content=read_foo())
+            msg = [state["solution"], state["code_additions"], msg_code, state["test_results"]]
+            tools = [read_local_file, read_full_performance_history,]
             output = tool_calling_state_graph(sys_msg, msg, tools)
             validation = HumanMessage(content=output["messages"][-1].content)
 
             validator_counter = state["validator_counter"] - 1
 
             return {"validation": validation, "tool_calling_messages": output["messages"], "validator_counter": validator_counter}
-
-        def summarize_conversation(state: CreatorGraphState):
-    
-            print("In Summarizer Node")
-            sys_msg = SystemMessage(content=
-                f"""You are tasked with summarizing an Multi-Agent Workflow with the steps Full_Results, Analysis, Solution, Code Additions, and Validation
-                This workflow will iterate until the code is correct and the game is won. 
-
-                Above, you have new Full_Results, Analysis, Solution, Code Additions Messages for a new step in the Multi-Agent Workflow
-                Your Summary should look like the following:
-
-                <Short High Level Description>
-                    Game Results Summary: <summary of the game results>
-                    Analysis: <summary of the analysis>
-                    Solution: <summary of the solution>
-                    Code Additions: <summary of the code additions>
-                    Validation: <summary of the validation>
-                
-
-                IMPORTANT: Only include the summary in the output, no other commentary or information
-                Make sure to keep the summary concise and to the point
-
-                """
-            )
-            
-            print("Summary")
-            state_msgs = [state["full_results"], state["analysis"], state["solution"], state["code_additions"], state["validation"]]
-            tools = []
-            output = tool_calling_state_graph(sys_msg, state_msgs, tools)
-            summary = output["messages"][-1].content
-            
-            performance_history = {}
-            # Update the performance history JSON with the summary
-            try:
-                # Load the performance history
-                performance_history_path = Path(CreatorAgent.run_dir) / "performance_history.json"
-                if performance_history_path.exists():
-                    with open(performance_history_path, 'r') as f:
-                        performance_history = json.load(f)
-                    
-                    # Find the entry for the current evolution
-                    # The current evolution key should be for the current iteration
-                    evolution_key = f"Evolution {CreatorAgent.current_evolution - 1}"  # -1 because it's incremented after running
-                    
-                    if evolution_key in performance_history:
-                        # Update the summary field
-                        performance_history[evolution_key]["summary"] = summary
-                        
-                        # Write the updated performance history back to the file
-                        with open(performance_history_path, 'w') as f:
-                            json.dump(performance_history, f, indent=2)
-                            
-                        print(f"Updated performance history with summary for {evolution_key}")
-                    else:
-                        print(f"Warning: Could not find {evolution_key} in performance history")
-            except Exception as e:
-                print(f"Error updating performance history with summary: {e}")
-                import traceback
-                traceback.print_exc()
-            return {"performance_history": HumanMessage(content=json.dumps(performance_history))}
         
         def continue_evolving_analyzer(state: CreatorGraphState):
             """
@@ -611,11 +677,11 @@ class CreatorAgent():
                 return END
             elif analyzer_continue_key in analyzer_message:  #
                 print("Validation failed - rerunning player")
-                return "researcher"
+                return "strategizer"
             else:
                 # Default case if neither string is found
-                print("Warning: Could not determine validation result, defaulting to researcher")
-                return "researcher"
+                print("Warning: Could not determine validation result, defaulting to strategizer")
+                return "strategizer"
             
         def code_ok_validator(state: CreatorGraphState):
             """
@@ -647,12 +713,12 @@ class CreatorAgent():
             graph.add_node("init", init_node)
             graph.add_node("run_player", run_player_node)
             graph.add_node("analyzer", analyzer_node)
-            #graph.add_node("tools", ToolNode(tools))
+            graph.add_node("strategizer", strategizer_node)
             graph.add_node("researcher", researcher_node)
             graph.add_node("coder", coder_node)
             graph.add_node("test_player", test_player_node)
             graph.add_node("validator", validator_node)
-            graph.add_node("summarizer", summarize_conversation)
+            graph.add_node("summarizer", summarizer_node)
 
             graph.add_edge(START, "init")
             graph.add_edge("init", "run_player")
@@ -661,9 +727,10 @@ class CreatorAgent():
             graph.add_conditional_edges(
                 "analyzer",
                 continue_evolving_analyzer,
-                {END, "researcher"}
+                {END, "strategizer"}
             )
             #graph.add_edge("analyzer", "researcher")
+            graph.add_edge("strategizer", "researcher")
             graph.add_edge("researcher", "coder")
             graph.add_edge("coder", "test_player")
             graph.add_edge("test_player", "validator")
@@ -695,8 +762,17 @@ class CreatorAgent():
                     #print(step)
                     #log_file.write(f"Step: {step.}\n")
                     for node, update in step.items():
+                        
                         print(f"In Node: {node}")
                         
+                        # Simplified Messages code
+                        key_types = ["analysis", "strategy", "solution", "code_additions", "validation", "performance_history", "full_results", "test_results"]
+                        for key in key_types:
+                            if key in update:
+                                msg = update[key]
+                                msg.pretty_print()
+                                log_file.write(msg.pretty_repr())
+
                         if "tool_calling_messages" in update:
                             count = 0
                             for msg in update["tool_calling_messages"]:
@@ -707,39 +783,13 @@ class CreatorAgent():
                                 count += 1
                                 log_file.write((msg).pretty_repr())
                             print(f"Number of Tool Calling Messages: {count}")
-
-                        if "analysis" in update:
-                            msg = update["analysis"]
-                            msg.pretty_print()
-                            log_file.write((msg).pretty_repr())
-                        if "solution" in update:
-                            msg = update["solution"]
-                            msg.pretty_print()
-                            log_file.write((msg).pretty_repr())
-                        if "code_additions" in update:
-                            msg = update["code_additions"]
-                            msg.pretty_print()
-                            log_file.write((msg).pretty_repr())
-                        if "validation" in update:
-                            msg = update["validation"]
-                            msg.pretty_print()
-                            log_file.write((msg).pretty_repr())
-                        if "performance_history" in update:
-                            msg = update["performance_history"]
-                            msg.pretty_print()
-                            log_file.write((msg).pretty_repr())
+                       
                         if "evolve_counter" in update:
                             print("ENVOLVE COUNTER: ", update["evolve_counter"])
                             log_file.write(f"Evolve Counter: {update['evolve_counter']}\n")
                         if "validator_counter" in update:
                             print("VALIDATOR COUNTER: ", update["validator_counter"])
                             log_file.write(f"Validator Counter: {update['validator_counter']}\n")
-                        if "test_results" in update:
-                            print("Test Results:", update["test_results"])
-                            log_file.write(f"Test Results: {update['test_results']}\n")
-                        if "full_results" in update:
-                            print("Full Results:", update["full_results"])
-                            log_file.write(f"Full Results: {update['full_results']}\n")
 
 
             print("✅  graph finished")
@@ -834,7 +884,11 @@ def run_testfoo(short_game: bool = False) -> str:
     Run one Catanatron match (R vs Agent File) and return raw CLI output.
     Input: short_game (bool): If True, run a short game with a 30 second timeout.
     """
-    run_id = datetime.now().strftime("game_%Y%m%d_%H%M%S")
+
+    if short_game:
+        run_id = datetime.now().strftime("game_%Y%m%d_%H%M%S_vg")
+    else:
+        run_id = datetime.now().strftime("game_%Y%m%d_%H%M%S_fg")
     game_run_dir = Path(CreatorAgent.run_dir) / run_id
     game_run_dir.mkdir(exist_ok=True)
     
