@@ -1,0 +1,1057 @@
+================================ Human Message =================================
+
+- **MEDIUM LEVEL GOAL:** Over the next 5 iterations, build a strategic decision-making framework for the `foo_player.py` that selects actions dynamically based on game state.
+- **LOW LEVEL GOAL:** For the next iteration, implement a basic logic system in `foo_player.py` that evaluates available actions and selects one based on simple criteria, such as maximizing resource generation or settlement expansion.
+
+- **CHOSEN AGENT:** STRATEGIZER
+- **AGENT OBJECTIVE:** Generate a list of **5 basic strategies** that can be implemented in the `foo_player.py`. These strategies should focus on:
+   1. Expanding settlements and acquiring cities.
+   2. Building roads to maximize resource access and connectivity.
+   3. Using resource cards effectively to boost development goals.
+   4. Prioritizing actions that yield the highest immediate resource gains.
+   5. Defensive actions like blocking opponents via road positioning. ================================== Ai Message ==================================
+
+STRATEGY:
+
+### Strategy Framework for Basic Implementation in `foo_player.py`
+
+1. **Settlement Expansion Strategy**
+   - Logic: Prioritize building settlements when possible. Choose actions that secure new settlement spots based on resource richness and proximity to roads.
+   - Implementation:
+     ```python
+     for action in playable_actions:
+         if action.action_type == ActionType.BUILD_SETTLEMENT:
+             return action
+     ```
+     
+2. **Road Building Strategy**
+   - Logic: Build roads to enhance connectivity and access to diverse resources. Focus on expanding towards potential settlement positions in future turns.
+   - Implementation:
+     ```python
+     for action in playable_actions:
+         if action.action_type == ActionType.BUILD_ROAD:
+             return action
+     ```
+     
+3. **Resource Card Utilization**
+   - Logic: Analyze playable actions for the use of resource cards to trade, advance player development goals, or acquire rare resources needed for building.
+   - Implementation:
+     ```python
+     for action in playable_actions:
+         if action.action_type == ActionType.TRADE_RESOURCE:
+             return action
+     ```
+     
+4. **Maximize Immediate Resource Gains**
+   - Logic: Choose actions that generate the highest resource yield, such as building settlements in high-yield regions or trading cards for valuable resources lacking.
+   - Implementation:
+     ```python
+     # Assumes an Interface to Evaluate Yield (Pseudo Code):
+     best_yield_action = max(playable_actions, key=lambda act: act.resource_gain)
+     return best_yield_action
+     ```
+     
+5. **Defensive Road Placement**
+   - Logic: Block opponent expansion paths by strategically placing roads in contested areas or stopping potential settlements in valuable resource zones.
+   - Implementation:
+     ```python
+     for action in playable_actions:
+         if action.action_type == ActionType.BUILD_ROAD and action.is_defensive():
+             return action
+     ```
+
+### Suggested Order for Development:
+For the next iteration, prioritize **Settlement Expansion Strategy** and integrate it into the framework. Gradually layer the other strategies in subsequent evolutions while observing their impact on performance.
+
+END STRATEGY.================================ Human Message =================================
+
+- **MEDIUM LEVEL GOAL:** Build upon the current implementation to expand strategic behavior in `foo_player.py` by dynamically integrating city-building, resource optimization, and defensive gameplay into its framework within the next 5 iterations.
+- **LOW LEVEL GOAL:** Implement a **Resource Utilization Strategy** in `foo_player.py` to analyze trade and resource management actions (e.g., trading, using surplus resources) to enhance development potential and increase VP opportunities.
+
+- **CHOSEN AGENT:** STRATEGIZER
+- **AGENT OBJECTIVE:** Identify and design a **Resource Utilization Strategy** that aligns with the current Catanatron Minigame mechanics. Specifically:
+  1. Detail a strategy for trading resource cards to acquire necessary resources for settlement and road activities.
+  2. Recommend other resource-focused actions or patterns to implement, such as preventing resource stagnation or balancing resource generation.
+  3. Suggest ways to integrate these resource decisions with already-implemented strategies such as settlement expansion or road building. ================================== Ai Message ==================================
+
+STRATEGY:
+
+### Resource Utilization Strategy Design
+
+#### 1. **Trading Resource Cards**
+**Logic:**
+- Evaluate available resources against the resources necessary to perform high-priority actions like building settlements, roads, or cities.
+- Prioritize trades that balance resource shortages with surpluses in inventory.
+- Trade for missing resources if it enables immediate construction or development.
+
+**Implementation Idea:**
+- Create a function that evaluates the current resources and the resource costs of key actions (settlement, road, city):
+  ```python
+  def evaluate_trade(game, current_resources, action_cost):
+      needed_resources = {r: action_cost[r] - current_resources.get(r, 0) 
+                          for r in action_cost if action_cost[r] > current_resources.get(r, 0)}
+      surplus_resources = [r for r, qty in current_resources.items() if qty > 3]
+      # Suggest trading surplus for needed resources
+      if needed_resources and surplus_resources:
+          return (surplus_resources[0], list(needed_resources.keys())[0])  # Trade first surplus for first needed
+      return None
+  ```
+- In the `decide` method:
+  ```python
+  # Trading resource strategy
+  for action in playable_actions:
+      if action.action_type == ActionType.TRADE_RESOURCE:
+          trade = evaluate_trade(game, game.current_player.resources, action.cost)
+          if trade:
+              print(f"Trading {trade[0]} for {trade[1]}")
+              return action
+  ```
+
+#### 2. **Prevent Resource Stagnation**
+**Logic:**
+- Ensure resource balance by trading away excess resources (e.g., more than 4 of a type) to prevent loss during robber raids.
+- Favor diversifying resources to maintain flexibility for multiple actions in future turns.
+
+**Pattern Recommendation:**
+- Monitor the player's current cards and prioritize trades/actions to balance:
+  - At least 1 of every resource type.
+  - No more than 4 of any type unless there's a plan to use them immediately.
+
+**Implementation Idea:**
+- Add defensive decision-making about resource card usage:
+  ```python
+  def prevent_stagnation(game, current_resources):
+      for resource, qty in current_resources.items():
+          if qty > 4:  # Stagnation threshold
+              return resource  # Suggest trading or using excess resource
+      return None
+  ```
+
+#### 3. **Integrating Resource Decisions with Current Strategies**
+**Connections with Settlement and Road Building Strategies:**
+- Prioritize resource trades/actions that align with the requirements of the **Settlement Expansion Strategy** (focus on Brick and Wood).
+- If building roads is the next critical action, bias trades toward Wood and Brick; if building settlements, focus on all five required resources (Brick, Wood, Wheat, Sheep); if building cities, prioritize Wheat and Ore.
+- Use the following implementation logic:
+  ```python
+  # Evaluate priority based on current game state and integrate with settlement/road strategies
+  settlement_cost = {'Brick': 1, 'Wood': 1, 'Wheat': 1, 'Sheep': 1}
+  road_cost = {'Brick': 1, 'Wood': 1}
+  city_cost = {'Wheat': 2, 'Ore': 3}
+
+  # Focus trade actions toward immediate near-term target
+  if game.current_player.can_build('settlement'):
+      target_cost = settlement_cost
+  elif game.current_player.can_build('road'):
+      target_cost = road_cost
+  elif game.current_player.can_build('city'):
+      target_cost = city_cost
+
+  for action in playable_actions:
+      if (action.action_type == ActionType.TRADE_RESOURCE and
+          evaluate_trade(game, game.current_player.resources, target_cost)):
+          return action
+  ```
+
+#### 4. **Additional Suggestions**
+- Incorporate **resource prioritization logic** into the fallback behavior (currently defaulting to the first action). For example:
+  ```python
+  # Fallback: prioritize trading/using highest surplus resource
+  stagnant_resource = prevent_stagnation(game, game.current_player.resources)
+  if stagnant_resource:
+      print(f"Using or trading surplus resource: {stagnant_resource}")
+      # Execute a trade or use action involving the stagnant resource
+  ```
+
+### Summary of Integration
+- **Trading**: Add logic to analyze resource gaps for next desired action.
+- **Stagnation Prevention**: Monitor quantities to prevent resource loss or inefficiency.
+- **Dynamic Integration**: Tie resource decisions to existing settlement and road strategies by aligning resource priorities with building goals.
+
+END STRATEGY.================================ Human Message =================================
+
+- **MEDIUM LEVEL GOAL:** Ensure the `catanatron_core` package or module is properly configured, imported, and accessible such that the strategic logic in `foo_player.py` can execute without import issues. Overhaul the environment setup and move forward with strategy implementation.
+- **LOW LEVEL GOAL:** Resolve the `ModuleNotFoundError` by either installing `catanatron_core` locally, adjusting paths, or extracting/reimplementing critical functions (`player_key` and `get_player_freqdeck`) directly into `foo_player.py`.
+
+- **CHOSEN AGENT:** STRATEGIZER
+- **AGENT OBJECTIVE:** Provide a clear pathway for resolving dependencies on `catanatron_core`. Specifically:
+  1. Determine whether continuing dependency on `catanatron_core` is strategic or if critical code should be extracted/refactored directly into `foo_player.py`.
+  2. Recommend the best way forward to mitigate future dependency issues:
+     - Locally install `catanatron_core` and properly configure paths, OR
+     - Reimplement/state-functions logic directly into player code. 
+  3. Advise on improving robustness for environment setup and module management in overall design strategy.================================== Ai Message ==================================
+
+STRATEGY:
+
+### Resolving Dependencies on `catanatron_core`
+
+#### 1. Determine the Strategic Direction for Dependency on `catanatron_core`
+**Analysis:**
+- Continuing Dependency: Retains the integrity of the `catanatron_core` module for future updates. Reduces duplication and leverages pre-tested code.
+- Extracting Critical Code: Improves control over the implementation. Simplifies environment setup but could lead to fragmentation and maintenance overhead.
+
+**Recommendation:**
+Given the current issues and the goals of improving robustness, **extracting critical functions** (`player_key` and `get_player_freqdeck`) directly into `foo_player.py` will simplify the problem immediately. This avoids dealing with installation paths, external module access issues, or dependency conflicts in future iterations.
+
+#### 2. Critical Functions to Extract/Refactor
+**Steps for Implementation:**
+Extract functionality from `catanatron_core` related to:
+- **`player_key(state, current_color)`**: Determines the prefix key for identifying state/attributes tied to a specific player (e.g., their resources or other stats). This logic is simple to reimplement.
+- **`get_player_freqdeck(state)`**: Fetches or computes player-specific metrics. If this is not critical for immediate strategies, temporarily omit its integration.
+
+**Sample Implementation:**
+- `player_key` Refactor:
+  ```python
+  def player_key(state, color):
+      # Derive the player's prefix key for the game state
+      return f"PLAYER_{color}"
+  ```
+
+- `get_player_freqdeck` Mock:
+  ```python
+  def get_player_freqdeck(state, color):
+      # Simulate frequency calculation for now (if needed later)
+      return {resource: state.player_state[f"{player_key(state, color)}_{resource}_IN_HAND"]
+              for resource in ["WOOD", "BRICK", "SHEEP", "WHEAT", "ORE"]}
+  ```
+
+Integrate these functions directly into `foo_player.py` to eliminate import issues.
+
+#### 3. Advise on Mitigating Future Module Issues
+**Improving Environment and Setup:**
+- **Wrapper Utility:**
+  Create a helper script/module within the project directory to manage dependencies and environment setup. For example:
+  ```python
+  import sys, os
+  sys.path.append(os.path.abspath("path_to_catanatron_core"))
+  try:
+      from catanatron_core.catanatron.some_module import some_function
+  except ImportError as e:
+      print("Dependency not found. Ensure catanatron_core is correctly installed.")
+      # Fall back or notify missing dependency
+  ```
+
+- **Modular Refactoring:**
+  Break `foo_player.py` strategies into smaller modules. For example:
+  - `resource_management.py` for trading logic.
+  - `settlement_strategy.py` for expansion decisions.
+  This compartmentalization enables easier testing and maintenance while reducing dependency risks.
+
+#### 4. Recommended Path Forward
+- **Short-Term Goal:** Extract critical functions (`player_key` and optionally mock `get_player_freqdeck`) to resolve immediate `ModuleNotFoundError`.
+- **Long-Term Strategy:** Plan a modular redesign of `foo_player.py`, where strategies and state-handling mechanisms are abstracted into dedicated modules. Work towards incorporating dependencies like `catanatron_core` into an auxiliary wrapper layer or package that simplifies management.
+
+### Immediate Next Steps
+1. Add the extracted code into `foo_player.py`.
+2. Remove imports related to `catanatron_core` that are causing issues.
+3. Test gameplay performance to verify proper execution of strategies.
+
+END STRATEGY.================================ Human Message =================================
+
+- **MEDIUM LEVEL GOAL:** Enhance the decision-making framework in `foo_player.py` to prioritize strategic objectives, increase gameplay versatility, and reduce reliance on the fallback "First Action on Default". Over the next iterations, these improvements should target higher development (settlements, cities, and roads) and integrate effective trading for better resource management.
+- **LOW LEVEL GOAL:** Refine the trading logic to ensure surplus resources are actively utilized for strategic advantage. Optimize the fallback mechanism to prioritize higher-scoring actions instead of default selections.
+
+- **CHOSEN AGENT:** STRATEGIZER
+- **AGENT OBJECTIVE:** Analyze and draft a strategy framework to address key limitations in `foo_player.py`. Specifically:
+  1. Suggest improvements for handling surplus resources effectively, including maritime and domestic trades or alternative usage for better scoring actions like settlements, roads, and cities.
+  2. Propose enhancements for leveraging broader strategies such as acquiring development cards and expanding roads/cities.
+  3. Recommend mechanisms to reduce reliance on fallback actions and prioritize high-value plays dynamically.================================== Ai Message ==================================
+
+STRATEGY:
+
+### Strategy Framework to Enhance `foo_player.py`
+
+#### 1. **Improving Surplus Resource Utilization**
+##### Key Limitation:
+Current trading logic evaluates surplus resources for trades but does not actively consider broader strategies or prioritize actions that make effective use of these surpluses. 
+
+##### Improvements:
+- Implement a **tiered trading strategy** that aligns surplus disposal with game progression:
+  1. Prioritize trading for resources critical for settlements, roads, or cities.
+  2. If no current critical action exists, trade surplus resources for Ore or Wheat to prepare for potential city upgrades.
+  3. If all paths are blocked, trade for Development Cards to improve versatility with knights or other bonuses.
+
+- Enhanced `evaluate_trade` function:
+  ```python
+  def evaluate_trade_surplus(current_resources, surplus_limit=4):
+      surplus_resources = [resource for resource, qty in current_resources.items() if qty > surplus_limit]
+      if surplus_resources:
+          # Prioritize trading surplus for resources needed in high-value actions
+          return surplus_resources[0]  # Select the largest surplus for trade
+      return None
+  ```
+
+- Tie the surplus handling logic directly into trade and fallback decision-making:
+  ```python
+  for action in playable_actions:
+      if action.action_type in [ActionType.MARITIME_TRADE, ActionType.OFFER_TRADE]:
+          surplus_resource = evaluate_trade_surplus(current_resources)
+          if surplus_resource:
+              print(f"Trading surplus {surplus_resource} for higher-priority resources.")
+              return action
+  ```
+
+---
+
+#### 2. **Broader Strategy Enhancements (Development Cards, City/Road Expansion)**
+##### Key Focus Areas:
+- Increase scoring potential by factoring **Development Cards** into decision-making. 
+- Recognize progression stages:
+  - Early game: Focus on settlements and connecting roads.
+  - Mid-game: Shift priority to cities and road networks.
+  - Late game: Incorporate Development Cards for Victory Points or Largest Army bonuses.
+
+##### Recommendations:
+- **Development Cards Integration**:
+  Incorporate conditional logic for purchasing Development Cards when no immediate actions (settlement/road/city building) are viable, especially if key resources (Ore, Wheat) are abundant:
+  ```python
+  dev_card_cost = {'ore': 1, 'wheat': 1, 'sheep': 1}
+  can_buy_dev_card = all(
+      current_resources.get(resource, 0) >= quantity
+      for resource, quantity in dev_card_cost.items()
+  )
+  if can_buy_dev_card:
+      print("Evaluating Development Card purchase as a fallback.")
+      for action in playable_actions:
+          if action.action_type == ActionType.BUY_DEVELOPMENT_CARD:
+              print(f"Chosen Action: {action}")
+              return action
+  ```
+
+- **Dynamic Strategy Based on Available Resources**:
+Prioritize actions dynamically based on the player’s resource stockpile and target opportunities for settlements/cities/roads:
+  ```python
+  def prioritize_high_value_actions(playable_actions, current_resources):
+      priority_order = [ActionType.BUILD_CITY, ActionType.BUILD_SETTLEMENT, ActionType.BUILD_ROAD]
+      for action_type in priority_order:
+          for action in playable_actions:
+              if action.action_type == action_type:
+                  print(f"Prioritized Action: {action_type}")
+                  return action
+      return None
+  ```
+
+- Add this prioritization logic before falling back to default action selections.
+
+---
+
+#### 3. **Reducing Reliance on Fallback Actions**
+##### Key Limitation:
+The current fallback mechanism defaults to the first action, which generally leads to unoptimized or suboptimal moves.
+
+##### Improvements:
+- Use **heuristic evaluation** to rank actions dynamically and select the one with the highest score:
+  - Assign scores based on action type (e.g., road expansion near high-value settlement spots gets a boost, trading for city resources is prioritized).
+  - Incorporate game-state information to identify strategic goals.
+
+- Example Heuristic Ranking Function:
+  ```python
+  def rank_actions(playable_actions, current_resources, settlement_spots, road_expansion_points):
+      action_scores = {}
+      for action in playable_actions:
+          if action.action_type == ActionType.BUILD_SETTLEMENT:
+              action_scores[action] = 10  # High-value action
+          elif action.action_type == ActionType.BUILD_CITY:
+              action_scores[action] = 8
+          elif action.action_type == ActionType.BUILD_ROAD:
+              # Evaluate if the road leads to a settlement spot
+              if action.target_location in road_expansion_points:
+                  action_scores[action] = 6
+              else:
+                  action_scores[action] = 4
+          elif action.action_type in [ActionType.MARITIME_TRADE, ActionType.OFFER_TRADE]:
+              action_scores[action] = 5  # Mid-value fallback
+          else:
+              action_scores[action] = 2  # Default low score
+      return max(action_scores, key=action_scores.get) if action_scores else None
+  ```
+
+- Replace the default fallback with this ranking mechanism:
+  ```python
+  best_action = rank_actions(playable_actions, current_resources, settlement_spots, road_expansion_points)
+  if best_action:
+      print(f"Chosen High-Value Action: {best_action}")
+      return best_action
+  ```
+
+---
+
+### Summary of Immediate Improvements
+1. **Optimize Resource Surplus Decisions**:
+   - Improve maritime and domestic trade handling for surplus resources.
+   - Align trades with immediate and long-term strategic goals (e.g., settlements, city upgrades, development cards).
+2. **Expand Broader Strategies**:
+   - Add logic to buy development cards as a viable option.
+   - Dynamically adjust priority based on game stage (early, mid, late) to better utilize resources for cities, settlements, and roads.
+3. **Refine Fallback Actions**:
+   - Implement a heuristic ranking system to evaluate actions dynamically rather than defaulting to arbitrary selections.
+
+This integrated strategy will enhance `foo_player.py`’s adaptability and scoring potential while ensuring that fallback actions are strategic rather than reactive.
+
+END STRATEGY.================================ Human Message =================================
+
+- **MEDIUM LEVEL GOAL:** Enhance decision-making and action execution in `foo_player.py` by refining prioritization logic, improving trade strategies, and integrating a more balanced approach to broader strategies. Implement iterative testing-driven improvements to move beyond fallback reliance and progressively achieve higher scoring.
+- **LOW LEVEL GOAL:** Identify and address inefficiencies in trade execution and further improve action prioritization to reduce fallback usage. Introduce functional logic for utilizing trades effectively towards higher-scoring building strategies (e.g., settlements, cities, roads).
+
+- **CHOSEN AGENT:** STRATEGIZER
+- **AGENT OBJECTIVE:** Analyze and address the following areas:
+  1. Identify potential reasons for the failure to execute actual trades despite surplus resource detection.
+  2. Recommend strategy enhancements to expand city, settlement, and road-building decision-making while maintaining surplus management.
+  3. Propose incremental adjustments to ensure fallback is less frequently utilized, with actions dynamically prioritized based on available game conditions.================================== Ai Message ==================================
+
+STRATEGY:
+
+### Addressing Trade Inefficiencies and Action Prioritization in `foo_player.py`
+
+#### 1. **Identifying Potential Reasons for Trade Failures**
+Despite detecting surplus resources, there may be issues preventing successful execution of trades:
+- **Improper Action Matching:** The logic currently aligns trade actions (`MARITIME_TRADE` and `OFFER_TRADE`) around surplus detection but does not fully evaluate resource gaps or match trade offers with valid conditions.
+- **Condition Gaps for Surplus Trades:** The decision-making process might not explicitly connect player needs (deficits) with actionable trade logic. Maritime trade rules and domestic trade validity are likely under-defined.
+- **Unrealistic Targets for Trade Actions:** The `target_cost` logic assumes that surplus trades are always feasible, but this ignores potential constraints like required resource combinations for maritime trades or opponent willingness in domestic trades.
+
+##### Recommendations to Improve Trading Logic:
+- **Integrate Resource Gap Evaluation with Trade Actions:**
+  Explicitly calculate the required resources necessary to accomplish the next strategic goal and match these with trade options where deficits are covered:
+  ```python
+  def evaluate_trade_deficit(current_resources, target_cost):
+      needed_resources = {resource: target_cost[resource] - current_resources.get(resource, 0)
+                          for resource in target_cost if target_cost[resource] > current_resources.get(resource, 0)}
+      return needed_resources
+  ```
+
+- Combine surplus detection with trade side evaluation:
+  ```python
+  for action in playable_actions:
+      if action.action_type == ActionType.MARITIME_TRADE:
+          surplus_resource = evaluate_trade_surplus(current_resources)
+          needed_resources = evaluate_trade_deficit(current_resources, target_cost)
+          if surplus_resource and needed_resources:
+              print(f"Executing Maritime Trade: Trading {surplus_resource} for {list(needed_resources.keys())[0]}")
+              return action
+  ```
+
+- Ensure `OFFER_TRADE` aligns with possible realistic trades:
+  ```python
+  if action.action_type == ActionType.OFFER_TRADE:
+      surplus_resource = evaluate_trade_surplus(current_resources)
+      needed_resources = evaluate_trade_deficit(current_resources, target_cost)
+      if surplus_resource and needed_resources:
+          print(f"Proposing Domestic Trade: Offering {surplus_resource} for {list(needed_resources.keys())[0]}")
+          return action
+  ```
+
+---
+
+#### 2. **Enhancing Broader Strategies for City, Settlement, and Road Building**
+To expand the decision-making framework for city, settlement, and road-building, the following improvements are suggested:
+
+##### Refining Prioritization for Building:
+- Prioritize actions dynamically based on **long-term strategic goals**, evaluated per game state and progression phase:
+  - **Early Game:** Favor settlements and roads for expansion.
+  - **Mid-Game:** Shift focus to cities to maximize Victory Points and resource gains.
+  - **Late Game:** Balance between securing largest army/road bonuses and increasing Development Cards for additional points.
+
+##### Logic to Enhance Decision Priority:
+- Expand prioritization logic with goal-based evaluation:
+  ```python
+  def prioritize_actions_by_phase(playable_actions, game_state, phase):
+      priority_per_phase = {
+          "early": [ActionType.BUILD_SETTLEMENT, ActionType.BUILD_ROAD],
+          "mid": [ActionType.BUILD_CITY, ActionType.BUILD_SETTLEMENT],
+          "late": [ActionType.BUY_DEVELOPMENT_CARD, ActionType.BUILD_CITY],
+      }
+      for action_type in priority_per_phase[phase]:
+          for action in playable_actions:
+              if action.action_type == action_type:
+                  print(f"Prioritized based on phase ({phase}): {action.action_type}")
+                  return action
+      return None
+  ```
+
+- Determine the current game phase dynamically:
+  ```python
+  total_turns = game_state.turn_count
+  if total_turns < 30:
+      phase = "early"
+  elif total_turns < 60:
+      phase = "mid"
+  else:
+      phase = "late"
+  prioritized_action = prioritize_actions_by_phase(playable_actions, game_state, phase)
+  if prioritized_action:
+      return prioritized_action
+  ```
+
+---
+
+#### 3. **Reducing Fallback Usage**
+In current implementation, fallback decisions are overly used when strategic options fail. Integrating more robust checks and dynamic prioritization can reduce reliance on fallback actions.
+
+##### Incremental Adjustments:
+1. **Expand Validity Checks for Playable Actions:**
+   Ensure every invalid condition (e.g., insufficient resources, unrealistic trades) is evaluated before defaulting to a fallback:
+   ```python
+   def validate_action_feasibility(action, current_resources):
+       if action.action_type in [ActionType.BUILD_SETTLEMENT, ActionType.BUILD_ROAD, ActionType.BUILD_CITY]:
+           # Validate resource sufficiency
+           action_cost = {
+               ActionType.BUILD_SETTLEMENT: {'wood': 1, 'brick': 1, 'wheat': 1, 'sheep': 1},
+               ActionType.BUILD_ROAD: {'wood': 1, 'brick': 1},
+               ActionType.BUILD_CITY: {'wheat': 2, 'ore': 3},
+           }[action.action_type]
+           return all(current_resources.get(r, 0) >= qty for r, qty in action_cost.items())
+       return True  # For trade actions or fallback
+   ```
+
+2. **Scoring Actions Based on Value:**
+   Before falling back, implement a simple scoring mechanism where actions produce a weighted score based on their utility:
+   ```python
+   def score_actions(playable_actions):
+       action_scores = {}
+       for action in playable_actions:
+           if action.action_type == ActionType.BUILD_SETTLEMENT:
+               action_scores[action] = 10
+           elif action.action_type == ActionType.BUILD_ROAD:
+               action_scores[action] = 7
+           elif action.action_type == ActionType.BUILD_CITY:
+               action_scores[action] = 15
+           elif action.action_type in [ActionType.MARITIME_TRADE, ActionType.OFFER_TRADE]:
+               action_scores[action] = 5
+       return max(action_scores, key=action_scores.get, default=None)
+   ```
+
+3. **Intelligently Leverage Development Cards:**
+   - Add Development Cards as a fallback priority if no other actions can progress core strategies:
+     ```python
+     if ActionType.BUY_DEVELOPMENT_CARD in [a.action_type for a in playable_actions]:
+         print("Buying Development Card as fallback option")
+         for action in playable_actions:
+             if action.action_type == ActionType.BUY_DEVELOPMENT_CARD:
+                 return action
+     ```
+
+4. **Final Fallback Adjustments:**
+   Only allow fallback to the first action if all other checks fail:
+   ```python
+   print("All strategies failed; defaulting to fall back.")
+   return playable_actions[0]
+   ```
+
+---
+
+### Summary of Proposed Adjustments
+1. **Improved Trading Logic:**
+   - Integrate surplus management with realistic resource gap evaluations for both maritime and domestic trades.
+2. **Enhanced Building Strategies:**
+   - Prioritize actions dynamically based on game phase and scoring objectives (settlements early, cities mid-game, Development Cards late).
+3. **Reduced Fallback Dependence:**
+   - Validate action feasibility, add score-based prioritization, and expand utility of fallback options with Development Cards.
+
+These changes will improve resource utilization, strategic decision-making, and reduce reliance on arbitrary fallback actions, leading to a stronger decision framework and higher scores in gameplay.
+
+END STRATEGY.================================ Human Message =================================
+
+- **MEDIUM LEVEL GOAL:** Focus on improving trade execution logic, enhancing fallback mechanisms to actively guide decision-making, and increasing strategic road-building behavior. The next few iterations should aim to achieve at least one win while maintaining the growing trend of higher scoring.
+- **LOW LEVEL GOAL:** Refine trade logic to ensure surplus resources are successfully converted into necessary resources via maritime or domestic trades. Address gaps in fallback logic to prioritize meaningful actions like road-building and resource utilization actively.
+
+- **CHOSEN AGENT:** STRATEGIZER
+- **AGENT OBJECTIVE:** Provide refined strategies to address:
+  1. Why trade mechanisms continue to fail despite surplus detection and inclusion of trade actions (`MARITIME_TRADE`, `OFFER_TRADE`).
+  2. Methods to specifically prioritize road-building as a key early-game expansion strategy, increasing settlement availability and overall player versatility.
+  3. Incremental improvements for fallback actions to reduce reliance on "Choosing First Action on Default" while ensuring strategic adaptability in unconventional situations.================================== Ai Message ==================================
+
+STRATEGY:
+
+### Refined Strategy to Address Trade Failures, Road-Building, and Improved Fallback Logic
+
+#### 1. **Resolving Trade Mechanism Failures**
+##### Analysis:
+Despite surplus detection and trade logic inclusion, trades may fail due to:
+- **Unfulfilled Preconditions:** Trades are selected without verifying availability of compatible trade partners (for `OFFER_TRADE`) or ensuring maritime trades are valid (e.g., having a port for the surplus resource).
+- **Incomplete Resource Matching:** Trade actions are executed without fully aligning surplus resources with requested resource gaps.
+
+##### Improvements for Trade Logic:
+- **Validate Maritime Trade Preconditions:** Ensure the player can perform maritime trades by checking port ownership and resource availability:
+  ```python
+  def can_execute_maritime_trade(state, surplus_resource):
+      ports = state.current_player().ports
+      return surplus_resource in ports or "any" in ports
+  ```
+
+- **Improve Domestic Trade Execution:** For `OFFER_TRADE`, align offers with realistic gameplay conditions, validating whether an opposing player has the resource needed:
+  ```python
+  def can_offer_trade(state, needed_resource):
+      for opponent in state.players:
+          if opponent.color != state.current_player().color:
+              if opponent.resources.get(needed_resource, 0) > 0:
+                  return True
+      return False
+  ```
+
+- **Enhanced Trade Integration:**
+  Tie the evaluations above to surplus detection and ensure valid execution:
+  ```python
+  for action in playable_actions:
+      if action.action_type == ActionType.MARITIME_TRADE:
+          surplus_resource = evaluate_trade_surplus(current_resources)
+          needed_resources = evaluate_trade_deficit(current_resources, target_cost)
+          if surplus_resource and needed_resources and can_execute_maritime_trade(game.state, surplus_resource):
+              print(f"Executing Valid Maritime Trade: Trading {surplus_resource} for {list(needed_resources.keys())[0]}")
+              return action
+      elif action.action_type == ActionType.OFFER_TRADE and target_cost:
+          surplus_resource = evaluate_trade_surplus(current_resources)
+          needed_resources = evaluate_trade_deficit(current_resources, target_cost)
+          if surplus_resource and needed_resources and can_offer_trade(game.state, list(needed_resources.keys())[0]):
+              print(f"Executing Valid Domestic Trade: Offering {surplus_resource} for {list(needed_resources.keys())[0]}")
+              return action
+  ```
+
+---
+
+#### 2. **Prioritizing Road-Building for Early Expansion**
+##### Importance of Road-Building:
+Early-game road-building enhances settlement opportunities and resource accessibility, providing a foundation for mid- and late-game development.
+
+##### Strategy Enhancements for Road-Building:
+- **Focus Road Expansion Towards Settlement Spots:** Prioritize roads that connect to open settlement locations or intersect with high-value resource tiles.
+- **Detect Expansion Paths:** Identify positions where road-building contributes directly to settlement placement:
+  ```python
+  def find_road_to_settlement(game, playable_actions):
+      open_settlement_spots = game.state.get_open_settlement_spots()
+      for action in playable_actions:
+          if action.action_type == ActionType.BUILD_ROAD:
+              # Check if the road leads to open settlement spots
+              if action.target_location in open_settlement_spots:
+                  return action
+      return None
+  ```
+
+- **Tie Road-Building to Early Game Strategy:**
+  Implement dynamic prioritization for road-building directly within the "early" phase:
+  ```python
+  def prioritize_road_building(playable_actions, current_resources):
+      road_cost = {"wood": 1, "brick": 1}
+      if all(current_resources.get(resource, 0) >= quantity for resource, quantity in road_cost.items()):
+          road_action = find_road_to_settlement(game, playable_actions)
+          if road_action:
+              print(f"Prioritized Road-Building Action: {road_action}")
+              return road_action
+      return None
+  ```
+
+---
+
+#### 3. **Incremental Improvements for Fallback Actions**
+##### Current Issues:
+Fallback logic defaults to the first action without weighing its relevance or strategic value, leading to wasted turns and missed opportunities.
+
+##### Enhanced Fallback Mechanism:
+- **Introduce Weighted Rankings for Actions:** Assign scores dynamically based on the action’s immediate value, such as road-building to settlements or trading surplus resources:
+  ```python
+  def rank_fallback_actions(playable_actions):
+      action_scores = {}
+      for action in playable_actions:
+          if action.action_type == ActionType.BUILD_SETTLEMENT:
+              action_scores[action] = 10
+          elif action.action_type == ActionType.BUILD_CITY:
+              action_scores[action] = 15
+          elif action.action_type == ActionType.BUILD_ROAD:
+              action_scores[action] = 8
+          elif action.action_type in [ActionType.OFFER_TRADE, ActionType.MARITIME_TRADE]:
+              action_scores[action] = 6
+          else:
+              action_scores[action] = 1  # Default low score for generic actions
+      return max(action_scores, key=action_scores.get) if action_scores else None
+  ```
+
+- **Fallback with Prioritized Action:** Replace "Choosing First Action on Default" fallback with the ranked action:
+  ```python
+  fallback_action = rank_fallback_actions(playable_actions)
+  if fallback_action:
+      print(f"Chosen Fallback Action Based on Ranking: {fallback_action}")
+      return fallback_action
+  print("Defaulting to First Action")
+  return playable_actions[0]
+  ```
+
+- **Prevent Stagnation as Fallback Option:** Detect resource stagnation and use fallback to trade or use excess resources proactively:
+  ```python
+  stagnant_resource = prevent_stagnation(current_resources)
+  if stagnant_resource:
+      for action in playable_actions:
+          if action.action_type in [ActionType.MARITIME_TRADE, ActionType.OFFER_TRADE]:
+              print(f"Fallback for Resource Stagnation: Trading {stagnant_resource}")
+              return action
+  ```
+
+---
+
+### Integrated Strategy Summary
+1. **Refined Trade Execution:**
+   - Validate maritime and domestic trade conditions before executing.
+   - Ensure surplus trades and resource deficits align with realistic conditions.
+2. **Enhanced Road-Building Logic:**
+   - Focus road-building on connecting to open settlement spots.
+   - Prioritize road construction during early-game phases for strategic expansion.
+3. **Improved Fallback Mechanisms:**
+   - Replace fallback with a weighted ranking for selecting high-value actions.
+   - Add resource stagnation handling as a fallback option, reducing wasted turns.
+
+These refinements will bolster `foo_player.py`'s early-game productivity and reduce reliance on default behaviors, improving overall gameplay adaptability and increasing scoring potential.
+
+END STRATEGY.================================ Human Message =================================
+
+- **MEDIUM LEVEL GOAL:** Strengthen the strategic functionality of `FooPlayer` by implementing robust settlement expansion and road-building logic using fallback mechanisms. Resolve dependency issues with the `catanatron_core` module to ensure foundational functions like `settlement_possibilities` and `road_building_possibilities` are available for gameplay improvement.
+- **LOW LEVEL GOAL:** Inject dynamic decision-making for settlement and road-building strategies based on filtered `playable_actions` when external dependencies remain unavailable, mitigating gaps caused by non-installed modules.
+
+---
+
+### CHOSEN AGENT: STRATEGIZER  
+### AGENT OBJECTIVE:  
+1. **Provide new strategies** to improve gameplay performance in the context of settlement expansion and road-building by dynamically analyzing `playable_actions`.
+   - Example focus areas:
+     - Early-game settlement prioritization
+     - Road connections to expand settlement possibilities
+     - Trade/resource utilization strategies tailored for mid and late-game phases
+
+2. **Generate actionable alternatives** to overcome performance bottlenecks caused by the over-reliance on fallback mechanisms.
+
+3. Identify strategic adjustments or creative approaches to boost FooPlayer's gameplay behavior and competitiveness against opponents, regardless of module dependency limitations.================================== Ai Message ==================================
+
+STRATEGY:
+
+### Settlement Expansion and Road-Building Strategy Framework
+
+---
+
+#### 1. **Dynamic Settlement Expansion Without Dependency on External Modules**
+External module gaps (limited access to `settlement_possibilities`) require dynamic analysis of `playable_actions` to prioritize settlements strategically.
+
+##### Approach:
+- Evaluate settlement-building actions by identifying tiles connected to high-value resource nodes or expansions that maximize resource diversity:
+  ```python
+  def dynamic_settlement_evaluation(game, playable_actions):
+      high_value_settlement_locations = []  # Populate this dynamically based on current board data
+      for node in game.state.board.nodes:  # Access settlement nodes
+          potential_resources = [tile.resource for tile in game.state.board.tiles if node in tile.nodes]
+          resource_diversity = len(set(potential_resources))
+          if resource_diversity >= 3:  # Favor locations with access to 3+ resource types
+              high_value_settlement_locations.append(node)
+      for action in playable_actions:
+          if action.action_type == ActionType.BUILD_SETTLEMENT and action.value in high_value_settlement_locations:
+              print(f"Chosen High-Diversity Settlement: {action}")
+              return action
+      return None
+  ```
+
+##### Integration:
+In the "early" phase (after attempting road-building), prioritize actions for settlement expansion based on defined heuristic:
+```python
+settlement_action = dynamic_settlement_evaluation(game, playable_actions)
+if settlement_action:
+    print(f"Selected Settlement Expansion Action: {settlement_action}")
+    return settlement_action
+```
+
+---
+
+#### 2. **Dynamic Road-Building to Expand Settlement Opportunities**
+Road-building should strategically support settlement construction by connecting to regions with high resource potential or contested zones.
+
+##### Approach:
+- Dynamically prioritize roads leading to open settlement spots:
+  ```python
+  def dynamic_road_evaluation(game, playable_actions):
+      open_settlement_spots = [node for node in game.state.board.nodes if not game.state.node_is_occupied(node)]
+      for action in playable_actions:
+          if action.action_type == ActionType.BUILD_ROAD:
+              road_target_nodes = game.state.board.edges[action.value]
+              for node in road_target_nodes:
+                  if node in open_settlement_spots:
+                      print(f"Road Action Leads to Settlement Opportunity: {action}")
+                      return action
+      return None
+  ```
+
+##### Integration:
+In the early game phase, prioritize roads leading directly to open settlement spots:
+```python
+road_action = dynamic_road_evaluation(game, playable_actions)
+if road_action:
+    print(f"Selected Strategic Road Action: {road_action}")
+    return road_action
+```
+
+---
+
+#### 3. **Dynamic Resource Utilization Strategies**
+When surplus resources occur (defined as more than 4 of any type), prioritize converting them into needed resources using trade actions (`MARITIME_TRADE`, `OFFER_TRADE`).
+
+##### Approach:
+- Analyze surplus and determine needed resources for priority actions:
+  ```python
+  def resource_trade_strategy(current_resources, target_costs, playable_actions):
+      surplus_resource = next((res for res, qty in current_resources.items() if qty > 4), None)
+      needed_resources = {
+          res: qty - current_resources.get(res, 0)
+          for res, qty in target_costs.items()
+          if current_resources.get(res, 0) < qty
+      }
+      if surplus_resource and needed_resources:
+          needed_resource = next(iter(needed_resources.keys()))  # Pick the first needed resource
+          for action in playable_actions:
+              if action.action_type in [ActionType.MARITIME_TRADE, ActionType.OFFER_TRADE]:
+                  print(f"Trading {surplus_resource} for {needed_resource}")
+                  return action
+      return None
+  ```
+
+##### Example Integration for Mid/Late Game Phases:
+Here, surplus resources are converted into target costs dynamically during settlement or city actions:
+```python
+target_cost = {"wood": 1, "brick": 1, "sheep": 1, "wheat": 2, "ore": 3}  # Adjust dynamically for city or settlement
+trade_action = resource_trade_strategy(current_resources, target_cost, playable_actions)
+if trade_action:
+    print(f"Executing Trade Action Based on Resources: {trade_action}")
+    return trade_action
+```
+
+---
+
+#### 4. **Reduce Reliance on Fallback Defaults**
+##### Issue:
+The fallback mechanism currently defaults to the first action arbitrarily if no valid strategies are available, resulting in wasted turns.
+
+##### Solution:
+Enhance the fallback mechanism with scoring evaluations based on strategic priorities:
+- Score actions using the weighted heuristic (modified from the current implementation):
+  ```python
+  def fallback_action_ranking(playable_actions):
+      action_scores = {}
+      for action in playable_actions:
+          if action.action_type == ActionType.BUILD_SETTLEMENT:
+              action_scores[action] = 10
+          elif action.action_type == ActionType.BUILD_CITY:
+              action_scores[action] = 15
+          elif action.action_type == ActionType.BUILD_ROAD:
+              action_scores[action] = 8
+          elif action.action_type in [ActionType.MARITIME_TRADE, ActionType.OFFER_TRADE]:
+              action_scores[action] = 6
+          else:
+              action_scores[action] = 1  # Lowest score for basic actions
+      return max(action_scores, key=action_scores.get, default=None)
+  ```
+
+##### Integration:
+Replace arbitrary fallback with ranked fallback:
+```python
+ranked_fallback = fallback_action_ranking(playable_actions)
+if ranked_fallback:
+    print(f"Chosen Ranked Fallback Action: {ranked_fallback}")
+    return ranked_fallback
+```
+
+---
+
+### Summary of Adjustments
+
+1. **Settlement Expansion Logic:**  
+   Dynamically evaluate settlement actions based on resource diversity and strategic positioning when external dependencies are unavailable.
+
+2. **Strategic Road-Building:**  
+   Prioritize roads leading to open settlement spots to ensure early game expansion opportunities.
+
+3. **Resource Utilization via Trade:**  
+   Detect surplus resources and match trades for strategically needed resources to enable critical actions like settlements, cities, or roads.
+
+4. **Improved Fallback Ranking:**  
+   Replace "Choosing First Action on Default" with ranked fallback based on heuristic scoring to maintain strategic value in unconventional situations.
+
+---
+
+Expected Outcome:
+These integrated strategies should improve gameplay competitiveness, reduce wasted turns, and enable more dynamic decisions for settlement expansion and road-building, even with module dependencies remaining unavailable.
+
+END STRATEGY.================================ Human Message =================================
+
+- **MEDIUM LEVEL GOAL:** Refine FooPlayer's prioritization system to bolster early and mid-game strategies, focusing on aggressive settlement expansion, road connectivity, and resource management tactics. Aim to minimize reliance on fallback actions and improve decision impact.
+- **LOW LEVEL GOAL:** Integrate more targeted logic for settlement and road-building prioritization, ensuring these actions occur early and at strategic game phases, dynamically adapting to resource availability. Diagnose and correct phase detection inaccuracies to enable effective decision-making throughout the game.
+
+---
+
+### CHOSEN AGENT: STRATEGIZER  
+### AGENT OBJECTIVE:
+1. **Identify Gaps in the Current Strategy:**
+   - Why does the player consistently overuse fallback actions like `ROLL` or `END_TURN`?
+   - What depth or logic adjustments are needed to prioritize impactful moves like settlements and roads during early game phases?
+
+2. **Propose Strategic Enhancements:**
+   - Provide actionable new strategies for better settlement spot selection, earlier road-building, and smarter use of available resources.
+   - Suggest methods to reduce late-game inefficiencies, ensuring meaningful actions are executed when they matter most.
+
+3. **Focus Areas for Improvement:**
+   - Increase settlements to at least 2 per game and roads to 0.5 per game (current averages are too low to compete).
+   - Reduce unnecessary turns or actions that do not contribute to gameplay advancement.
+   - Integrate offense-oriented techniques to derail opponents or take advantage of their vulnerabilities.
+
+Your output should provide specific, implementable strategies targeting these goals and designed to overcome current deficiencies in the player logic.================================== Ai Message ==================================
+
+STRATEGY:
+
+### Diagnosis and Gaps in the Current Strategy
+
+#### 1. Reliance on Fallback Actions
+**Issue:** Overuse of fallback actions, such as arbitrary `ROLL` or `END_TURN`, indicates insufficient decision-making depth in the logic, especially in critical early turns.  
+- **Cause:** Key decisions like settlement building or road building are not adequately prioritized due to:
+  - Limited evaluation of valid settlement spots (e.g., importance of resource diversity or expansion potential).
+  - Weak road-building strategy that fails to pave the way for settlement expansion.
+  - Resource utilization gaps, where trades are not effectively executed to mitigate shortages or capitalize on surpluses.
+
+---
+
+### Proposed Enhancements to Strategy Framework
+
+#### 1. **Dynamic Settlement Prioritization**
+Expand settlement prioritization by scoring potential settlement spots based on resource diversity and strategic opportunity.
+
+##### New Logic for Evaluating Settlement Spots:
+- Settlement spots are evaluated using a **Scoring Function** based on:
+  1. **Resource Diversity:** Prefer spots with access to 3+ unique resources.
+  2. **Proximity to Existing Roads:** Ensure the path to settlement placement is feasible.
+  3. **Strategic Value:** Higher weights to rare resources or contested spots.
+
+```python
+def score_settlement_spots(game, player_color):
+    settlement_spots = game.state.board.buildable_node_ids(player_color)  # Fetch valid spots
+    spot_scores = {}
+    for spot in settlement_spots:
+        resources = [tile.resource for tile in game.state.board.tiles if spot in tile.nodes]
+        score = len(set(resources))  # Resource diversity score
+        if "ore" in resources or "wheat" in resources:
+            score += 2  # High-value resource bonus
+        if spot in game.state.board.get_road_ends(player_color):
+            score += 3  # Accessibility score
+        spot_scores[spot] = score
+    return max(spot_scores, key=spot_scores.get) if spot_scores else None
+```
+
+##### Integration in Decision-Making:
+Use the highest evaluated settlement spot to guide settlement-building actions:
+```python
+highest_scoring_spot = score_settlement_spots(game, game.state.current_player().color)
+for action in playable_actions:
+    if action.action_type == ActionType.BUILD_SETTLEMENT and action.value == highest_scoring_spot:
+        print(f"Chosen Settlement Action Based on Scoring: {action}")
+        return action
+```
+
+---
+
+#### 2. **Strengthen Road-Building Strategies**
+Create a more dynamic strategy for roads that contributes to settlement expansion and disrupts opponent opportunities.
+
+##### New Logic for Road Evaluation:
+- Evaluate roads based on:
+  1. **Connection to High-Scoring Settlement Spots:** Roads supporting settlement building are prioritized.
+  2. **Blocking Opponent Growth:** Consider roads that limit opponent expansion opportunities.
+  3. **Longest Road Potential:** Bias roads that extend connectivity for future points.
+
+```python
+def score_road_targets(game, player_color, playable_actions):
+    settlement_targets = [spot for spot in game.state.board.buildable_node_ids(player_color)]
+    road_scores = {}
+    for action in playable_actions:
+        if action.action_type == ActionType.BUILD_ROAD:
+            road_end = action.value
+            if road_end in settlement_targets:
+                road_scores[action] = 10  # Favor roads leading to settlements
+            elif road_end in game.state.board.get_opponent_hotspot_edges(player_color):
+                road_scores[action] = 5  # Penalize opponents' expansion
+            else:
+                road_scores[action] = 3  # General road score for connectivity
+    return max(road_scores, key=road_scores.get) if road_scores else None
+```
+
+##### Integration in Decision-Making:
+Add road prioritization into the early-game logic:
+```python
+prioritized_road_action = score_road_targets(game, game.state.current_player().color, playable_actions)
+if prioritized_road_action:
+    print(f"Chosen Road-Building Action: {prioritized_road_action}")
+    return prioritized_road_action
+```
+
+---
+
+#### 3. **Improved Resource Management in Trade Logic**
+Targeted trades ensure resources are optimized for strategic builds like settlements, roads, or cities.
+
+##### New Trade Logic:
+- Expand the logic to trade surplus resources dynamically to fulfill immediate goals for settlement or road construction.
+
+```python
+def trade_for_settlement_or_road(game, current_resources, playable_actions):
+    settlement_cost = {"wood": 1, "brick": 1, "sheep": 1, "wheat": 1}
+    road_cost = {"wood": 1, "brick": 1}
+    target_cost = settlement_cost if game.state.phase == "early" else road_cost
+    needed_resources = {res: qty - current_resources.get(res, 0) for res, qty in target_cost.items()}
+    surplus_resources = [res for res, qty in current_resources.items() if qty > 4]
+    
+    for action in playable_actions:
+        if action.action_type in [ActionType.MARITIME_TRADE, ActionType.OFFER_TRADE]:
+            # Match surplus with needed resources dynamically
+            if surplus_resources and needed_resources:
+                print(f"Trading surplus {surplus_resources[0]} for needed resource {list(needed_resources.keys())[0]}")
+                return action
+    return None
+```
+
+##### Integration in Decision-Making:
+Look for trade options to resolve resource gaps for settlement or road building:
+```python
+trade_action = trade_for_settlement_or_road(game, current_resources, playable_actions)
+if trade_action:
+    print(f"Chosen Trade Action to Meet Resource Needs: {trade_action}")
+    return trade_action
+```
+
+---
+
+#### 4. **Phase Detection Adjustments**
+Fix inaccuracies in phase detection by using both turn count and game metrics:
+```python
+def determine_game_phase(game_state):
+    num_turns = game_state.num_turns
+    print(f"Number of completed turns: {num_turns}")
+    if game_state.is_initial_build_phase:
+        return "early"
+    elif num_turns < 50 and game_state.num_settlements_built < 2:
+        return "early-mid"
+    elif num_turns < 50:
+        return "mid"
+    else:
+        return "late"
+```
+
+---
+
+### Summary of Strategy Enhancements
+
+1. **Dynamic Settlement Planning:**
+   - Use scoring to pick settlement spots with the highest resource diversity and strategic value.
+   - Ensure early settlements are prioritized to expand player opportunities.
+
+2. **Road-Building Strategy:**
+   - Build roads to unlock high-value settlement spots, block opponents, and increment connectivity.
+
+3. **Resource Management Tactics:**
+   - Dynamically match surplus resources with immediate needs via expanded trade mechanisms.
+
+4. **Phase Detection:**
+   - Improved phase classification that incorporates turn count and game progression allows better decision-making alignment with current conditions.
+
+5. **Higher Scoring Behavior:**
+   - By focusing on strategic settlement placements, early road expansion, and effective trades, the player will improve resource utilization and reduce reliance on fallbacks like `ROLL` or `END_TURN`.
+
+These targeted improvements will help `FooPlayer` scale in its decision-making ability and actively address limitations in early and mid-game phases.
+
+END STRATEGY.
