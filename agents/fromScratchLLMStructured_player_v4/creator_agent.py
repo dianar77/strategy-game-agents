@@ -56,24 +56,24 @@ class CreatorAgent():
 
     def __init__(self):
         # Get API key from environment variable
-        # self.llm_name = "gpt-4o"
-        # self.llm = AzureChatOpenAI(
-        #     model="gpt-4o",
-        #     azure_endpoint="https://gpt-amayuelas.openai.azure.com/",
-        #     api_version = "2024-12-01-preview"
-        # )
+        self.llm_name = "o1"
+        self.llm = AzureChatOpenAI(
+            model="o1",
+            azure_endpoint="https://gpt-amayuelas.openai.azure.com/",
+            api_version = "2024-12-01-preview"
+        )
 
         # config = Config(read_timeout=1000)
         # bedrock_client = client(service_name='bedrock-runtime', region_name='us-east-2', config=config)
-        self.llm_name = "claude-3.7"
-        self.llm = ChatBedrockConverse(
-            aws_access_key_id = os.environ["AWS_ACESS_KEY"],
-            aws_secret_access_key = os.environ["AWS_SECRET_KEY"],
-            region_name = "us-east-2",
-            provider = "anthropic",
-            model_id="arn:aws:bedrock:us-east-2:288380904485:inference-profile/us.anthropic.claude-3-7-sonnet-20250219-v1:0"
-        )
-        os.environ["LANGCHAIN_TRACING_V2"] = "false"
+        # self.llm_name = "claude-3.7"
+        # self.llm = ChatBedrockConverse(
+        #     aws_access_key_id = os.environ["AWS_ACESS_KEY"],
+        #     aws_secret_access_key = os.environ["AWS_SECRET_KEY"],
+        #     region_name = "us-east-2",
+        #     provider = "anthropic",
+        #     model_id="arn:aws:bedrock:us-east-2:288380904485:inference-profile/us.anthropic.claude-3-7-sonnet-20250219-v1:0"
+        # )
+        # os.environ["LANGCHAIN_TRACING_V2"] = "false"
 
 
         # self.llm_name = "mistral-large-latest"
@@ -116,18 +116,6 @@ class CreatorAgent():
         
 
         class CreatorGraphState(TypedDict):
-            # full_results: HumanMessage # Last results of running the game
-            # analysis: HumanMessage         # Output of Anlayzer, What Happend?
-            # strategy: HumanMessage         # Output of Strategizer, What should be done?
-            # solution: HumanMessage         # Ouput of Researcher, How should it be implemented?
-            # code_additions: HumanMessage         # Output of Coder, What was added to the code?
-            # test_results: HumanMessage # Running a test on code, to ensure correctness
-            # validation: HumanMessage       # Ouptut of Validator, Is the code correct?
-            # tool_calling_messages: list[AnyMessage]     # Messages from the tool calling state graph (used for debugging)
-            # performance_history: HumanMessage
-
-            # evolve_counter: int         # Counter for the number of evolutions
-            # validator_counter: int
             meta_messages: list[AnyMessage] # Messages from the meta node (used for debugging)
             analyzer_messages: list[AnyMessage] # Messages from the analyzer node (used for debugging)
             strategizer_messages: list[AnyMessage] # Messages from the strategizer node (used for debugging)
@@ -137,16 +125,15 @@ class CreatorAgent():
             recent_meta_message: HumanMessage # Recent Message from the meta node (used for debugging)
             recent_helper_response: HumanMessage # Recent Message from the helper node (used for debugging)
             game_results: HumanMessage # Last results of running the game
-
             tool_calling_messages: list[AnyMessage] # Messages from the tool calling state graph
             
 
         multi_agent_prompt = f"""You are apart of a multi-agent system that is working to evolve the code in {FOO_TARGET_FILENAME} to become the best player in the Catanatron Minigame.\n\tYour specific role is the:"""
         
-        NUM_EVOLUTIONS = 12
+        NUM_EVOLUTIONS = 20
 
 
-        MAX_MESSAGES_TOOL_CALLING = 8
+        MAX_MESSAGES_TOOL_CALLING = 4
         NUM_META_MESSAGES_GIVEN_TO_CODER = 6
         MAX_MESSAGES_IN_AGENT = 20
 
@@ -560,19 +547,30 @@ Your Guidelines:
     - Cite any sources that you use in your report at the bottom
 
 Scenarios:
-    If The performance history shows that the player consistentaly does not compile (score stays at 0) or cannot get a score better than default (score stays at 2), Repond With
+    Within the first 5 Evolutions, if The performance history shows that the player consistentaly does not compile (score stays at 0) or cannot get a score better than default (score stays at 2), Repond With
         Try the following code snippet to get the player to compile and get simple results:
         for action in playable_actions:
             "if action.action_type == ActionType.BUILD_SETTLEMENT:
                 return action"
+
+    If The performance history contains a previous version of {FOO_TARGET_FILENAME} that is more successful then the recent iterations, 
+        Call read_older_foo_file tool to get the code of the previous {FOO_TARGET_FILENAME}
+        Either return the entire contents of the file, or just your analysis of the differences
+
+    If the performance history shows no signs of player improving over the last 3 successful evolutions (game ran successfully)
+        Recommend that the player should try a new strategy to optimize the {FOO_TARGET_FILENAME} player (This means starting from scratch)
+    
 
 Your Tools:
     - read_local_file: Read the content of a file that is in the performance history
         Input: String rel_path - path of the file to read
         Output: String - content of the file
     - read_game_results_file: Read the content of the game_results*.json file
-        Input: Int num - the evolution number you want to read (default is -1 for most recent)
+        Input: Int num - the evolution number you want to read (default is -1 for most recent), 0 will return the default template
         Output: String - contents of the file (Includes Player Summary With Wins, Victory Points, Cities, Settles, Road, Army, and Game Summary with number of Ticks, Turns))
+    - read_older_foo_file: Read the content of an older vesrion {FOO_TARGET_FILENAME} file
+        Input: Int num - the evolution number you want to read (default is -1 for most recent), 0 will return the default template
+        Output: String - contents of the python file for the older player as a string
     - web_search_tool_call: Perform a web search using the Tavily API.
         Input: String query - the search query
         Output: TavilySearchResults - the search results                         
@@ -584,7 +582,7 @@ Respond with No Commentary, just the Strategy.
                 """
             )
 
-            tools = [read_local_file, read_game_results_file, web_search_tool_call]
+            tools = [read_local_file, read_game_results_file, read_older_foo_file, web_search_tool_call]
             
             # Call the LLM with the provided tools
             base_len = len(state["strategizer_messages"][-MAX_MESSAGES_IN_AGENT:])
