@@ -323,7 +323,7 @@ Start your summary with "TOOL SUMMARY:" and end with "END TOOL SUMMARY"
 ANALYZER OBJECTIVE:
 
 If there is no syntax errors, I want you to return
-    - The Scores of the {FOO_TARGET_FILENAME} player from the game_results.json file
+    - The Scores of the {FOO_TARGET_FILENAME} player from the game_results json file
     - Short analysis of the game output (return anything interseting that was printed)
     - EMPHASIZE any errors, warnings, or signs of player implementation error in the game_output.txt file 
 
@@ -434,8 +434,8 @@ Your Inputs:
     - The most up to date performance history, with the scores and game results of the {FOO_TARGET_FILENAME} player accross evolutions
     - The most recent foo_player.py file (note previous messages might be referring to an older version)
     - The most recent game_output.txt file which contains the output from run game command
-    - The most recent game_results.json file which contains the breakdown of the {FOO_TARGET_FILENAME} player vs. the opponent
-        - Note: The game_results.json file will not be included if the game failed to run due to a syntax error
+    - The most recent game_results json file which contains the breakdown of the {FOO_TARGET_FILENAME} player vs. the opponent
+        - Note: The game_results json file will not be included if the game failed to run due to a syntax error
     - Your OBJECTIVE: The most recent message includes the task that you are responding to... starts with {ANALYZER_NAME}
 
 
@@ -484,7 +484,7 @@ Respond with No Commentary, just the Analysis.
 
             performance_msg = HumanMessage(content=f"This is the current performance history\n\n{read_full_performance_history()}")
             game_output_msg = HumanMessage(content=f"This is the current game_output.txt file\n\n{read_game_output_file()}")
-            game_results_msg = HumanMessage(content=f"This is the current game_results.json file\n\n{read_game_results_file()}")
+            game_results_msg = HumanMessage(content=f"This is the current game_results json file\n\n{read_game_results_file()}")
             current_foo_msg = HumanMessage(content=f"This is the current foo_player.py file\n\n{read_foo()}")
 
 
