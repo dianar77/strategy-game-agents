@@ -65,28 +65,28 @@ class CreatorAgent():
 
         # config = Config(read_timeout=1000)
         # bedrock_client = client(service_name='bedrock-runtime', region_name='us-east-2', config=config)
-        # self.llm_name = "claude-3.7"
-        # self.llm = ChatBedrockConverse(
-        #     aws_access_key_id = os.environ["AWS_ACESS_KEY"],
-        #     aws_secret_access_key = os.environ["AWS_SECRET_KEY"],
-        #     region_name = "us-east-2",
-        #     provider = "anthropic",
-        #     model_id="arn:aws:bedrock:us-east-2:288380904485:inference-profile/us.anthropic.claude-3-7-sonnet-20250219-v1:0"
+        self.llm_name = "claude-3.7"
+        self.llm = ChatBedrockConverse(
+            aws_access_key_id = os.environ["AWS_ACESS_KEY"],
+            aws_secret_access_key = os.environ["AWS_SECRET_KEY"],
+            region_name = "us-east-2",
+            provider = "anthropic",
+            model_id="arn:aws:bedrock:us-east-2:288380904485:inference-profile/us.anthropic.claude-3-7-sonnet-20250219-v1:0"
+        )
+        os.environ["LANGCHAIN_TRACING_V2"] = "false"
+
+
+        # self.llm_name = "mistral-large-latest"
+        # rate_limiter = InMemoryRateLimiter(
+        #     requests_per_second=1,    # Adjust based on your API tier
+        #     check_every_n_seconds=0.1,
         # )
-        # os.environ["LANGCHAIN_TRACING_V2"] = "false"
-
-
-        self.llm_name = "mistral-large-latest"
-        rate_limiter = InMemoryRateLimiter(
-            requests_per_second=1,    # Adjust based on your API tier
-            check_every_n_seconds=0.1,
-        )
-        self.llm = ChatMistralAI(
-            model="mistral-large-latest",
-            temperature=0,
-            max_retries=10,
-            rate_limiter=rate_limiter,
-        )
+        # self.llm = ChatMistralAI(
+        #     model="mistral-large-latest",
+        #     temperature=0,
+        #     max_retries=10,
+        #     rate_limiter=rate_limiter,
+        # )
 
         # Create run directory if it doesn't exist
         if CreatorAgent.run_dir is None:
@@ -104,7 +104,7 @@ class CreatorAgent():
         )
 
         self.config = {
-            "recursion_limit": 125, # set recursion limit for graph
+            "recursion_limit": 200, # set recursion limit for graph
             # "configurable": {
             #     "thread_id": "1"
             # }
@@ -143,7 +143,7 @@ class CreatorAgent():
 
         multi_agent_prompt = f"""You are apart of a multi-agent system that is working to evolve the code in {FOO_TARGET_FILENAME} to become the best player in the Catanatron Minigame.\n\tYour specific role is the:"""
         
-        NUM_EVOLUTIONS = 10
+        NUM_EVOLUTIONS = 12
 
 
         MAX_MESSAGES_TOOL_CALLING = 8
@@ -346,6 +346,7 @@ If there is a syntax error, I want you to return
     - The exact line of code that caused the error if possible
 
 Keep the Response as concise as possible
+Start your response with "After Running The New {FOO_TARGET_FILENAME} Player, Here is my analysis and findings:"
 """
             )
             # Clear all past messages
@@ -375,6 +376,7 @@ Here is your Current Performance History for Evolving the {FOO_TARGET_FILENAME} 
 2nd Step: Output your current MEDIUM LEVEL GOAL, and LOW LEVEL GOAL at the top of your message
 
 3rd Step: Determine the sub-agent that you wish to consult, and prepare an OBJECTIVE message for them
+    - If your performance history has not improved in the last three evolutions or stays at 0, consult the strategizer
 
 
 AGENTS:
@@ -407,7 +409,6 @@ Guidelines:
     - Always keep your GOALS in mind and try to achieve them
         - Medium Level Goal must have a clear objective for the the next **5** iterations of evolving
         - Low Level Goal must have a clear objective for the next iteration of evolving
-
     - Only include one agent key (the output is parsed to detemine which agent to send it to)
 
 
@@ -558,10 +559,12 @@ Your Guidelines:
     - Do not make up information. If you do not know the answer, say you do not know
     - Cite any sources that you use in your report at the bottom
 
-If The Coder is Struggling to get a player that compiles or is higher than 0, suggest you try just these lines of code in the decide function:
-for action in playable_actions:
-    "if action.action_type == ActionType.BUILD_SETTLEMENT:
-        return action"
+Scenarios:
+    If The performance history shows that the player consistentaly does not compile (score stays at 0) or cannot get a score better than default (score stays at 2), Repond With
+        Try the following code snippet to get the player to compile and get simple results:
+        for action in playable_actions:
+            "if action.action_type == ActionType.BUILD_SETTLEMENT:
+                return action"
 
 Your Tools:
     - read_local_file: Read the content of a file that is in the performance history
