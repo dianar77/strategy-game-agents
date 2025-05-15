@@ -1,0 +1,22 @@
+Traceback (most recent call last):
+  File "/Users/dakotabarnes/miniconda3/envs/catanatron/bin/catanatron-play", line 33, in <module>
+    sys.exit(load_entry_point('catanatron-experimental', 'console_scripts', 'catanatron-play')())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/dakotabarnes/miniconda3/envs/catanatron/lib/python3.11/site-packages/click/core.py", line 1130, in __call__
+    return self.main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/dakotabarnes/miniconda3/envs/catanatron/lib/python3.11/site-packages/click/core.py", line 1055, in main
+    rv = self.invoke(ctx)
+         ^^^^^^^^^^^^^^^^
+  File "/Users/dakotabarnes/miniconda3/envs/catanatron/lib/python3.11/site-packages/click/core.py", line 1404, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/dakotabarnes/miniconda3/envs/catanatron/lib/python3.11/site-packages/click/core.py", line 760, in invoke
+    return __callback(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/dakotabarnes/Develop/CollectiveComputingLabs/strategy-game-agents/catanatron/catanatron_experimental/catanatron_experimental/play.py", line 186, in simulate
+    play_batch(
+  File "/Users/dakotabarnes/Develop/CollectiveComputingLabs/strategy-game-agents/catanatron/catanatron_experimental/catanatron_experimental/play.py", line 296, in play_batch
+    table.add_column(f"{player.color.value} VP", justify="right")
+                        ^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'value'
