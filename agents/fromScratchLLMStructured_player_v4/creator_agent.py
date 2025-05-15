@@ -56,12 +56,12 @@ class CreatorAgent():
 
     def __init__(self):
         # Get API key from environment variable
-        self.llm_name = "gpt-4o"
-        self.llm = AzureChatOpenAI(
-            model="gpt-4o",
-            azure_endpoint="https://gpt-amayuelas.openai.azure.com/",
-            api_version = "2024-12-01-preview"
-        )
+        # self.llm_name = "gpt-4o"
+        # self.llm = AzureChatOpenAI(
+        #     model="gpt-4o",
+        #     azure_endpoint="https://gpt-amayuelas.openai.azure.com/",
+        #     api_version = "2024-12-01-preview"
+        # )
 
         # config = Config(read_timeout=1000)
         # bedrock_client = client(service_name='bedrock-runtime', region_name='us-east-2', config=config)
@@ -76,17 +76,17 @@ class CreatorAgent():
         # os.environ["LANGCHAIN_TRACING_V2"] = "false"
 
 
-        # self.llm_name = "mistral-large-latest"
-        # rate_limiter = InMemoryRateLimiter(
-        #     requests_per_second=1,    # Adjust based on your API tier
-        #     check_every_n_seconds=0.1,
-        # )
-        # self.llm = ChatMistralAI(
-        #     model="mistral-large-latest",
-        #     temperature=0,
-        #     max_retries=10,
-        #     rate_limiter=rate_limiter,
-        # )
+        self.llm_name = "mistral-large-latest"
+        rate_limiter = InMemoryRateLimiter(
+            requests_per_second=1,    # Adjust based on your API tier
+            check_every_n_seconds=0.1,
+        )
+        self.llm = ChatMistralAI(
+            model="mistral-large-latest",
+            temperature=0,
+            max_retries=10,
+            rate_limiter=rate_limiter,
+        )
 
         # Create run directory if it doesn't exist
         if CreatorAgent.run_dir is None:
@@ -143,14 +143,13 @@ class CreatorAgent():
 
         multi_agent_prompt = f"""You are apart of a multi-agent system that is working to evolve the code in {FOO_TARGET_FILENAME} to become the best player in the Catanatron Minigame.\n\tYour specific role is the:"""
         
-        NUM_EVOLUTIONS = 8
+        NUM_EVOLUTIONS = 10
 
 
         MAX_MESSAGES_TOOL_CALLING = 8
         NUM_META_MESSAGES_GIVEN_TO_CODER = 6
         MAX_MESSAGES_IN_AGENT = 20
 
-        
 
         ANALYZER_NAME = "ANALYZER"
         STRATEGIZER_NAME = "STRATEGIZER"
@@ -307,7 +306,7 @@ Start your summary with "TOOL SUMMARY:" and end with "END TOOL SUMMARY"
             Initialize the state of the graph
             """
             print("In Init Node")
-
+            
             return {
                 "meta_messages": [],
                 "analyzer_messages": [],
@@ -339,7 +338,7 @@ ANALYZER OBJECTIVE:
 If there is no syntax errors, I want you to return
     - The Scores of the {FOO_TARGET_FILENAME} player from the game_results.json file
     - Short analysis of the game output (return anything interseting that was printed)
-    - Anything else note worthy from the 
+    - EMPHASIZE any errors, warnings, or signs of player implementation error in the game_output.txt file 
 
 If there is a syntax error, I want you to return
     - The error message from the game_output.txt file
@@ -370,7 +369,7 @@ Here is your Current Performance History for Evolving the {FOO_TARGET_FILENAME} 
 {read_full_performance_history()}
 
 
-1st Step: Look at the previous messages and take note of your previous goals, and the newest information provided to you. 
+1st Step: Look at the previous messages and take note of your previous goals, and the newest information provided to you
     - Be sure to carefully consider what the analyzer is saying regarding the game output
 
 2nd Step: Output your current MEDIUM LEVEL GOAL, and LOW LEVEL GOAL at the top of your message
@@ -410,6 +409,7 @@ Guidelines:
         - Low Level Goal must have a clear objective for the next iteration of evolving
 
     - Only include one agent key (the output is parsed to detemine which agent to send it to)
+
 
 Output Format:
     - MEDIUM LEVEL GOAL: <insert here>
@@ -558,6 +558,10 @@ Your Guidelines:
     - Do not make up information. If you do not know the answer, say you do not know
     - Cite any sources that you use in your report at the bottom
 
+If The Coder is Struggling to get a player that compiles or is higher than 0, suggest you try just these lines of code in the decide function:
+for action in playable_actions:
+    "if action.action_type == ActionType.BUILD_SETTLEMENT:
+        return action"
 
 Your Tools:
     - read_local_file: Read the content of a file that is in the performance history
@@ -637,6 +641,7 @@ Your Guidelines:
     - For questions on syntax, ensure to provide relevant code that you found
     - Do not make up information. If you do not know the answer, say you do not know and where you looked
     - Cite the sources that you used in your report at the bottom, with a note on the information they included (so you know where to find it in the future)
+        Ex. 1. catanatron_core/catanatron/models/enums.py - includes enums for Development Cards, NodeRef, EdgeRef, ActionPrompt, and ActionType
 
 
 Your Tools:
@@ -715,6 +720,7 @@ Coding Guidelines:
     - Note: You will have multiple of iterations to evolve, so make sure the syntax is correct
     - PRIORITIZE FIXING BUGS AND ERRORS THAT ARISE
     - Make sure to follow **python 3.12** syntax!!
+    - Your code will go straight to the {FOO_TARGET_FILENAME} file, to be run in the game, so make sure to be aware of the syntax
 
 Report Guidelines:
     - Return bullet points of the changes you made to the code
@@ -744,7 +750,7 @@ Make sure to start your report with 'CODER' and end with 'END CODER'.
                 meta_msgs = state["meta_messages"]
 
             # Call the LLM with the provided tools
-            current_foo_msg = HumanMessage(content=f"This is the current foo_player.py file\n\n{read_foo()}")
+            current_foo_msg = HumanMessage(content=f"This is the old foo_player.py file\nNow It is your turn to update it with the new recommendations from META\n\n{read_foo()}")
             base_len = len(state["coder_messages"][-MAX_MESSAGES_IN_AGENT:])
             msgs = state["coder_messages"][-MAX_MESSAGES_IN_AGENT:] + meta_msgs + [current_foo_msg]
             output = tool_calling_state_graph(sys_msg, msgs, tools)

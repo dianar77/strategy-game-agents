@@ -49,9 +49,9 @@ RUN_TEST_FOO_HAPPENED = False # Used to keep track of whether the testfoo tool h
 # -------------------------------------------------------------------------------------
 
 
-LLM_NAME = "gpt-4o"
+LLM_NAME = "o1"
 LLM = AzureChatOpenAI(
-    model="gpt-4o",
+    model="o1",
     azure_endpoint="https://gpt-amayuelas.openai.azure.com/",
     api_version = "2024-12-01-preview"
 )
@@ -282,13 +282,14 @@ class CreatorAgent():
                     ───────────────────────────────────────────────
 
 
-                    ask_question(query) will be used to ask a question to the LLM
+                    ask_question(query) will be used to ask a question to helper LLM
                         - What can be answered
                             - Questions about the result of the last game, or any game in performance history
-                            - Questions about the catanatron api 
+                            - Questions about the catanatron api and the player function
                             - Questions requiring a web search
                             - Questions about syntax
                             - Questions about the current player
+                            - Request to view the output of the last player (see print() statemmnts)
 
                         - Recommendation
                             - Ask SPECIFIC questions
@@ -300,6 +301,12 @@ class CreatorAgent():
                         - It is better to be able to see results, instead of continuously causing exceptions
                         - Make sure to always keep the imports, and the decide() function  in the file. (This is how next turn is done)
 
+                    
+                    - When getting your previous game results, I recommend calling ask_question to get more information about the game. (Like Output)
+
+                    - Try and use ask_question at least once per turn to get insightful information, instead of just updateing the code
+
+                    - After You call write_foo(new_code), Return immediately a quick summary of what you did to initiate the test game
 
                     DO NOT RESPOND TO THIS PROMPT...JUST CALL THE write_foo(new_code) TOOL CALL to Write to the New Player
                     """
@@ -709,6 +716,12 @@ Role: **Knowledge-Fetcher**
 Answer *only* the user's question as briefly and concretely as possible to
 support code evolution for FooPlayer.
 
+Rules:
+ - Do not make up answers. 
+ - When being asked about syntax errors, try and find the solution in the catanatron source code
+    - If you don't know the answer, say "I don't know the answer because... Here is what I can do instead...                       
+
+                                                
 Tools available: Use As Many Tool Calls as needed
   1. list_catanatron_files: 
     - lists out all the game files in catanatron, so that they can be opened
