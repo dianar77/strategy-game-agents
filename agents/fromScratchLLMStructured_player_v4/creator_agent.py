@@ -370,7 +370,8 @@ Here is your Current Performance History for Evolving the {FOO_TARGET_FILENAME} 
 {read_full_performance_history()}
 
 
-1st Step: Look at the previous messages and take note of your previous goals, and the newest information provided to you
+1st Step: Look at the previous messages and take note of your previous goals, and the newest information provided to you. 
+    - Be sure to carefully consider what the analyzer is saying regarding the game output
 
 2nd Step: Output your current MEDIUM LEVEL GOAL, and LOW LEVEL GOAL at the top of your message
 
