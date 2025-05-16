@@ -15,7 +15,7 @@ from agents.toolCallLLM_player.toolCallLLM_player import ToolCallLLMPlayer
 from agents.fromScratch_player.creator_agent import read_foo, write_foo, run_testfoo, list_local_files, read_local_file 
 from agents.fromScratch_player.creator_agent import CreatorAgent as ScratchCreatorAgent 
 from agents.promptRefiningLLM_player.creator_agent import CreatorAgent as PromptRefiningCreatorAgent
-from agents.promptRefiningLLM_player.creator_agent import read_foo, write_foo, list_local_files, read_local_file 
+from agents.promptRefiningLLM_player.creator_agent import read_prompt, write_prompt, list_local_files, read_local_file 
 from agents.codeRefiningLLM_player.creator_agent import CreatorAgent as CodeRefiningCreatorAgent
 from agents.codeRefiningLLM_player.creator_agent import read_foo, write_foo, list_local_files, read_local_file
 # from agents.base_llm import OpenAILLM, MistralLLM, AzureOpenAILLM
@@ -45,7 +45,7 @@ def main():
 
 
     # # run prompt refining (should loop until it wins 3/5 of games in a run)
-    cA = PromptRefiningCreatorAgent(opponent="AB")
+    cA = PromptRefiningCreatorAgent()
     cA.run_react_graph()
 
     # run code refining (should loop until it wins 3/5 of games in a run)
