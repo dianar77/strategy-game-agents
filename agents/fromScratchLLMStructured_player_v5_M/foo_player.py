@@ -1,290 +1,288 @@
-from catanatron.models.player import Player, Color
-from catanatron.models.actions import Action
-from catanatron.models.enums import ActionType
-# Import building types as constants, not as an enum
-from catanatron.models.enums import SETTLEMENT, CITY, ROAD
-from catanatron.state_functions import (
-    get_player_freqdeck,
-    player_can_afford_dev_card,
-    get_player_buildings,
-    get_actual_victory_points,
-    get_visible_victory_points,
-    get_longest_road_length,
+import os
+from catanatron import Player
+from catanatron.game import Game
+from catanatron.models.player import Color
+from catanatron.models.actions import ActionType
+from catanatron.models.enums import (
+    WOOD, BRICK, SHEEP, WHEAT, ORE, RESOURCES,
+    KNIGHT, YEAR_OF_PLENTY, MONOPOLY, ROAD_BUILDING, VICTORY_POINT,
+    SETTLEMENT, CITY, ROAD, ActionPrompt
 )
-from catanatron import state_functions
-from agents.fromScratchLLMStructured_player_v4.llm_tools import LLM
+from agents.fromScratchLLMStructured_player_v5_M.llm_tools import LLM
+
 
 class FooPlayer(Player):
     def __init__(self, name=None):
         super().__init__(Color.BLUE, name)
         self.llm = LLM()  # use self.llm.query_llm(str prompt) to query the LLM
         self.turn_count = 0
-        self.is_initial_placement_phase = True
+        self.debug = True  # Set to True for debug prints
 
     def decide(self, game, playable_actions):
-        self.turn_count += 1
-        color = self.color  # get our player color
-        state = game.state
+        """
+        Choose an action from playable_actions using LLM assistance.
+        
+        Args:
+            game (Game): complete game state. read-only.
+            playable_actions (Iterable[Action]): options to choose from
+        Return:
+            action (Action): Chosen element of playable_actions
+        """
+        if not playable_actions:
+            if self.debug:
+                print("No playable actions available")
+            return None
 
-        # Get current game state information
-        our_points = get_actual_victory_points(state, color)
-        our_resources = get_player_freqdeck(state, color)
-        our_settlements = get_player_buildings(state, color, SETTLEMENT)
-        our_cities = get_player_buildings(state, color, CITY)
-        our_roads = get_player_buildings(state, color, ROAD)
-        road_length = get_longest_road_length(state, color)
+        self.turn_count += 1
         
-        # Determine the current phase of the game more accurately
-        # Instead of checking settlement count, check action types
-        initial_placement_actions = [
-            ActionType.BUILD_SETTLEMENT,
-            ActionType.BUILD_ROAD,
-        ]
+        if self.debug:
+            print(f"Turn {self.turn_count}: {len(playable_actions)} actions available")
+
+        # Extract relevant game state information
+        game_state = self._extract_game_state(game)
         
-        # Check if we're in initial placement based on game state or actions
-        if self.is_initial_placement_phase:
-            # Check if any action is NOT a placement action
-            for action in playable_actions:
-                if action.action_type == ActionType.ROLL:
-                    self.is_initial_placement_phase = False
-                    break
+        # Format actions for the LLM
+        action_descriptions = self._format_actions(playable_actions)
         
-        # Handle initial placement phase with better strategy
-        if self.is_initial_placement_phase:
-            print(f"Initial placement phase - turn {self.turn_count}")
+        # Create prompt for LLM
+        prompt = self._create_llm_prompt(game_state, action_descriptions)
+        
+        try:
+            # Query the LLM
+            if self.debug:
+                print("Querying LLM for decision...")
             
-            # For initial settlements, use the LLM to evaluate options if multiple exist
-            if len(playable_actions) > 1 and any(a.action_type == ActionType.BUILD_SETTLEMENT for a in playable_actions):
-                settlement_actions = [(i, a) for i, a in enumerate(playable_actions) if a.action_type == ActionType.BUILD_SETTLEMENT]
+            llm_response = self.llm.query_llm(prompt)
+            
+            if self.debug:
+                print(f"LLM Response: {llm_response[:100]}...")
+            
+            # Parse LLM response to select an action
+            selected_action = self._parse_llm_response(llm_response, playable_actions)
+            
+            if selected_action is not None:
+                if self.debug:
+                    print(f"Selected action: {selected_action.action_type} with value {selected_action.value}")
+                return selected_action
+            
+        except Exception as e:
+            if self.debug:
+                print(f"Error with LLM: {str(e)}")
+        
+        # Fallback strategy if LLM fails or returns invalid selection
+        return self._fallback_strategy(playable_actions)
+
+    def _extract_game_state(self, game):
+        """Extract relevant information from the game state."""
+        state = game.state
+        color = self.color
+        
+        # Get player resources
+        resources = {}
+        resource_types = [WOOD, BRICK, SHEEP, WHEAT, ORE]  # Updated: use constants instead of enum
+        for resource_type in resource_types:
+            resource_key = f"P{state.colors.index(color)}_{resource_type}"
+            resources[resource_type] = state.player_state.get(resource_key, 0)
+        
+        # Get buildings
+        buildings = state.buildings_by_color.get(color, {})
+        settlements = [node for node, building_type in buildings.items() if building_type == SETTLEMENT]
+        cities = [node for node, building_type in buildings.items() if building_type == CITY]
+        roads = state.board.roads_by_color.get(color, [])
+        
+        # Get board state
+        is_initial_build = state.is_initial_build_phase
+        current_prompt = state.current_prompt
+        
+        # Get victory points
+        victory_points = 0
+        for settlement in settlements:
+            victory_points += 1
+        for city in cities:
+            victory_points += 2
+        
+        # Get other players' information
+        other_players = {}
+        for other_color in state.colors:
+            if other_color != color:
+                player_idx = state.colors.index(other_color)
+                other_buildings = state.buildings_by_color.get(other_color, {})
+                other_settlements = [node for node, building_type in other_buildings.items() if building_type == SETTLEMENT]
+                other_cities = [node for node, building_type in other_buildings.items() if building_type == CITY]
+                other_roads = state.board.roads_by_color.get(other_color, [])
                 
-                if settlement_actions:
-                    prompt = f"""
-                    I'm placing my initial settlement in Catan.
-                    The available settlement locations are:
-                    {[f"{i}: {action.value}" for i, action in settlement_actions]}
-                    
-                    Which location (by index) would be most strategic for resource generation?
-                    Consider proximity to high-probability numbers and variety of resources.
-                    Respond with just the index number.
-                    """
-                    response = self.llm.query_llm(prompt)
-                    try:
-                        if response and response.strip().isdigit():
-                            index = int(response.strip())
-                            if 0 <= index < len(settlement_actions):
-                                return playable_actions[settlement_actions[index][0]]
-                    except:
-                        pass
-            
-            # For initial roads, place them in a way that allows for expansion
-            if len(playable_actions) > 1 and any(a.action_type == ActionType.BUILD_ROAD for a in playable_actions):
-                # Just take the first road option for now
-                for action in playable_actions:
-                    if action.action_type == ActionType.BUILD_ROAD:
-                        return action
-            
-            # If we reach here, just take the first action
-            return playable_actions[0]
+                other_vp = len(other_settlements) + 2 * len(other_cities)
+                
+                other_players[other_color.name] = {
+                    "settlements": len(other_settlements),
+                    "cities": len(other_cities),
+                    "roads": len(other_roads),
+                    "victory_points": other_vp
+                }
         
-        # Categorize available actions
-        building_actions = []
-        dev_card_actions = []
-        trade_actions = []
-        robber_actions = []
-        roll_actions = []
-        end_turn_actions = []
-        discard_actions = []
-        other_actions = []
+        # Put together game state summary
+        game_state = {
+            "resources": resources,
+            "buildings": {
+                "settlements": len(settlements),
+                "cities": len(cities),
+                "roads": len(roads)
+            },
+            "victory_points": victory_points,
+            "is_initial_build": is_initial_build,
+            "current_prompt": current_prompt.name if hasattr(current_prompt, "name") else str(current_prompt),
+            "other_players": other_players,
+            "turn_count": self.turn_count
+        }
+        
+        return game_state
+
+    def _format_actions(self, playable_actions):
+        """Format the playable actions for the LLM."""
+        action_descriptions = []
+        
+        for i, action in enumerate(playable_actions):
+            action_type = action.action_type.name
+            value = action.value
+            
+            description = f"Action {i}: {action_type}"
+            
+            # Add more details based on action type
+            if action_type == "BUILD_SETTLEMENT":
+                description += f" at node {value}"
+            elif action_type == "BUILD_CITY":
+                description += f" at node {value}"
+            elif action_type == "BUILD_ROAD":
+                description += f" from {value[0]} to {value[1]}"
+            elif action_type == "BUY_DEVELOPMENT_CARD":
+                description += " (costs 1 ORE, 1 WHEAT, 1 SHEEP)"
+            elif action_type == "PLAY_YEAR_OF_PLENTY":
+                description += f" selecting {value[0]} and {value[1]}"
+            elif action_type == "PLAY_MONOPOLY":
+                description += f" selecting resource {value}"
+            elif action_type == "MARITIME_TRADE":
+                description += f" giving {value[0]} {value[1]} for 1 {value[2]}"
+            elif action_type == "MOVE_ROBBER":
+                description += f" to coordinate {value[0]} stealing from {value[1]}"
+            
+            action_descriptions.append(description)
+        
+        return action_descriptions
+
+    def _create_llm_prompt(self, game_state, action_descriptions):
+        """Create a prompt for the LLM."""
+        prompt = "You are an AI agent playing Catan. Please evaluate the current game state and select the best action to take.\n\n"
+        
+        # Game state information
+        prompt += "GAME STATE:\n"
+        prompt += f"Turn: {game_state['turn_count']}\n"
+        prompt += f"Current phase: {game_state['current_prompt']}\n"
+        prompt += f"Initial build phase: {game_state['is_initial_build']}\n"
+        
+        # Resources
+        prompt += "\nMY RESOURCES:\n"
+        for resource, count in game_state['resources'].items():
+            prompt += f"- {resource}: {count}\n"
+        
+        # Buildings and VP
+        prompt += "\nMY BUILDINGS:\n"
+        prompt += f"- Settlements: {game_state['buildings']['settlements']}\n"
+        prompt += f"- Cities: {game_state['buildings']['cities']}\n"
+        prompt += f"- Roads: {game_state['buildings']['roads']}\n"
+        prompt += f"- Victory Points: {game_state['victory_points']}\n"
+        
+        # Other players
+        prompt += "\nOTHER PLAYERS:\n"
+        for color, data in game_state['other_players'].items():
+            prompt += f"Player {color}:\n"
+            prompt += f"- Settlements: {data['settlements']}\n"
+            prompt += f"- Cities: {data['cities']}\n"
+            prompt += f"- Roads: {data['roads']}\n"
+            prompt += f"- Victory Points: {data['victory_points']}\n"
+        
+        # Available actions
+        prompt += "\nAVAILABLE ACTIONS:\n"
+        for i, description in enumerate(action_descriptions):
+            prompt += f"{description}\n"
+        
+        # Strategy guidance
+        prompt += "\nSTRATEGY CONSIDERATIONS:\n"
+        prompt += "1. In the early game, focus on resource acquisition and expansion.\n"
+        prompt += "2. Build settlements on spots with good resource diversity and probability.\n"
+        prompt += "3. Consider upgrading to cities when you have enough resources.\n"
+        prompt += "4. Think about resource scarcity and what you need for future turns.\n"
+        prompt += "5. Development cards can provide victory points or special advantages.\n"
+        
+        # Request format
+        prompt += "\nPlease analyze the game state and available actions. Return your response in the following format:\n"
+        prompt += "SELECTED: Action X\n"
+        prompt += "REASONING: Your explanation of why this action is best...\n"
+        
+        return prompt
+
+    def _parse_llm_response(self, response, playable_actions):
+        """Parse the LLM response to get the selected action."""
+        try:
+            # Look for the action selection in the LLM response
+            if "SELECTED:" in response:
+                selected_line = [line for line in response.split('\n') if "SELECTED:" in line][0]
+                action_str = selected_line.split("SELECTED:")[1].strip()
+                
+                # Extract the action index
+                action_index = None
+                for word in action_str.split():
+                    if word.lower() == "action":
+                        continue
+                    try:
+                        action_index = int(word.strip())
+                        break
+                    except ValueError:
+                        continue
+                
+                if action_index is not None and 0 <= action_index < len(playable_actions):
+                    return playable_actions[action_index]
+            
+            if self.debug:
+                print("Could not parse action selection from LLM response")
+            
+            return None
+        
+        except Exception as e:
+            if self.debug:
+                print(f"Error parsing LLM response: {str(e)}")
+            return None
+
+    def _fallback_strategy(self, playable_actions):
+        """Fallback strategy when LLM fails to provide a valid action."""
+        if self.debug:
+            print("Using fallback strategy")
+        
+        # Define action priorities (higher number = higher priority)
+        action_priorities = {
+            ActionType.BUILD_CITY: 5,
+            ActionType.BUILD_SETTLEMENT: 4,
+            ActionType.BUILD_ROAD: 3,
+            ActionType.BUY_DEVELOPMENT_CARD: 2,
+            ActionType.PLAY_KNIGHT_CARD: 2,
+            ActionType.MARITIME_TRADE: 1
+        }
+        
+        # Find the action with the highest priority
+        best_action = None
+        best_priority = -1
         
         for action in playable_actions:
-            if action.action_type == ActionType.BUILD_SETTLEMENT:
-                building_actions.append(("BUILD_SETTLEMENT", action))
-            elif action.action_type == ActionType.BUILD_CITY:
-                building_actions.append(("BUILD_CITY", action))
-            elif action.action_type == ActionType.BUILD_ROAD:
-                building_actions.append(("BUILD_ROAD", action))
-            elif action.action_type == ActionType.BUY_DEVELOPMENT_CARD:
-                dev_card_actions.append(("BUY_DEV_CARD", action))
-            elif action.action_type == ActionType.PLAY_KNIGHT_CARD:
-                dev_card_actions.append(("PLAY_KNIGHT", action))
-            elif action.action_type == ActionType.PLAY_MONOPOLY:
-                dev_card_actions.append(("PLAY_MONOPOLY", action))
-            elif action.action_type == ActionType.PLAY_YEAR_OF_PLENTY:
-                dev_card_actions.append(("PLAY_YEAR_OF_PLENTY", action))
-            elif action.action_type == ActionType.PLAY_ROAD_BUILDING:
-                dev_card_actions.append(("PLAY_ROAD_BUILDING", action))
-            elif action.action_type == ActionType.MARITIME_TRADE:
-                trade_actions.append(("MARITIME_TRADE", action))
-            elif action.action_type == ActionType.MOVE_ROBBER:
-                robber_actions.append(("MOVE_ROBBER", action))
-            elif action.action_type == ActionType.ROLL:
-                roll_actions.append(("ROLL", action))
-            elif action.action_type == ActionType.END_TURN:
-                end_turn_actions.append(("END_TURN", action))
-            elif action.action_type == ActionType.DISCARD:
-                discard_actions.append(("DISCARD", action))
-            else:
-                other_actions.append((str(action.action_type), action))
+            priority = action_priorities.get(action.action_type, 0)
+            if priority > best_priority:
+                best_action = action
+                best_priority = priority
         
-        # Handle discard actions - keep resources for building
-        if discard_actions:
-            print(f"Discarding cards - turn {self.turn_count}")
-            # Prioritize keeping resources needed for settlements and cities
-            return discard_actions[0][1]  # Simple strategy for now: take first discard action
-            
-        # If we can roll, always roll first
-        if roll_actions:
-            print(f"Rolling dice - turn {self.turn_count}")
-            return roll_actions[0][1]
+        if best_action:
+            if self.debug:
+                print(f"Fallback strategy selected: {best_action.action_type}")
+            return best_action
         
-        # If we only have one action, take it (no need to use LLM)
-        if len(playable_actions) == 1:
-            print(f"Only one action available - turn {self.turn_count}")
-            return playable_actions[0]
-        
-        # If we need to move the robber, use the LLM to decide
-        if robber_actions:
-            prompt = f"""
-            I need to move the robber in a game of Catan. 
-            My player has {our_points} points.
-            My resources are: {our_resources}.
-            I have {len(our_settlements)} settlements and {len(our_cities)} cities.
-            
-            The available robber moves are:
-            {[f"{i}: {action[1].value}" for i, action in enumerate(robber_actions)]}
-            
-            Which move (by index) would be the most strategic to hurt my opponents while minimizing risk to myself?
-            Respond with just the index number.
-            """
-            response = self.llm.query_llm(prompt)
-            try:
-                # Try to parse an index from the LLM response
-                if response and response.strip().isdigit():
-                    index = int(response.strip())
-                    if 0 <= index < len(robber_actions):
-                        print(f"LLM chose robber action {index} - turn {self.turn_count}")
-                        return robber_actions[index][1]
-                # If parsing fails, just take the first robber action
-                print(f"Using first robber action - turn {self.turn_count}")
-                return robber_actions[0][1]
-            except:
-                print(f"Error parsing LLM response for robber, using first action - turn {self.turn_count}")
-                return robber_actions[0][1]
-        
-        # Enhanced strategic decision making for building and dev cards
-        if building_actions or dev_card_actions:
-            action_descriptions = []
-            combined_actions = []
-            
-            for i, (desc, action) in enumerate(building_actions + dev_card_actions):
-                action_descriptions.append(f"{i}: {desc} {action.value}")
-                combined_actions.append(action)
-            
-            # Enhanced prompt to give the LLM more strategic context
-            prompt = f"""
-            I'm playing Catan and need to decide my next action.
-            My player has {our_points} points out of 10 needed to win.
-            My resources are: {our_resources}.
-            I have {len(our_settlements)} settlements, {len(our_cities)} cities, and {len(our_roads)} roads.
-            My longest road is {road_length} segments long.
-            
-            The available actions are:
-            {action_descriptions}
-            
-            Which action (by index) would be most strategic for winning the game?
-            Consider:
-            1. Immediate point gains (cities = 2 VP, settlements = 1 VP)
-            2. Resource generation potential
-            3. Longest road potential (5 segments = 2 VP)
-            4. Development cards that might give Victory Points
-            
-            Respond with just the index number.
-            """
-            response = self.llm.query_llm(prompt)
-            try:
-                # Try to parse an index from the LLM response
-                if response and response.strip().isdigit():
-                    index = int(response.strip())
-                    if 0 <= index < len(combined_actions):
-                        print(f"LLM chose building/dev action {index} - turn {self.turn_count}")
-                        return combined_actions[index]
-            except:
-                print(f"Error parsing LLM response for building/dev, using heuristic - turn {self.turn_count}")
-            
-            # Improved heuristic priorities if LLM parsing fails
-            # 1. Build city (2 VP)
-            # 2. Build settlement (1 VP)
-            # 3. Buy development card (potential VP or Knight)
-            # 4. Build road if we're close to longest road (4+ segments)
-            # 5. Play development cards
-            # 6. Build road otherwise
-            
-            # Check if we're close to longest road
-            close_to_longest_road = road_length >= 4
-            
-            priority_actions = ["BUILD_CITY", "BUILD_SETTLEMENT", "BUY_DEV_CARD"]
-            if close_to_longest_road:
-                priority_actions.insert(3, "BUILD_ROAD")
-                
-            for action_type in priority_actions:
-                for desc, action in building_actions + dev_card_actions:
-                    if desc == action_type:
-                        print(f"Using heuristic: {action_type} - turn {self.turn_count}")
-                        return action
-            
-            # Process remaining development card and road actions
-            for desc, action in dev_card_actions:
-                if desc not in ["BUY_DEV_CARD"]:  # All other dev card plays
-                    print(f"Playing development card: {desc} - turn {self.turn_count}")
-                    return action
-                    
-            for desc, action in building_actions:
-                if desc == "BUILD_ROAD":
-                    print(f"Building road - turn {self.turn_count}")
-                    return action
-            
-            # If we're here, just take the first building or dev card action
-            if building_actions:
-                print(f"Using first building action - turn {self.turn_count}")
-                return building_actions[0][1]
-            if dev_card_actions:
-                print(f"Using first dev card action - turn {self.turn_count}")
-                return dev_card_actions[0][1]
-        
-        # Improved trade strategy
-        if trade_actions:
-            # Only trade if we have more than 1 option
-            if len(trade_actions) > 1:
-                # Create a simple prompt for the LLM to evaluate trades
-                trade_descriptions = [f"{i}: {action[1].value}" for i, action in enumerate(trade_actions)]
-                prompt = f"""
-                I'm trading resources in Catan.
-                My current resources are: {our_resources}
-                The available trades are:
-                {trade_descriptions}
-                
-                Which trade (by index) would be best given my current resources and buildings?
-                Consider which resources I need most for building settlements and cities.
-                Respond with just the index number.
-                """
-                response = self.llm.query_llm(prompt)
-                try:
-                    if response and response.strip().isdigit():
-                        index = int(response.strip())
-                        if 0 <= index < len(trade_actions):
-                            print(f"LLM chose trade {index} - turn {self.turn_count}")
-                            return trade_actions[index][1]
-                except:
-                    pass
-                    
-            print(f"Using first trade action - turn {self.turn_count}")
-            return trade_actions[0][1]
-        
-        # If end turn is available and we've done everything else, end the turn
-        if end_turn_actions:
-            print(f"Ending turn {self.turn_count}")
-            return end_turn_actions[0][1]
-        
-        # If we get here, just take the first action (fallback)
-        print(f"Using fallback first action - turn {self.turn_count}")
+        # If no prioritized action is found, return the first action
+        if self.debug:
+            print("Fallback to first action")
         return playable_actions[0]
