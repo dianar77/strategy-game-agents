@@ -3,7 +3,7 @@ from catanatron import Player
 from catanatron.game import Game
 from catanatron.models.player import Color
 from catanatron.models.actions import ActionType
-from agents.fromScratchLLMStructured_player_v5_M.llm_tools import LLM
+from agents.llmAgentEvolver.llm_tools import LLM
 
 
 
