@@ -380,9 +380,18 @@ Start your response with "After Running The New {FOO_TARGET_FILENAME} Player, He
 
 Task: You are the highest level of intelligence, and you must think critically about all your outputs.
 
-HIGH LEVEL GOAL: Learn how to create a Catanatron player in {FOO_TARGET_FILENAME} that can win games against the opponent
+HIGH LEVEL GOAL: Learn how to create a Catanatron player in {FOO_TARGET_FILENAME} that can win games against the opponent.
 
-Here is your Current Performance History for Evolving the {FOO_TARGET_FILENAME} player:
+This is the initial Catanatron player file, that you have been evolving
+class FooPlayer(Player):
+    def __init__(self, name=None):
+        super().__init__(Color.BLUE, name)
+        self.llm = LLM()
+    def decide(self, game, playable_actions):
+        print("Choosing First Action on Default")
+        return playable_actions[0]
+
+Here is your Current Performance History for Evolving the {FOO_TARGET_FILENAME} player, with Evolution 0 being the given template:
 {read_full_performance_history()}
 
 
@@ -1311,8 +1320,8 @@ def view_last_game_llm_query(query_number: int = -1) -> str:
         The content of the requested game results file or an error message.
     """
 
-    if RUN_TEST_FOO_HAPPENED == False:
-        return "No game run has been executed yet."
+    # if RUN_TEST_FOO_HAPPENED == False:
+    #     return "No game run has been executed yet."
     
     # Path to the runs directory
     runs_dir = Path(__file__).parent / "runs"
