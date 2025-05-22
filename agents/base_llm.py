@@ -6,6 +6,7 @@ from openai import OpenAI, AzureOpenAI
 from anthropic import AnthropicBedrock
 import time
 import json
+from dotenv import load_dotenv
 #import openai
 # Load environment variables
 
@@ -49,7 +50,8 @@ class MistralLLM(BaseLLM):
     ]
     
     def __init__(self, model_name: str = "mistral-large-latest"):
-        self.api_key = os.getenv("MISTRAL_API_KEY")
+        load_dotenv()
+        self.api_key =  os.environ.get("MISTRAL_API_KEY")
         if not self.api_key:
             raise ValueError("MISTRAL_API_KEY not found in environment variables")
         self.client = Mistral(api_key=self.api_key)

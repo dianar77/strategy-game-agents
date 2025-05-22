@@ -5,7 +5,7 @@ import time
 import re
 from datetime import datetime
 
-LLM = "gpt-4o"  # The LLM used
+LLM = "mistral-large-latest"  # The LLM used
 EVAL_PLAYER = "LLM"  # The player you want to evaluate (use the code/key)
 NUM_GAMES = 10
 

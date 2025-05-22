@@ -64,9 +64,9 @@ PLAYER_CODE_TO_NAME = {
     # Add any other players you need
 }
 
-EVOLVE_COUNTER_MAX = 10
+EVOLVE_COUNTER_MAX = 3
 # Set winning points to 5 for quicker game
-FOO_RUN_COMMAND = f"catanatron-play --players=AB,{OUR_PLAYER} --num=5 --config-map=MINI --config-vps-to-win=10"
+FOO_RUN_COMMAND = f"catanatron-play --players=AB,{OUR_PLAYER} --num=5 --config-vps-to-win=10"
 RUN_TEST_FOO_HAPPENED = False # Used to keep track of whether the testfoo tool has been called
 # -------------------------------------------------------------------------------------
 

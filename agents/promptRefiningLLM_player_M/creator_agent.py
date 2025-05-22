@@ -13,6 +13,7 @@ from datetime import datetime
 import shutil
 from pathlib import Path
 import subprocess, shlex
+from dotenv import load_dotenv
 
 
 from langchain_openai import AzureChatOpenAI
@@ -85,15 +86,17 @@ class CreatorAgent():
         #     api_version = "2024-12-01-preview"
         # )
         # os.environ["LANGCHAIN_TRACING_V2"] = "false"
-
+        load_dotenv()
+        api_key = os.environ.get("MISTRAL_API_KEY")
         self.llm_name = "mistral-large-latest"
         rate_limiter = InMemoryRateLimiter(
-            requests_per_second=0.01,    # Adjust based on your API tier
+            requests_per_second=0.5,    # Adjust based on your API tier
             check_every_n_seconds=0,
             max_bucket_size=1        # Allows for burst handling
         )
         self.llm = ChatMistralAI(
             model="mistral-large-latest",
+            mistral_api_key=api_key,
             temperature=0,
             max_retries=2,
             rate_limiter=rate_limiter,
@@ -254,9 +257,9 @@ class CreatorAgent():
             sys_msg = SystemMessage(content =
                 (
                     f"""
-                    You are in charge of creating the prompt for the Catan Player promptRefiningLLM_player_M in {FOO_TARGET_FILENAME}. 
+                    You are in charge of refining the prompt for the Catan Player promptRefiningLLM_player_M in {FOO_TARGET_FILENAME}. 
                     
-                    YOUR PRIMARY GOAL: Revise the prompt to help our promptRefiningLLM_player_M win against its opponent AlphaBetaPlayer.
+                    YOUR PRIMARY GOAL: Revise the prompt using the write_prompt tool call to help our promptRefiningLLM_player_M win against its opponent AlphaBetaPlayer.
                     
                     IMPROVEMENT PROCESS:
                     1. Carefully analyze game logs to identify key weaknesses in our player
@@ -281,16 +284,18 @@ class CreatorAgent():
                     - write_prompt: Write the content of {PROMPT_NEW_FILENAME}. (Any text in brackets MUST remain in brackets)
                     - web_search_tool_call: Research strategies for specific aspects of Catan gameplay.
                     
-                    PROCESS GUIDELINES:
+                    FOLLOW THESE STEPS:
                     1. After each run, analyze the results to identify specific weaknesses. Each run includes the results of 5 games.
                     2. Review performance history to see if the prompt used is better or worse that other prompts.
                     3. Optionally read logging files listed in performance history for a better understanding of how an evolution's prompt impacted decisions made during the game and how that impacted results.
                     4. Use web_search_tool_call to research strategies addressing weaknesses that you recognize.
-                    5. Hypothesis ways that you can improve the prompt with the things that you learned.
-                    4. Read and modify the prompt with these improvements, being specific and detailed.
-                    5. Once you have called enough tools and have written the new prompt, stop calling tools to allow the player to run a test game.
+                    5. Hypothesize ways that you can improve the prompt with the things that you learned.
+                    6. Call the read_prompt tool to understand the current prompt.
+
+                    FINAL STEP:
+                    7. Call the write_prompt tool to write a new prompt that incorporates the changes you want to make.
                     
-                    Keep iterating and improving your prompt until the player consistently wins.
+                    Keep iterating and improving your prompt until the player consistently wins. Ensure that you call the write_prompt tool to update the prompt with your changes.
                     """
                 )
             )
@@ -904,6 +909,7 @@ def web_search_tool_call(query: str) -> str:
     """
     try:
         # Get the API key from environment variable
+        load_dotenv()
         api_key = os.environ.get("TAVILY_API_KEY")
         
         if not api_key:
