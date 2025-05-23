@@ -1,0 +1,35 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Here is the current game state:
+        Player Stats:
+        - Resources: [5, 0, 0, 2, 2]
+        - Settlements: []
+        - Cities: [0, 2]
+        - Victory Points: 4
+        - Roads Available: 13
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WOOD', 'WOOD', 'WOOD', 'WOOD', 'ORE'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WOOD', 'WOOD', 'WOOD', 'WOOD', 'SHEEP'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WOOD', 'WOOD', 'WOOD', 'WOOD', 'WHEAT'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WOOD', 'WOOD', 'WOOD', 'WOOD', 'BRICK'))
+
+        Heuristic Scores for Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WOOD', 'WOOD', 'WOOD', 'WOOD', 'ORE')): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WOOD', 'WOOD', 'WOOD', 'WOOD', 'SHEEP')): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WOOD', 'WOOD', 'WOOD', 'WOOD', 'WHEAT')): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WOOD', 'WOOD', 'WOOD', 'WOOD', 'BRICK')): 1
+
+        Please respond with the optimal action and briefly explain why it was chosen. Format:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the decision}
+        
+
+========================================
+
+Response:
+Action: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)  
+Justification: All available actions have the same heuristic score of 1, meaning they are equally beneficial based on the current evaluation. Since maritime trades would deplete resources with no clear benefit given your current resource distribution and goals, the most prudent action is to end the turn and await opportunities for better trades or actions in the future. This conserves resources for more impactful moves in subsequent turns.

@@ -1,0 +1,81 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [1, 7, 2, 0, 1]
+        - Settlements: [22]
+        - Cities: [10]
+        - Victory Points (VP): 5
+        - Roads Available: 9
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(9, 10))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(24, 53))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(48, 49))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(28, 29))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(11, 32))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(11, 12))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(6, 23))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(51, 52))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(49, 50))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(20, 22))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(29, 30))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('BRICK', 'BRICK', 'BRICK', 'BRICK', 'SHEEP'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('BRICK', 'BRICK', 'BRICK', 'BRICK', 'WHEAT'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('BRICK', 'BRICK', 'BRICK', 'BRICK', 'WOOD'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('BRICK', 'BRICK', 'BRICK', 'BRICK', 'ORE'))
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(9, 10)): 10
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(24, 53)): 10
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(48, 49)): 10
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(28, 29)): 10
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(11, 32)): 10
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(11, 12)): 10
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(6, 23)): 10
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(51, 52)): 10
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(49, 50)): 10
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(20, 22)): 10
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(29, 30)): 10
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('BRICK', 'BRICK', 'BRICK', 'BRICK', 'SHEEP')): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('BRICK', 'BRICK', 'BRICK', 'BRICK', 'WHEAT')): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('BRICK', 'BRICK', 'BRICK', 'BRICK', 'WOOD')): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('BRICK', 'BRICK', 'BRICK', 'BRICK', 'ORE')): 1
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+### Action:
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(20, 22))
+
+### Justification:
+To optimize Victory Points (VP) growth and align with the game priorities, we should focus on expanding early by building roads toward new settlement spots. This action fulfills the following strategic considerations:
+
+1. **Priority 1 - Build Settlements and Roads Early for Resource Diversity:**
+   - Building a road in the direction of (20, 22) connects to an existing settlement at 22, potentially leading to new resource tiles or settlement spots.
+   - By securing future settlement locations, we increase access to diverse resources, a key to long-term development and city upgrades.
+
+2. **Resource Availability and Cost Efficiency:**
+   - Building a road requires [1 Wood, 1 Brick], and the current resource count is [1, 7, 2, 0, 1] (Brick-heavy). This makes road building affordable and efficient.
+
+3. **Heuristic Score Analysis:**
+   - All road-building actions rank equally at a heuristic score of 10. Among them, the action (20, 22) stands out strategically as it leverages an existing settlement for expansion potential.
+
+4. **Avoiding Low-Impact Actions:**
+   - Actions like ending the turn (heuristic score: 1) or trading for other resources at this point are less impactful. They neither progress toward the goal of resource diversity nor significantly improve VP efficiency.
+
+By choosing this road-building action, we maintain forward momentum in the game toward settlement growth and maximize growth potential for the current stage.

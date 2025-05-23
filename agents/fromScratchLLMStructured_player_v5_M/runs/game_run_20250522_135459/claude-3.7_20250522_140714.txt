@@ -1,0 +1,63 @@
+Prompt:
+Current Game State:
+Your color: Color.BLUE
+Your victory points: 2
+Your resources: {'WOOD': 0, 'BRICK': 1, 'SHEEP': 0, 'WHEAT': 0, 'ORE': 3}
+Your buildings: {'settlements': 2, 'cities': 0, 'roads': 2}
+
+Opponents:
+- Color.RED: 6 victory points, Buildings: {'settlements': 4, 'cities': 1, 'roads': 5}
+
+Available Actions (18):
+Action 0: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((1, -1, 0), None, None))
+Action 1: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((0, -1, 1), <Color.RED: 'RED'>, None))
+Action 2: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((-1, 0, 1), <Color.RED: 'RED'>, None))
+Action 3: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((-1, 1, 0), <Color.RED: 'RED'>, None))
+Action 4: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((0, 1, -1), <Color.RED: 'RED'>, None))
+Action 5: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((1, 0, -1), None, None))
+Action 6: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((2, -2, 0), None, None))
+Action 7: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((1, -2, 1), None, None))
+Action 8: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((0, -2, 2), <Color.RED: 'RED'>, None))
+Action 9: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((-1, -1, 2), <Color.RED: 'RED'>, None))
+Action 10: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((-2, 0, 2), <Color.RED: 'RED'>, None))
+Action 11: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((-2, 1, 1), <Color.RED: 'RED'>, None))
+Action 12: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((-2, 2, 0), <Color.RED: 'RED'>, None))
+Action 13: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((-1, 2, -1), <Color.RED: 'RED'>, None))
+Action 14: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((0, 2, -2), None, None))
+Action 15: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((1, 1, -2), None, None))
+Action 16: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((2, 0, -2), None, None))
+Action 17: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((2, -1, -1), None, None))
+
+Analyze each available action and recommend the best one. Consider your current resources, victory points, and building opportunities. Aim to maximize your chances of winning by securing key resources and building strategically.
+
+Specify your choice by indicating 'RECOMMENDED ACTION: Action X' where X is the action index.
+
+========================================
+
+Response:
+# Analysis of Robber Placement Options
+
+I need to decide where to place the robber to disrupt my opponent (Red) who is currently leading with 6 victory points compared to my 2 points.
+
+## Key Considerations:
+- Red is significantly ahead with 6 VP vs my 2 VP
+- I should prioritize placing the robber on hexes where Red has settlements/cities
+- Actions that include stealing from Red (indicated by `<Color.RED: 'RED'>` in the action) are more valuable
+
+## Evaluating the Actions:
+All actions are MOVE_ROBBER actions, but they target different hexes:
+
+- Actions 1-4, 8-13: These allow me to place the robber on a hex where Red has a settlement/city AND steal a resource
+- Actions 0, 5-7, 14-17: These place the robber but don't let me steal (indicating Red doesn't have buildings on those hexes)
+
+Since Red is far ahead, I should maximize disruption by:
+1. Blocking a productive hex for Red
+2. Stealing a resource from them
+
+Without knowing the specific resource numbers on each hex, I should choose a hex that allows me to steal from Red. Actions 1-4, 8-13 all allow this. Among these, I should prioritize hexes that are most likely to be productive (typically hexes in the center of the board).
+
+Actions 2 and 3 with coordinates (-1,0,1) and (-1,1,0) are likely central hexes on the board, making them good candidates.
+
+## RECOMMENDED ACTION: Action 3
+
+This places the robber at (-1,1,0) which is likely a productive central hex, and allows me to steal a resource from Red. This will both deny them resources from this hex and give me an extra resource, helping to close the significant point gap between us.

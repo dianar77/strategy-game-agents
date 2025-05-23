@@ -1,0 +1,50 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [1, 0, 1, 0, 3]
+        - Settlements: [23, 16]
+        - Cities: []
+        - Victory Points (VP): 2
+        - Roads Available: 13
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_MONOPOLY: 'PLAY_MONOPOLY'>, value='WOOD')
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_MONOPOLY: 'PLAY_MONOPOLY'>, value='BRICK')
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_MONOPOLY: 'PLAY_MONOPOLY'>, value='SHEEP')
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_MONOPOLY: 'PLAY_MONOPOLY'>, value='WHEAT')
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_MONOPOLY: 'PLAY_MONOPOLY'>, value='ORE')
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_KNIGHT_CARD: 'PLAY_KNIGHT_CARD'>, value=None)
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.ROLL: 'ROLL'>, value=None)
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_MONOPOLY: 'PLAY_MONOPOLY'>, value='WOOD'): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_MONOPOLY: 'PLAY_MONOPOLY'>, value='BRICK'): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_MONOPOLY: 'PLAY_MONOPOLY'>, value='SHEEP'): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_MONOPOLY: 'PLAY_MONOPOLY'>, value='WHEAT'): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_MONOPOLY: 'PLAY_MONOPOLY'>, value='ORE'): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_KNIGHT_CARD: 'PLAY_KNIGHT_CARD'>, value=None): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.ROLL: 'ROLL'>, value=None): 1
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+**Action:** Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.ROLL: 'ROLL'>, value=None)  
+**Justification:**  
+Rolling the dice is the optimal choice in this scenario. It allows you to gain new resources, which are currently limited ([1, 0, 1, 0, 3]). Without adequate resources, constructing roads, settlements, or upgrading settlements to cities is not possible. Playing a Monopoly card or Knight card now would not be impactful because:  
+1. Monopoly cards require strategic timing to extract maximum value and currently provide minimal benefit since heuristics for monopolizing any resource (WOOD, BRICK, SHEEP, WHEAT, ORE) are all scored at 1.  
+2. The Knight card doesn’t directly contribute to VP growth or resource diversity in your current state.  
+  
+Rolling the dice advances your position by increasing resource diversity, aligning with the first priority of expanding settlements and roads early for VP maximization.

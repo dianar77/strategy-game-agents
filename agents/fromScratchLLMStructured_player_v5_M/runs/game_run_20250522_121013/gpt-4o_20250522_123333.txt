@@ -1,0 +1,54 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [0, 2, 1, 3, 0]
+        - Settlements: []
+        - Cities: [23, 16]
+        - Victory Points (VP): 7
+        - Roads Available: 6
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None): 1
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+Based on the provided scenario, it seems you are at an impasse where no productive actions (such as road building, settlement placement, or trading for resource diversity) are currently available. Your only listed action is "END_TURN," but given the guideline to avoid repetitive or low-impact actions, it's crucial to evaluate why such limitations exist.
+
+Let’s analyze your specific situation:
+
+1. **Resource Supply**: You currently have [0, 2, 1, 3, 0] resources. Assuming the standard Catan resource order ([Brick, Lumber, Ore, Grain, Wool]):
+   - You lack brick (0) and wool (0), which are *critical* resources for building settlements (need 1 brick, 1 lumber, 1 grain, 1 wool).
+   - You have sufficient ore (1) and grain (3), which allows saving toward upgrading settlements to cities, although this isn't actionable yet.
+
+2. **Current Infrastructure**: 
+   - You have no settlements beyond your cities at [23, 16], so your resource production diversity is restricted. Expanding is key, but you lack the needed resources right now, particularly brick and wool.
+   - You have 6 roads available, meaning you can extend your reach if future resources allow—it’s essential to focus on resource generation soon.
+
+3. **Available Actions Overview**: 
+   - The only listed action is END_TURN with a heuristic score of 1. While low, this indicates there are no immediate actions available to progress the game's primary priorities.
+
+### Conclusion:
+Since you have no practical options to build roads, settlements, or cities at this moment, **the only viable action is to end your turn**. However, it’s essential to focus future moves on acquiring missing resources (brick, wool) through resource collection, trades, or other game mechanics. Prioritize actions that lead to settlement expansion and resource diversity when your turn returns.
+
+---
+
+**Action:** Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)  
+
+**Justification:** Ending the turn is the only action available and necessary to progress, as no other productive actions (e.g., settlement placement, road building) can be performed due to current resource constraints.

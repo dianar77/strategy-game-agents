@@ -1,0 +1,63 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [1, 2, 0, 0, 1]
+        - Settlements: [23, 16]
+        - Cities: []
+        - Victory Points (VP): 4
+        - Roads Available: 11
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(24, 53))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(18, 40))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(22, 23))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(6, 23))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(5, 16))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(51, 52))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(21, 43))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(19, 21))
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(24, 53)): 10
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(18, 40)): 10
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(22, 23)): 10
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(6, 23)): 10
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(5, 16)): 10
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(51, 52)): 10
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(21, 43)): 10
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(19, 21)): 10
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+### Action: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(22, 23))
+
+### Justification:
+1. **Expand for Resource Diversity (Priority 1)**:
+   - The road `(22, 23)` strategically connects to existing settlements at node `23`. This opens up new opportunities for settlement placement around node `22`, which contributes to resource diversity and expansion potential.
+
+2. **Higher Heuristic Score**:
+   - All "BUILD_ROAD" actions have equal heuristic scores (10). Given this tie, prioritizing roads that align with settlement expansion near existing nodes ensures efficient resource access and maximization of VP opportunities.
+
+3. **Avoid Ending Turn Prematurely**:
+   - Ending the turn without building any roads is low-impact and conflicts with the resource diversity and expansion priorities outlined.
+
+4. **Road Placement Synergy**:
+   - Building a road connected to an established settlement (node `23`) provides more strategic advantage than other options that branch off arbitrarily. This option sets the stage for creating additional settlements or cities later, optimizing VP growth.
+
+By executing this action, you actively expand towards new territory while leveraging existing infrastructure for future development.

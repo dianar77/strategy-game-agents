@@ -1,0 +1,40 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [0, 3, 0, 2, 1]
+        - Settlements: [22]
+        - Cities: [10]
+        - Victory Points (VP): 5
+        - Roads Available: 9
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_KNIGHT_CARD: 'PLAY_KNIGHT_CARD'>, value=None)
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.ROLL: 'ROLL'>, value=None)
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_KNIGHT_CARD: 'PLAY_KNIGHT_CARD'>, value=None): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.ROLL: 'ROLL'>, value=None): 1
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+### Action: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.ROLL: 'ROLL'>, value=None)
+
+### Justification:
+- The **current resource availability** ([0, 3, 0, 2, 1]) does not allow for building a settlement, upgrading to a city, or crafting other impactful moves. Rolling is crucial to gain more resources to progress towards these goals.
+- Rolling the dice is a high-impact, standard action that aligns with the first priority of resource diversity, as it may provide the necessary resources to build settlements and roads.
+- While playing a knight card could block an opponent or reposition the robber, it does not directly contribute to VP growth at this stage, especially since the heuristic score for playing the knight card is equally low (1).
+- By rolling the dice, we have the chance to gain immediate resources for strategic expansion and position ourselves to take decisive actions in upcoming turns.

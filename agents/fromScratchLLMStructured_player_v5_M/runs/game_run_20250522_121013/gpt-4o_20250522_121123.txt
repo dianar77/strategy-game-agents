@@ -1,0 +1,80 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [6, 0, 0, 1, 6]
+        - Settlements: [10]
+        - Cities: [12]
+        - Victory Points (VP): 3
+        - Roads Available: 11
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('ORE', 'ORE', 'ORE', 'ORE', 'WOOD'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WOOD', 'WOOD', 'WOOD', 'WOOD', 'SHEEP'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('ORE', 'ORE', 'ORE', 'ORE', 'BRICK'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('ORE', 'ORE', 'ORE', 'ORE', 'WHEAT'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WOOD', 'WOOD', 'WOOD', 'WOOD', 'BRICK'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WOOD', 'WOOD', 'WOOD', 'WOOD', 'WHEAT'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WOOD', 'WOOD', 'WOOD', 'WOOD', 'ORE'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('ORE', 'ORE', 'ORE', 'ORE', 'SHEEP'))
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('ORE', 'ORE', 'ORE', 'ORE', 'WOOD')): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WOOD', 'WOOD', 'WOOD', 'WOOD', 'SHEEP')): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('ORE', 'ORE', 'ORE', 'ORE', 'BRICK')): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('ORE', 'ORE', 'ORE', 'ORE', 'WHEAT')): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WOOD', 'WOOD', 'WOOD', 'WOOD', 'BRICK')): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WOOD', 'WOOD', 'WOOD', 'WOOD', 'WHEAT')): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WOOD', 'WOOD', 'WOOD', 'WOOD', 'ORE')): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('ORE', 'ORE', 'ORE', 'ORE', 'SHEEP')): 1
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+### Analysis:
+- **Resources Breakdown**: [6 (Wood), 0 (Brick), 0 (Sheep), 1 (Wheat), 6 (Ore)] suggests:
+  - You have an excess of **Wood** and **Ore** but are missing **Brick** and **Sheep** for settlements/roads.
+  - Optimal trading should focus on acquiring **Brick** and **Sheep** to enable settlement and road construction (Priority 1).
+  - Maritime trade costs are 4:1, so consider trades carefully.
+
+- **Game Status**:
+  - You have **11 roads available**; expanding settlements is feasible and aligns with Priority 1.
+  - Progressing toward increasing VP (by building settlements/cities) is more impactful than ending the turn. Roads and settlements also block opponents strategically.
+
+- **Heuristic Scores**:
+  - All actionable maritime trades have the same heuristic score. Thus, the choice should focus on trades that best assist with building settlements or roads.
+
+### Path toward VP Optimization:
+- To build a settlement, you need **1 Brick, 1 Sheep, 1 Wheat, and 1 Wood**.
+  - You currently lack **Brick and Sheep**.
+  - You also have 11 available road segments, making roads a feasible strategy.
+
+### Action Decision:
+The best strategy is to perform a **Maritime Trade** to exchange **4 Ore for 1 Brick**, bringing you closer to building a settlement.
+
+---
+
+### Suggested Action and Justification:
+
+**Action**:  
+`Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('ORE', 'ORE', 'ORE', 'ORE', 'BRICK'))`
+
+**Justification**:  
+- Acquiring **Brick** helps fulfill the resource requirement for constructing a settlement, directly contributing to Priority 1 (expansion for resource diversity).  
+- Utilizing excess **Ore** efficiently aligns with maximizing resource gains.  
+- Other trades (e.g., for Sheep or Wheat) are less impactful as they still leave you needing additional resources, while this action gets you closer to building.  
+- Ending the turn without taking an action would be a low-impact decision at this point.

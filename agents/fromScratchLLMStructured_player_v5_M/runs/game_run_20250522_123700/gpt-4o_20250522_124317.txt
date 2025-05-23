@@ -1,0 +1,36 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [0, 1, 1, 2, 2]
+        - Settlements: [0, 10]
+        - Cities: []
+        - Victory Points (VP): 8
+        - Roads Available: 1
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUY_DEVELOPMENT_CARD: 'BUY_DEVELOPMENT_CARD'>, value=None)
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUY_DEVELOPMENT_CARD: 'BUY_DEVELOPMENT_CARD'>, value=None): 7
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+**Action:** Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUY_DEVELOPMENT_CARD: 'BUY_DEVELOPMENT_CARD'>, value=None)
+
+**Justification:** Purchasing a development card is the most impactful action based on the heuristic score (7 vs. 1 for ending the turn). Development cards can potentially provide Victory Points (e.g., via Victory Point cards) or powerful abilities like largest army or monopolization of resources. Given the current resources [0, 1, 1, 2, 2] (which matches the typical cost of a development card: 1 wheat, 1 sheep, and 1 ore), this action effectively converts resources into a strategic asset that aligns with the stated goal of maximizing Victory Points. Ending the turn without utilizing available resources would represent a low-impact move and a missed opportunity to progress toward victory.

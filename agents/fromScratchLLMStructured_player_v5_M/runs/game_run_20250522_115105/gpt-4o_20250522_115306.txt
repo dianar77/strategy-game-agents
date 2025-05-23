@@ -1,0 +1,31 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Here is the current game state:
+        Player Stats:
+        - Resources: [0, 0, 0, 0, 0]
+        - Settlements: [0]
+        - Cities: []
+        - Victory Points: 1
+        - Roads Available: 15
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(0, 1))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(0, 20))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(0, 5))
+
+        Heuristic Scores for Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(0, 1)): 5
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(0, 20)): 5
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(0, 5)): 5
+
+        Please respond with the optimal action and briefly explain why it was chosen. Format:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the decision}
+        
+
+========================================
+
+Response:
+Action: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(0, 1))  
+Justification: Since all actions have identical heuristic scores of 5, there is no purely quantitative basis to prioritize one action over the others. In such a situation, any action can be considered optimal as long as it is valid. I arbitrarily chose the action building a road at `(0, 1)` as it's the first presented option, and there is no additional context provided in the game state to differentiate between the actions.

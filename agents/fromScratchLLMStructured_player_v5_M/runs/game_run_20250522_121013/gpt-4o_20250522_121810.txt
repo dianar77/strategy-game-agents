@@ -1,0 +1,45 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [0, 0, 0, 0, 0]
+        - Settlements: [10]
+        - Cities: []
+        - Victory Points (VP): 1
+        - Roads Available: 15
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(9, 10))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(10, 11))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(10, 29))
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(9, 10)): 10
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(10, 11)): 10
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(10, 29)): 10
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+### Action: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(10, 29))
+
+### Justification:
+1. **Expansion Potential**: Building a road from (10, 29) extends your reach toward new territories that could provide resource diversity through future settlement placements. Since resource diversity is critical early in the game to supply a steady flow of resources for settlements, cities, and other developments, this is a strategically advantageous move.
+
+2. **Impactful Progress**: While all the presented actions have equal heuristic scores (10), the road from (10, 29) potentially opens pathways toward less crowded sections of the map or key resource-heavy zones faster than the alternatives.
+
+3. **Road Efficiency**: Since you have 15 roads available, prioritizing road placements that prepare for future settlement expansion aligns with your goal of maximizing VP efficiently. The connections from roads (10, 11) and (9, 10) might have less immediate strategic importance or could lead into already contested areas.
+
+By investing in (10, 29), you prioritize expanding into advantageous territory that supports both resource diversity and long-term VP growth.

@@ -1,0 +1,84 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [0, 1, 2, 0, 2]
+        - Settlements: [4, 0]
+        - Cities: []
+        - Victory Points (VP): 2
+        - Roads Available: 13
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((0, 0, 0), None, None))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((1, -1, 0), None, None))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((0, -1, 1), None, None))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((-1, 0, 1), <Color.RED: 'RED'>, None))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((0, 1, -1), <Color.RED: 'RED'>, None))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((1, 0, -1), None, None))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((2, -2, 0), None, None))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((1, -2, 1), None, None))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((0, -2, 2), None, None))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((-1, -1, 2), None, None))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((-2, 0, 2), <Color.RED: 'RED'>, None))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((-2, 1, 1), <Color.RED: 'RED'>, None))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((-2, 2, 0), None, None))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((-1, 2, -1), <Color.RED: 'RED'>, None))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((0, 2, -2), None, None))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((1, 1, -2), None, None))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((2, 0, -2), None, None))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((2, -1, -1), None, None))
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((0, 0, 0), None, None)): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((1, -1, 0), None, None)): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((0, -1, 1), None, None)): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((-1, 0, 1), <Color.RED: 'RED'>, None)): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((0, 1, -1), <Color.RED: 'RED'>, None)): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((1, 0, -1), None, None)): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((2, -2, 0), None, None)): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((1, -2, 1), None, None)): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((0, -2, 2), None, None)): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((-1, -1, 2), None, None)): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((-2, 0, 2), <Color.RED: 'RED'>, None)): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((-2, 1, 1), <Color.RED: 'RED'>, None)): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((-2, 2, 0), None, None)): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((-1, 2, -1), <Color.RED: 'RED'>, None)): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((0, 2, -2), None, None)): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((1, 1, -2), None, None)): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((2, 0, -2), None, None)): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((2, -1, -1), None, None)): 1
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+### Action:
+**Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((-1, 0, 1), <Color.RED: 'RED'>, None))**
+
+### Justification:
+1. **Strategic Blocking of Opponent Progress**:
+    - By moving the robber to a hex associated with **`<Color.RED>`**, this blocks one of the primary resource locations for the opponent, reducing their ability to produce resources and slowing down their development.
+    - The chosen hex, `((-1, 0, 1))`, is directly linked to <Color.RED>'s potential activities. Disrupting their development while they are in a critical early stage is strategically advantageous.
+
+2. **Adhering to Priorities**:
+    - Priority #3 encourages blocking opponent progress when strategically beneficial. Given the uniform heuristic score (1) across all options, targeting an opponent becomes the most valuable use of this action.
+    - None of the other options would directly contribute to our VP growth or disrupt the opponent effectively.
+
+3. **No Immediate Impact on VP via Road/Settlement Expansion**:
+    - Current resources (`[0, 1, 2, 0, 2]`) do not permit the construction of settlements, roads, or cities. Hence, this move focuses on weakening the opponent, ensuring they don't outpace us in resource production or VP growth.
+
+4. **Future Opportunities**:
+    - By selecting this action, we position ourselves for a stronger foothold in the game, allowing future turns to focus on resource gathering, settlement expansion, and upgrading to cities.
+
+Thus, moving the robber to `((-1, 0, 1))` and targeting `<Color.RED>` is the optimal choice.

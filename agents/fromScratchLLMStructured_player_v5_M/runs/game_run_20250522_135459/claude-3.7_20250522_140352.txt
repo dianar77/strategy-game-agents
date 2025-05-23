@@ -1,0 +1,58 @@
+Prompt:
+Current Game State:
+Your color: Color.BLUE
+Your victory points: 2
+Your resources: {'WOOD': 0, 'BRICK': 0, 'SHEEP': 0, 'WHEAT': 1, 'ORE': 2}
+Your buildings: {'settlements': 2, 'cities': 0, 'roads': 2}
+
+Opponents:
+- Color.RED: 3 victory points, Buildings: {'settlements': 3, 'cities': 0, 'roads': 3}
+
+Available Actions (5):
+Action 0: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+Action 1: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('ORE', 'ORE', None, None, 'WHEAT'))
+Action 2: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('ORE', 'ORE', None, None, 'BRICK'))
+Action 3: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('ORE', 'ORE', None, None, 'SHEEP'))
+Action 4: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('ORE', 'ORE', None, None, 'WOOD'))
+
+Analyze each available action and recommend the best one. Consider your current resources, victory points, and building opportunities. Aim to maximize your chances of winning by securing key resources and building strategically.
+
+Specify your choice by indicating 'RECOMMENDED ACTION: Action X' where X is the action index.
+
+========================================
+
+Response:
+# Game State Analysis
+
+Looking at the current game state:
+
+- You have 2 victory points (2 settlements)
+- Your resources: 1 WHEAT, 2 ORE
+- Opponent has 3 victory points (3 settlements)
+
+The available actions are:
+- End your turn
+- Various maritime trades using 2 ORE to get different resources (WHEAT, BRICK, SHEEP, or WOOD)
+
+## Action Assessment
+
+**Action 0 (END_TURN)**: Ending your turn without using your resources isn't optimal when you have resources that could be traded.
+
+**Actions 1-4 (MARITIME_TRADE)**: These allow you to trade 2 ORE for another resource type:
+- You already have 1 WHEAT, so getting another WHEAT (Action 1) could bring you closer to a Development Card (1 ORE + 1 WHEAT + 1 SHEEP)
+- BRICK (Action 2) would start your collection toward a road or settlement
+- SHEEP (Action 3) combined with your existing WHEAT and remaining ORE could get you a Development Card
+- WOOD (Action 4) would start your collection toward a road or settlement
+
+The best maritime trades depend on your immediate building goals. Since you're behind in points, focusing on getting a Development Card (potential victory point or helpful Knight) seems most valuable.
+
+## Recommendation
+
+**RECOMMENDED ACTION: Action 3**
+
+Trading 2 ORE for SHEEP is optimal because:
+1. It would give you WHEAT + SHEEP + ORE - the exact resources needed for a Development Card on your next turn
+2. Development Cards offer the potential for victory points, knights (which help with getting the Largest Army), or helpful actions like Road Building or Monopoly
+3. Your opponent is ahead, so pursuing Development Cards gives you a chance at hidden victory points and strategic advantages
+
+This approach maintains your strategic flexibility while setting you up for a potentially powerful next move.

@@ -1,0 +1,33 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [0, 0, 1, 1, 0]
+        - Settlements: [22]
+        - Cities: [10]
+        - Victory Points (VP): 5
+        - Roads Available: 9
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None): 1
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+Action: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)  
+Justification: The current resource count ([0, 0, 1, 1, 0]) is insufficient to execute any impactful building actions, such as constructing roads (requires [1 wood, 1 brick]), settlements (requires [1 wood, 1 brick, 1 sheep, 1 wheat]), or upgrading settlements to cities (requires [2 wheat, 3 ore]). Without sufficient resources to pursue priority actions that expand VP, ending the turn is unavoidable. However, future turns should focus on acquiring missing resources via trades, dice rolls, or strategic prioritization for building roads and settlements as per the outlined strategy to increase resource diversity.

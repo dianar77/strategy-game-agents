@@ -1,0 +1,37 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [0, 0, 0, 0, 0]
+        - Settlements: [23]
+        - Cities: []
+        - Victory Points (VP): 1
+        - Roads Available: 15
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(6, 23))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(23, 52))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(22, 23))
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(6, 23)): 10
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(23, 52)): 10
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(22, 23)): 10
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+**Action:** Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(23, 52))  
+**Justification:** While all the available actions have the same heuristic score of 10, choosing the road `(23, 52)` appears to be strategically preferable as it expands outward from the existing settlement at node 23. This increases the potential to reach new settlement locations and diversify resource access, aligning with the priority to build settlements/roads early for resource diversity. Nodes like `(23, 52)` also provide possibilities for further road building toward valuable intersections, which is critical in the current stage of the game. Additionally, avoiding doubling back or retreating, as with `(6, 23)` or `(22, 23)`, ensures progress toward new opportunities rather than reinforcing existing connections.

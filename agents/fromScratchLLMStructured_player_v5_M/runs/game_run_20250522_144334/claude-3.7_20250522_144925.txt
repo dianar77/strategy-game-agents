@@ -1,0 +1,44 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [1, 0, 4, 0, 0]
+        - Settlements: [7, 16]
+        - Cities: []
+        - Victory Points (VP): 3
+        - Roads Available: 11
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('SHEEP', 'SHEEP', 'SHEEP', 'SHEEP', 'WOOD'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('SHEEP', 'SHEEP', 'SHEEP', 'SHEEP', 'WHEAT'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('SHEEP', 'SHEEP', 'SHEEP', 'SHEEP', 'BRICK'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('SHEEP', 'SHEEP', 'SHEEP', 'SHEEP', 'ORE'))
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('SHEEP', 'SHEEP', 'SHEEP', 'SHEEP', 'WOOD')): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('SHEEP', 'SHEEP', 'SHEEP', 'SHEEP', 'WHEAT')): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('SHEEP', 'SHEEP', 'SHEEP', 'SHEEP', 'BRICK')): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('SHEEP', 'SHEEP', 'SHEEP', 'SHEEP', 'ORE')): 1
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+I'll analyze the current game state and available actions to make the optimal decision.
+
+Action: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('SHEEP', 'SHEEP', 'SHEEP', 'SHEEP', 'BRICK'))
+
+Justification: Looking at our resources [1, 0, 4, 0, 0], we have 1 wood and 4 sheep, but no brick, wheat, or ore. Based on our priorities to expand early with settlements and roads, we need brick to build roads. Trading 4 sheep for 1 brick would allow us to potentially build a road in the next turn when we collect more resources. Since we already have wood but lack brick, this is the most strategic maritime trade. Having both wood and brick positions us to build roads when we get the opportunity, advancing our expansion strategy. The other trade options either give us resources we already have (wood) or don't immediately help with our road-building priority (wheat/ore), making the brick trade the most valuable for our current situation.

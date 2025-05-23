@@ -1,0 +1,56 @@
+Prompt:
+
+You are an AI assistant helping a player make strategic decisions in a game of Catan.
+
+AVAILABLE ACTIONS:
+Action 0: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((1, -1, 0), None, None))
+Action 1: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((0, -1, 1), <Color.RED: 'RED'>, None))
+Action 2: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((-1, 0, 1), <Color.RED: 'RED'>, None))
+Action 3: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((-1, 1, 0), <Color.RED: 'RED'>, None))
+Action 4: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((0, 1, -1), <Color.RED: 'RED'>, None))
+Action 5: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((1, 0, -1), None, None))
+Action 6: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((2, -2, 0), None, None))
+Action 7: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((1, -2, 1), None, None))
+Action 8: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((0, -2, 2), <Color.RED: 'RED'>, None))
+Action 9: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((-1, -1, 2), <Color.RED: 'RED'>, None))
+Action 10: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((-2, 0, 2), <Color.RED: 'RED'>, None))
+Action 11: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((-2, 1, 1), <Color.RED: 'RED'>, None))
+Action 12: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((-2, 2, 0), <Color.RED: 'RED'>, None))
+Action 13: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((-1, 2, -1), <Color.RED: 'RED'>, None))
+Action 14: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((0, 2, -2), <Color.RED: 'RED'>, None))
+Action 15: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((1, 1, -2), None, None))
+Action 16: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((2, 0, -2), None, None))
+Action 17: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((2, -1, -1), None, None))
+
+Which action should I choose? Analyze each option and recommend the best action by returning the action index (e.g., "Action 2").
+Provide your final recommendation at the end in the format: "RECOMMENDED ACTION: Action X"
+
+
+========================================
+
+Response:
+I'll analyze the available actions, which are all about moving the robber in Catan.
+
+The robber blocks resource production on a hex and allows you to steal a card from a player with an adjacent settlement/city. Since you're playing as BLUE, I need to evaluate which placement would hurt RED the most while minimizing impact on yourself.
+
+Key considerations:
+1. Blocking high-probability numbers (6, 8, 5, 9)
+2. Targeting hexes with RED settlements/cities
+3. Avoiding hexes important to your own production
+
+Looking at the actions, I notice:
+- Actions 1-4, 8-14 let you steal from RED
+- Actions 0, 5-7, 15-17 don't allow you to steal (no RED buildings adjacent)
+
+Without knowing the exact board state including resource types and number tokens, the best strategy is usually to:
+1. Target a hex with a high-probability number that RED is using
+2. Choose a hex where you can steal from RED
+3. Avoid blocking your own important resources
+
+Since we can steal from RED in several locations, I'd prioritize actions 1-4, 8-14. Of these, the optimal choice would depend on which hex has the most valuable number token and resource type.
+
+Without that specific information, I'll recommend choosing an action that both blocks RED and allows stealing:
+
+RECOMMENDED ACTION: Action 2
+
+This places the robber at (-1, 0, 1) and lets you steal from RED. Without more specific board information, this represents a balanced choice that disrupts your opponent while enabling theft of a resource.

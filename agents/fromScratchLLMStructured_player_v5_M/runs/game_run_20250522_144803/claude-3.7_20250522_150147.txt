@@ -1,0 +1,74 @@
+Prompt:
+Current Game State:
+Your color: Color.BLUE
+Your victory points: 2
+Your resources: {'WOOD': 1, 'BRICK': 1, 'SHEEP': 0, 'WHEAT': 0, 'ORE': 3}
+Your buildings: {'settlements': 2, 'cities': 0, 'roads': 6}
+
+Opponents:
+- Color.RED: 6 victory points, Buildings: {'settlements': 4, 'cities': 0, 'roads': 14}
+
+Strategic Considerations:
+- Early Game: Focus on expanding by building roads and settlements.
+- Prioritize securing BRICK and WOOD resources for expansion.
+
+Available Actions (11):
+Action 0: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+Action 1: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(24, 53))
+Action 2: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(26, 27))
+Action 3: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(28, 29))
+Action 4: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(22, 23))
+Action 5: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(51, 52))
+Action 6: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(1, 6))
+Action 7: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('ORE', 'ORE', 'ORE', None, 'WHEAT'))
+Action 8: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('ORE', 'ORE', 'ORE', None, 'SHEEP'))
+Action 9: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('ORE', 'ORE', 'ORE', None, 'WOOD'))
+Action 10: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('ORE', 'ORE', 'ORE', None, 'BRICK'))
+
+Analyze each available action and recommend the best one. Consider your current resources, victory points, and building opportunities. Aim to maximize your chances of winning by securing key resources and building strategically.
+
+Specify your choice by indicating 'RECOMMENDED ACTION: Action X' where X is the action index.
+
+========================================
+
+Response:
+# Analysis of Available Actions
+
+I'll analyze each action considering the current game state, resources, and strategic goals.
+
+## Current Resources
+- WOOD: 1
+- BRICK: 1
+- SHEEP: 0
+- WHEAT: 0
+- ORE: 3
+
+## Action Analysis
+
+**Action 0: End Turn**
+- Not ideal since we have resources to use and are behind in victory points (2 vs opponent's 6).
+
+**Actions 1-6: Build Road (costs 1 WOOD + 1 BRICK)**
+- We have exactly the resources needed for one road (1 WOOD, 1 BRICK).
+- Building a road would use all our current WOOD and BRICK.
+- Road building should lead toward potential settlement locations to gain victory points.
+
+**Actions 7-10: Maritime Trade (trading 3 ORE for another resource)**
+- We have 3 ORE, which could be traded for any other resource.
+- Options:
+  - Trade for WOOD/BRICK: Could build another road after this turn.
+  - Trade for WHEAT/SHEEP: Would need more resources to build a settlement.
+
+## Strategic Assessment
+
+Since we're in the early game with only 2 victory points versus the opponent's 6, expansion is critical. We need to:
+1. Build roads that lead to viable settlement locations
+2. Acquire resources for settlements (need WOOD, BRICK, WHEAT, SHEEP)
+
+Looking at our options, using our WOOD and BRICK to build a road now, then trading ORE for WOOD or BRICK next turn could enable another road, potentially positioning us for a settlement.
+
+Without seeing the board layout to know which road position is most strategic, I'll recommend building a road using our current WOOD and BRICK resources. Since we can't determine which specific road location is best without seeing the board, I'll recommend Action 1 as a placeholder, but the actual choice should depend on which road leads toward a high-value settlement location.
+
+## RECOMMENDED ACTION: Action 1
+
+Building a road now using our existing WOOD and BRICK is best to continue expansion, followed by potential trading of ORE in future turns to enable more building.

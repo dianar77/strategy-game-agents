@@ -1,0 +1,42 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [0, 0, 0, 0, 2]
+        - Settlements: []
+        - Cities: [12, 10]
+        - Victory Points (VP): 4
+        - Roads Available: 2
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None): 1
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+Based on the provided game state and priorities, here’s the response:
+
+**Action:** Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)  
+**Justification:**  
+Given the current state:  
+- Resources: [0, 0, 0, 0, 2] indicates that you are critically resource-constrained, with no resources to build settlements, roads, or upgrade to cities.  
+- Settlements: You do not have any settlements, so you lack resource diversity needed to progress efficiently.  
+- Cities: While you have two cities providing VP, you must expand to gain access to more resources. However, building settlements requires resources that you currently lack.  
+- Roads Available: Having 2 roads available offers expansion opportunities, but again, without settlements or sufficient resources, road building is not immediately actionable.
+
+The only action available is ending the turn. Ending the turn in this situation is necessary to collect resources on the subsequent roll(s) that may allow you to take favorable actions in the future, such as building settlements or roads for expansion. While ending the turn has a low heuristic score (1), it is the only viable option for progressing toward the long-term goal of maximizing VP.

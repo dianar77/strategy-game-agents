@@ -1,0 +1,69 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Here is the current game state:
+        <catanatron.game.Game object at 0x7f1784423450>
+
+        Here are the actions you can choose from:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((0, 0, 0), <Color.RED: 'RED'>, None))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((0, -1, 1), None, None))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((-1, 0, 1), <Color.RED: 'RED'>, None))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((-1, 1, 0), <Color.RED: 'RED'>, None))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((0, 1, -1), <Color.RED: 'RED'>, None))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((1, 0, -1), None, None))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((2, -2, 0), None, None))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((1, -2, 1), None, None))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((0, -2, 2), None, None))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((-1, -1, 2), <Color.RED: 'RED'>, None))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((-2, 0, 2), <Color.RED: 'RED'>, None))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((-2, 1, 1), None, None))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((-2, 2, 0), None, None))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((-1, 2, -1), <Color.RED: 'RED'>, None))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((0, 2, -2), <Color.RED: 'RED'>, None))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((1, 1, -2), <Color.RED: 'RED'>, None))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((2, 0, -2), None, None))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((2, -1, -1), None, None))
+
+        Please provide the best action to take based on maximizing Victory Points (VP) and achieving strategic goals.
+        
+
+========================================
+
+Response:
+When playing the **Catanatron Minigame**, your objective is to maximize your **Victory Points (VP)** and achieve strategic goals. In this context, the "MOVE_ROBBER" actions you're considering must be evaluated with key priorities in mind:
+
+### Priorities to Evaluate:
+1. **Target Opponents Strategically**: Move the robber to a hex that impacts an opponent with strong resources or a high chance of gaining additional VP. Targeting **RED** is particularly appealing since they are specifically listed multiple times, indicating they may be a competitive threat.
+   
+2. **Stealing Resources to Gain Advantage**: If a hex has an opponent settlement or city and provides an opportunity to steal a resource, prioritize this action. Resources can accelerate your ability to build roads, settlements, and cities for VP.
+
+3. **Resource Blockade**: Deny key resources to the opponent (e.g., block a high-production tile like a 6 or 8 on the dice).
+
+4. **Avoid Suboptimal Moves**: Avoid targeting tiles affecting you or moving the robber to hexes that don't strategically benefit your position.
+
+---
+
+### Analysis of Available Actions:
+- Actions that include targeting **RED** suggest they may have settlements or cities on that tile, allowing you to steal a resource from them.
+- Many listed options also involve moving the robber to tiles without targeting a specific player (e.g., "None" in the action). These are less strategic unless those tiles block a significant resource hex.
+
+---
+
+### Recommended Action:
+The best action appears to be:
+```python
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((0, 0, 0), <Color.RED: 'RED'>, None))
+```
+
+#### Why?
+1. **Impact on RED**: This action targets **RED**, likely stealing a resource from them and hindering their progress.
+2. **Central Location**: Coordinates `(0, 0, 0)` often represent a high-traffic or productive area on the board, which might block a crucial hex for RED.
+3. **Resource Advantage**: Gaining a resource from RED could either mitigate resource shortages for you or provide critical resources to accelerate your strategy.
+
+---
+
+If you suspect another hex targeted at RED (e.g., other coordinates with `RED` listed) is blocking a more critical resource or production, substitute accordingly. For example:
+- `((-1, 0, 1), <Color.RED: 'RED'>, None)`
+- `((-1, 1, 0), <Color.RED: 'RED'>, None)`
+
+These are fallback options if you identify a more valuable block based on the game state.

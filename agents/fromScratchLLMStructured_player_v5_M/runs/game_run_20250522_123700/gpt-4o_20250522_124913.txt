@@ -1,0 +1,47 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [0, 2, 0, 0, 1]
+        - Settlements: [12, 21, 15]
+        - Cities: []
+        - Victory Points (VP): 5
+        - Roads Available: 3
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None): 1
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+### Action: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+
+### Justification:
+While the ultimate goal is to maximize Victory Points (VP), the current resources at hand [0, 2, 0, 0, 1] indicate that no impactful progress can be made this turn. Here's why:
+
+1. **Resource Analysis**:
+   - No brick (resource 0) and no wood (resource 1) are available, making it impossible to build roads or settlements, which are our first priority.
+   - Without additional sheep (resource 2) and no ore (resource 3), upgrading to a city (priority 2) is also unachievable.
+
+2. **Strategic Blockage**:
+   - There are no apparent blocking opportunities visible in this state as constructing roads (to cut off opponents) requires resources not currently available.
+
+3. **VP Efficiency**:
+   - Taking an action that has no impact (e.g., attempting an unachievable build or trade) would not contribute to VP growth. Ending the turn conserves time and prepares for the next resource roll, where new opportunities may arise.
+
+Therefore, while "end turn" is a low-impact action, given the current lack of resources and inability to progress toward our primary priorities, it is the only logical and efficient choice to await better opportunities in the next turn.

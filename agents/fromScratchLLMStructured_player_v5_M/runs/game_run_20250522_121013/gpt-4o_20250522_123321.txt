@@ -1,0 +1,53 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [0, 2, 1, 2, 0]
+        - Settlements: []
+        - Cities: [23, 16]
+        - Victory Points (VP): 7
+        - Roads Available: 6
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_KNIGHT_CARD: 'PLAY_KNIGHT_CARD'>, value=None)
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_KNIGHT_CARD: 'PLAY_KNIGHT_CARD'>, value=None): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None): 1
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+Based on the provided game state and priorities, let's evaluate the situation:
+
+**Game Analysis:**
+- **Resources:** You currently have [0, 2, 1, 2, 0] (brick, wood, sheep, wheat, ore). You're low on brick and ore, which are essential for settlements and cities.
+- **Settlements:** None yet. Building settlements would expand your resource diversity and is key for stage 1 of your strategy.
+- **Cities:** You already have two cities (hexes 23 and 16), which strengthens your resource generation but means expansion is necessary to secure diversity.
+- **VP Focus:** You are at 7 VP and need to continue an upward path toward winning (10 VP or more typically wins a game).
+- **Actions:** The only immediate choices are playing a Knight card or ending your turn.
+
+**Action Evaluation:**
+1. **Play Knight Card:** This allows you to move the robber to block an opponent's resource generation. Using this strategically on a key opponent's highest-producing tile could slow their progress. However, there’s no clear mention of opponent strength or their tiles in the game state, so the impact is ambiguous. Additionally, it does not directly contribute to your own VP growth unless it helps you chase Largest Army.
+2. **End Turn:** Without the ability to build roads, settlements, or trade, ending the turn is the default low-impact action. However, avoiding unnecessary turn-ending is crucial to maintain momentum.
+
+**Optimal Move:**
+
+**Action:** Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_KNIGHT_CARD: 'PLAY_KNIGHT_CARD'>, value=None)
+
+**Justification:**
+- Playing the Knight card allows you to reposition the robber and potentially block a strong opponent's progress by cutting their resource generation. This can be strategically advantageous in the longer term.
+- This action also contributes to pursuing the **Largest Army bonus (+2 VP)** if you accumulate 3 Knight card plays. It is less passive than simply ending your turn and aligns better with the goal of maximizing your VP efficiently.

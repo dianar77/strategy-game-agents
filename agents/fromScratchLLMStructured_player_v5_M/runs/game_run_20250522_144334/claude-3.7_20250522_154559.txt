@@ -1,0 +1,51 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [0, 1, 1, 0, 1]
+        - Settlements: [22]
+        - Cities: [6]
+        - Victory Points (VP): 5
+        - Roads Available: 9
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None): 1
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+# Analysis of Game State
+
+Looking at the current game state:
+- I have 1 Brick, 1 Wood, 0 Ore, 0 Sheep, 1 Wheat
+- I have settlements at position 22
+- I have cities at position 6
+- I have 5 Victory Points total
+- I have 9 roads available to build
+
+## Action Evaluation
+
+The only available action is to end my turn. While normally I'd prefer to take a more impactful action, in this case I don't have enough resources to build anything:
+- Road requires Brick + Wood (I have both but may want to save for better options)
+- Settlement requires Brick + Wood + Sheep + Wheat (missing Sheep)
+- City upgrade requires 3 Ore + 2 Wheat (missing Ore and need more Wheat)
+- Development card requires Ore + Sheep + Wheat (missing Ore and Sheep)
+
+Action: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+
+Justification: I must end my turn as I lack sufficient resources for any building action. With only one brick, one wood, and one wheat, I cannot build any structures. Ending my turn allows me to collect new resources on the next roll, which is the optimal strategic move to enable future expansion. I'll aim to gather more diverse resources next turn, particularly focusing on obtaining sheep and ore which I'm currently missing.

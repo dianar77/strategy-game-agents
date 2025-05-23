@@ -1,0 +1,41 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [0, 1, 0, 2, 1]
+        - Settlements: [0, 10]
+        - Cities: []
+        - Victory Points (VP): 7
+        - Roads Available: 8
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_KNIGHT_CARD: 'PLAY_KNIGHT_CARD'>, value=None)
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_KNIGHT_CARD: 'PLAY_KNIGHT_CARD'>, value=None): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None): 1
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+**Action:** Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_KNIGHT_CARD: 'PLAY_KNIGHT_CARD'>, value=None)  
+**Justification:**  
+Although both available actions have the same heuristic score of 1, ending the turn would be a low-impact action that doesn't contribute to current progress or blocking opponents. Playing a Knight Card, on the other hand, serves a potentially impactful purpose:
+- It may allow you to block an opponent's vital resource production or strategic hex, slowing their progress.
+- It can protect or support your resource diversity by moving the robber away from a key hex where you collect needed resources.
+- Playing Knight Cards builds progress toward obtaining the Largest Army bonus, which awards 2 VP, aligning with the goal of maximizing VP efficiently.
+
+Given the lack of other impactful alternatives, playing the Knight Card is the more strategic move at this turn to improve your position in the game.

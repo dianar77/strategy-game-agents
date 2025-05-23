@@ -1,0 +1,56 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [0, 0, 1, 0, 2]
+        - Settlements: [8, 10]
+        - Cities: []
+        - Victory Points (VP): 2
+        - Roads Available: 13
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_MONOPOLY: 'PLAY_MONOPOLY'>, value='WOOD')
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_MONOPOLY: 'PLAY_MONOPOLY'>, value='BRICK')
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_MONOPOLY: 'PLAY_MONOPOLY'>, value='SHEEP')
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_MONOPOLY: 'PLAY_MONOPOLY'>, value='WHEAT')
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_MONOPOLY: 'PLAY_MONOPOLY'>, value='ORE')
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.ROLL: 'ROLL'>, value=None)
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_MONOPOLY: 'PLAY_MONOPOLY'>, value='WOOD'): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_MONOPOLY: 'PLAY_MONOPOLY'>, value='BRICK'): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_MONOPOLY: 'PLAY_MONOPOLY'>, value='SHEEP'): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_MONOPOLY: 'PLAY_MONOPOLY'>, value='WHEAT'): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_MONOPOLY: 'PLAY_MONOPOLY'>, value='ORE'): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.ROLL: 'ROLL'>, value=None): 1
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+I need to make a strategic decision about playing a Monopoly card or simply rolling the dice. Let me analyze the situation:
+
+Action: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_MONOPOLY: 'PLAY_MONOPOLY'>, value='BRICK')
+
+Justification: Playing the Monopoly card for BRICK is the optimal move because:
+
+1. Looking at our current resources [0, 0, 1, 0, 2], we're specifically lacking WOOD and BRICK, which are essential early-game resources needed for roads and settlements.
+
+2. Since we currently have 2 settlements but no cities and 13 roads available, we're clearly in the early expansion phase of the game where roads and settlements are priority.
+
+3. BRICK is typically one of the most valuable resources in the early game and often hard to obtain in sufficient quantities. If other players have accumulated BRICK, stealing it all would immediately enable expansion opportunities.
+
+4. While ORE might seem tempting (for later city upgrades), our immediate strategy should be expansion through roads and settlements, making BRICK more valuable right now than any other resource.
+
+5. The Monopoly card is most effective when played for resources that are likely in high demand and possession among other players, which BRICK typically is during the early-mid game.

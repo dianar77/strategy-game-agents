@@ -1,0 +1,45 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [0, 2, 1, 4, 1]
+        - Settlements: [0, 10]
+        - Cities: []
+        - Victory Points (VP): 7
+        - Roads Available: 8
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_KNIGHT_CARD: 'PLAY_KNIGHT_CARD'>, value=None)
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUY_DEVELOPMENT_CARD: 'BUY_DEVELOPMENT_CARD'>, value=None)
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WHEAT', 'WHEAT', 'WHEAT', 'WHEAT', 'WOOD'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WHEAT', 'WHEAT', 'WHEAT', 'WHEAT', 'ORE'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WHEAT', 'WHEAT', 'WHEAT', 'WHEAT', 'SHEEP'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WHEAT', 'WHEAT', 'WHEAT', 'WHEAT', 'BRICK'))
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_KNIGHT_CARD: 'PLAY_KNIGHT_CARD'>, value=None): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUY_DEVELOPMENT_CARD: 'BUY_DEVELOPMENT_CARD'>, value=None): 7
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WHEAT', 'WHEAT', 'WHEAT', 'WHEAT', 'WOOD')): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WHEAT', 'WHEAT', 'WHEAT', 'WHEAT', 'ORE')): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WHEAT', 'WHEAT', 'WHEAT', 'WHEAT', 'SHEEP')): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WHEAT', 'WHEAT', 'WHEAT', 'WHEAT', 'BRICK')): 1
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+**Action:** Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUY_DEVELOPMENT_CARD: 'BUY_DEVELOPMENT_CARD'>, value=None)  
+**Justification:** Buying a development card has the highest heuristic score (7) compared to all other available actions. Development cards can provide critical resources such as VP (e.g., "Victory Point" cards), advancement options (e.g., "Road Building"), or defensive and offensive capabilities (e.g., "Knight" cards). These benefits align with the VP-maximization strategy and offer future flexibility for blocking opponents or pursuing other strategic goals. Given that resource constraints prevent building new settlements, cities, or roads at this moment, buying a development card represents the most impactful use of resources and contributes directly toward the game's objectives.

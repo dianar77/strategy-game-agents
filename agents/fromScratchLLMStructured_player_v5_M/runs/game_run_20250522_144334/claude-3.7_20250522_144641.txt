@@ -1,0 +1,36 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [0, 0, 3, 1, 3]
+        - Settlements: [7, 16]
+        - Cities: []
+        - Victory Points (VP): 2
+        - Roads Available: 12
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUY_DEVELOPMENT_CARD: 'BUY_DEVELOPMENT_CARD'>, value=None)
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUY_DEVELOPMENT_CARD: 'BUY_DEVELOPMENT_CARD'>, value=None): 7
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+Action: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUY_DEVELOPMENT_CARD: 'BUY_DEVELOPMENT_CARD'>, value=None)
+
+Justification: Buying a development card is the clear optimal choice here for several reasons. First, I have exactly the resources needed to purchase a development card (1 sheep, 1 wheat, 1 ore), and these resources would otherwise go unused since I can't build settlements, cities, or roads with my current inventory. Development cards provide strategic advantages like Victory Point cards (immediate VP), Knight cards (for defense and potential Largest Army bonus), or powerful action cards. The heuristic score strongly favors this action (7 vs 1), indicating its strategic value. While my priority is normally expansion through settlements and roads, when that's not possible, development cards offer an excellent alternative path to victory points and strategic advantage rather than simply ending my turn without taking any beneficial action.

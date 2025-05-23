@@ -1,0 +1,36 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [0, 1, 1, 0, 1]
+        - Settlements: [22]
+        - Cities: [10]
+        - Victory Points (VP): 5
+        - Roads Available: 8
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_KNIGHT_CARD: 'PLAY_KNIGHT_CARD'>, value=None)
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.ROLL: 'ROLL'>, value=None)
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_KNIGHT_CARD: 'PLAY_KNIGHT_CARD'>, value=None): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.ROLL: 'ROLL'>, value=None): 1
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+**Action:** Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.ROLL: 'ROLL'>, value=None)
+
+**Justification:** In the current state, resources are limited ([0, 1, 1, 0, 1]), which restricts the ability to expand settlements, build roads, or upgrade to cities. Rolling the dice is the optimal choice as it generates new resources, increasing the likelihood of optimizing future actions such as building settlements or upgrading them to cities—both of which directly contribute to Victory Point growth. Using the knight card at this stage doesn't offer immediate strategic advantage, as blocking opponents isn't essential without clear threat indicators. Therefore, rolling maximizes resource diversity and potential actions on subsequent turns, aligning with the priorities for VP efficiency.

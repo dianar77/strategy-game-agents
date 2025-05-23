@@ -1,0 +1,49 @@
+Prompt:
+Current Game State:
+Your color: Color.BLUE
+Your victory points: 2
+Your resources: {'WOOD': 0, 'BRICK': 0, 'SHEEP': 0, 'WHEAT': 1, 'ORE': 2}
+Your buildings: {'settlements': 2, 'cities': 0, 'roads': 1}
+
+Opponents:
+- Color.RED: 1 victory points, Buildings: {'settlements': 1, 'cities': 0, 'roads': 1}
+
+Available Actions (3):
+Action 0: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(0, 1))
+Action 1: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(0, 20))
+Action 2: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(0, 5))
+
+Analyze each available action and recommend the best one. Consider your current resources, victory points, and building opportunities. Aim to maximize your chances of winning by securing key resources and building strategically.
+
+Specify your choice by indicating 'RECOMMENDED ACTION: Action X' where X is the action index.
+
+========================================
+
+Response:
+# Action Analysis for Blue Player
+
+## Current Situation
+- You have 2 victory points from your 2 settlements
+- Limited resources: 1 WHEAT and 2 ORE
+- The red opponent has 1 victory point with 1 settlement
+
+## Available Actions
+All three actions are to build roads at different locations:
+- Action 0: Build road at position (0, 1)
+- Action 1: Build road at position (0, 20)
+- Action 2: Build road at position (0, 5)
+
+## Analysis
+Building a road requires 1 WOOD and 1 BRICK, but you currently have 0 of each. None of these actions are actually valid with your current resources.
+
+If there was an error in the game state description and you actually do have the required resources, I would need to know:
+1. Which hexes and resource types are near each potential road location
+2. Whether these roads extend toward valuable resource hexes
+3. If any of these roads position you for future settlement building
+4. If any road helps secure the longest road bonus
+
+Without that information, and based on your current resources, none of these actions appear to be executable.
+
+**RECOMMENDED ACTION: None of the actions are valid with your current resources (0 WOOD, 0 BRICK)**
+
+If the resource inventory is incorrect and you can actually build roads, please provide more details about the board layout for a proper recommendation.

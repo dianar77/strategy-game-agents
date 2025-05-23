@@ -57,9 +57,9 @@ class CreatorAgent():
 
     def __init__(self):
         # Get API key from environment variable
-        # self.llm_name = "o1"
+        # self.llm_name = "gpt-4o"
         # self.llm = AzureChatOpenAI(
-        #     model="o1",
+        #     model="gpt-4o",
         #     azure_endpoint="https://gpt-amayuelas.openai.azure.com/",
         #     api_version = "2024-12-01-preview"
         # )
@@ -82,7 +82,7 @@ class CreatorAgent():
             }
         }
 
-        #bedrock_client = client(service_name='bedrock-runtime', region_name='us-east-2', config=config)
+        # # bedrock_client = client(service_name='bedrock-runtime', region_name='us-east-2', config=config)
         self.llm_name = "claude-3.7"
         self.llm = ChatBedrockConverse(
             aws_access_key_id = os.environ["AWS_ACESS_KEY"],
@@ -92,8 +92,8 @@ class CreatorAgent():
             model_id="arn:aws:bedrock:us-east-2:288380904485:inference-profile/us.anthropic.claude-3-7-sonnet-20250219-v1:0",
             additional_model_request_fields=thinking_params,
             config=config
-
         )
+        
         # self.llm_name = "claude-3.7"
         # self.llm = ChatBedrockConverse(
         #     aws_access_key_id = os.environ["AWS_ACESS_KEY"],
@@ -1311,8 +1311,8 @@ def view_last_game_llm_query(query_number: int = -1) -> str:
         The content of the requested game results file or an error message.
     """
 
-    if RUN_TEST_FOO_HAPPENED == False:
-        return "No game run has been executed yet."
+    # if RUN_TEST_FOO_HAPPENED == False:
+    #     return "No game run has been executed yet."
     
     # Path to the runs directory
     runs_dir = Path(__file__).parent / "runs"

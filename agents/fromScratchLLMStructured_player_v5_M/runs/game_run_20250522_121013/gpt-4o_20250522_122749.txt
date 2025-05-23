@@ -1,0 +1,45 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [0, 0, 0, 0, 1]
+        - Settlements: [23, 16]
+        - Cities: []
+        - Victory Points (VP): 2
+        - Roads Available: 12
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_KNIGHT_CARD: 'PLAY_KNIGHT_CARD'>, value=None)
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.ROLL: 'ROLL'>, value=None)
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_KNIGHT_CARD: 'PLAY_KNIGHT_CARD'>, value=None): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.ROLL: 'ROLL'>, value=None): 1
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+Based on the current game state and priorities provided, the available resources are highly limited ([0, 0, 0, 0, 1]), meaning no immediate construction of settlements, cities, or roads is possible. Consequently, the most optimal move should focus on advancing the gameplay toward acquiring more resources to progress.
+
+### Chosen Action:
+**Action: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.ROLL: 'ROLL'>, value=None)**
+
+### Justification:
+- **Resource Diversity:** Rolling the dice maximizes the chance of acquiring resources, which are crucial for building settlements, roads, and upgrading settlements to cities, all of which directly contribute to Victory Point growth.
+- **Expansion Strategy:** Your priority is to expand early to improve resource intake. Rolling is the only available action that allows you to generate resources, which moves you closer to qualifying for construction.
+- **Low Impact of PLAY_KNIGHT_CARD:** Since playing a knight card would merely allow blocking or moving the robber without directly impacting your resource acquisition or VP growth at this moment, it is not strategically advantageous. Additionally, you have only 1 knight card score tied to this action.
+- **Efficiency:** Ending the turn without rolling would entirely halt progress and waste a crucial gameplay option.
+
+Thus, rolling the dice is the optimal choice to improve your position toward achieving resource diversity and long-term Victory Point growth.

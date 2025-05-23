@@ -1,0 +1,44 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [0, 1, 0, 0, 3]
+        - Settlements: [22]
+        - Cities: [6]
+        - Victory Points (VP): 5
+        - Roads Available: 12
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None): 1
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+# Analysis of Current Game State
+
+Looking at my current game state:
+- Resources: [0, 1, 0, 0, 3] (0 brick, 1 wood, 0 sheep, 0 wheat, 3 ore)
+- I have 1 settlement at position 22 and 1 city at position 6
+- I have 5 Victory Points (1 for settlement + 2 for city + potentially 2 from other sources)
+- I have 12 roads available to build
+
+# Action Decision
+
+Action: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+
+Justification: Currently, I have only 1 wood and 3 ore, which doesn't allow me to build any meaningful structures. I need brick to build roads (brick+wood), sheep and wheat for settlements (brick+wood+sheep+wheat), and wheat+ore for city upgrades (2 wheat+3 ore). Since I'm missing several key resources needed for construction and have only one available action, ending my turn is the only reasonable choice. This will allow me to collect new resources on the next roll and potentially have more strategic options available. While I generally want to avoid ending turns without action, in this specific case, it's the optimal move as I cannot construct anything with my current resources.

@@ -1,0 +1,36 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Here is the current game state:
+        <catanatron.game.Game object at 0x7f1784423450>
+
+        Here are the actions you can choose from:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('ORE', 'ORE', 'ORE', 'ORE', 'BRICK'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('ORE', 'ORE', 'ORE', 'ORE', 'SHEEP'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('ORE', 'ORE', 'ORE', 'ORE', 'WHEAT'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('ORE', 'ORE', 'ORE', 'ORE', 'WOOD'))
+
+        Please provide the best action to take based on maximizing Victory Points (VP) and achieving strategic goals.
+        
+
+========================================
+
+Response:
+To decide the best action based on maximizing Victory Points (VP) and strategic goals, let's analyze the choices:
+
+1. **END_TURN**: Ending the turn doesn't actively progress your game state or improve your resources. It's generally a fallback option when there is no productive action available during the turn.
+
+2. **MARITIME_TRADE (ORE → BRICK/SHEEP/WHEAT/WOOD)**: Trading 4 ORE for another resource can be advantageous if it unlocks strategic goals like building settlements, cities, roads, or development cards. The exact decision depends on your existing state:
+   - **BRICK**: Useful if roads or settlements can be built but less impactful if no immediate builds are possible.
+   - **SHEEP**: Likely needed alongside wheat for building settlements or development cards.
+   - **WHEAT**: Critical for cities and development cards (frequently a high-priority resource).
+   - **WOOD**: Useful primarily for roads and settlements.
+
+Given the situational importance of **WHEAT** (often vital for cities and development cards), we should prioritize trading for wheat unless your current state indicates an immediate need for other resources.
+
+### Recommendation:
+If the game state allows building a city, settlement, or a development card soon, and **WHEAT** is the missing resource, choose:
+**Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('ORE', 'ORE', 'ORE', 'ORE', 'WHEAT'))**
+
+If your game state favors other resources or prevents immediate progress with wheat, provide the specific game context for reevaluation.

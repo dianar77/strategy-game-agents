@@ -1,0 +1,65 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [6, 4, 0, 0, 3]
+        - Settlements: []
+        - Cities: [12, 10]
+        - Victory Points (VP): 4
+        - Roads Available: 0
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('BRICK', 'BRICK', 'BRICK', 'BRICK', 'SHEEP'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WOOD', 'WOOD', 'WOOD', 'WOOD', 'SHEEP'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('BRICK', 'BRICK', 'BRICK', 'BRICK', 'WOOD'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('BRICK', 'BRICK', 'BRICK', 'BRICK', 'WHEAT'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WOOD', 'WOOD', 'WOOD', 'WOOD', 'BRICK'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WOOD', 'WOOD', 'WOOD', 'WOOD', 'WHEAT'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('BRICK', 'BRICK', 'BRICK', 'BRICK', 'ORE'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WOOD', 'WOOD', 'WOOD', 'WOOD', 'ORE'))
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('BRICK', 'BRICK', 'BRICK', 'BRICK', 'SHEEP')): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WOOD', 'WOOD', 'WOOD', 'WOOD', 'SHEEP')): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('BRICK', 'BRICK', 'BRICK', 'BRICK', 'WOOD')): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('BRICK', 'BRICK', 'BRICK', 'BRICK', 'WHEAT')): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WOOD', 'WOOD', 'WOOD', 'WOOD', 'BRICK')): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WOOD', 'WOOD', 'WOOD', 'WOOD', 'WHEAT')): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('BRICK', 'BRICK', 'BRICK', 'BRICK', 'ORE')): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WOOD', 'WOOD', 'WOOD', 'WOOD', 'ORE')): 1
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+### Action: `Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('BRICK', 'BRICK', 'BRICK', 'BRICK', 'WOOD'))`
+
+### Justification:
+1. **Goal Assessment:**
+    - Priority 1 emphasizes building settlements and roads early to expand resource diversity. You currently have **no Settlements**, and you cannot build roads as you have 0 available. Your resources include an abundance of **brick (4)** and **wood (0)**—two critical resources for road building and settlement expansion. To follow the priority of future growth, acquiring **wood** is essential.
+
+2. **Action Analysis:**
+    - Trading 4 bricks for 1 wood enables you to progress toward the ability to construct roads (cost: 1 wood, 1 brick), which directly supports **expansion and resource diversity** (Priority 1). This is preferable to other trades, such as for **sheep, ore, or wheat**, which won't immediately further your ability to build settlements or roads.
+
+3. **Strategic Concerns:**
+    - Ending the turn without taking any action forfeits the opportunity to optimize resources for your growth.
+    - Other maritime trade options, such as trading brick for sheep, wheat, or ore, do not contribute to your immediate goal of building settlements and roads. They would only help with **city upgrades** (Priority 2), which is not the focus at this stage.
+    - Preparing to build roads early positions you to gain access to **more diverse resources via settlements**, ensuring sustainable production for higher VP actions later.
+
+4. **Efficiency Consideration:**
+    - This trade sets you up to use your **6 total bricks** and eventually unlock more productive board positions. This aligns with the principle of prioritizing impactful actions over repetitive or low-impact turns.
+
+By trading 4 bricks for 1 wood, you stay on track to build roads and settlements, preparing for significant strategic gains in future turns.

@@ -1,0 +1,47 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [0, 2, 1, 0, 1]
+        - Settlements: [0, 10]
+        - Cities: []
+        - Victory Points (VP): 9
+        - Roads Available: 0
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None): 1
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+### Action:
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+
+### Justification:
+Given the current game state, the only available action is to end the turn. Here's why:
+
+1. **Resource Insufficiency**:  
+   Your current resources are [0, 2, 1, 0, 1] (likely corresponding to Brick, Lumber, Wheat, Ore, Sheep). These are not sufficient to build settlements, roads, or upgrade settlements to cities. For example, a settlement typically requires 1 Wheat, 1 Sheep, 1 Brick, and 1 Lumber, but you lack Brick and Lumber. Cities, if you own a settlement already, typically require 2 Wheat and 3 Ore, which you also cannot afford.
+
+2. **Strategy Priorities**:  
+   Expanding by building settlements and roads early is a key priority, but since your resources are insufficient and you have 0 roads available to place, there is no valid expansion move you can currently make. Similarly, upgrading settlements to cities for higher VP is impossible with the current resource pool.
+
+3. **Avoiding Inefficient Moves**:  
+   Since there are no other available impactful moves, ending the turn is necessary to allow for resource generation on the next roll or trade opportunities, which will bring you closer to accumulating the required resources for expansion or upgrades.
+
+As no other impactful action is available, the optimal choice is to end the turn and prepare for better opportunities in future turns.

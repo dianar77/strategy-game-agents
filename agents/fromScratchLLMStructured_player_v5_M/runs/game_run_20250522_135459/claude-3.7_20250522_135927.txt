@@ -1,0 +1,52 @@
+Prompt:
+Current Game State:
+Your color: Color.BLUE
+Your victory points: 3
+Your resources: {'WOOD': 0, 'BRICK': 1, 'SHEEP': 4, 'WHEAT': 0, 'ORE': 0}
+Your buildings: {'settlements': 1, 'cities': 1, 'roads': 3}
+
+Opponents:
+- Color.RED: 6 victory points, Buildings: {'settlements': 0, 'cities': 2, 'roads': 9}
+
+Available Actions (2):
+Action 0: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_KNIGHT_CARD: 'PLAY_KNIGHT_CARD'>, value=None)
+Action 1: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.ROLL: 'ROLL'>, value=None)
+
+Analyze each available action and recommend the best one. Consider your current resources, victory points, and building opportunities. Aim to maximize your chances of winning by securing key resources and building strategically.
+
+Specify your choice by indicating 'RECOMMENDED ACTION: Action X' where X is the action index.
+
+========================================
+
+Response:
+# Action Analysis for Blue Player
+
+Let me analyze each available action based on the current game state:
+
+## Current Status Assessment
+- You have 3 victory points (1 settlement + 1 city worth 2 points)
+- Your resources are limited (mainly 4 sheep and 1 brick)
+- The opponent (Red) has 6 victory points, putting them ahead by 3 points
+
+## Action 0: PLAY_KNIGHT_CARD
+Playing a knight card would:
+- Move the robber to a new hex, potentially disrupting the opponent's resource production
+- Allow you to steal a resource card from the opponent
+- Count toward building the "Largest Army" (worth 2 victory points)
+- Not require any resources to play
+
+## Action 1: ROLL
+Rolling the dice would:
+- Potentially generate new resources based on the dice outcome
+- Risk a "7" which would activate the robber and force discarding if you have >7 cards
+- Take no special action beyond the standard resource collection
+
+## Strategic Consideration
+You currently have 5 resources total, which is below the 7-card threshold for robber penalties. The opponent is significantly ahead with 6 victory points. Playing the knight card could disrupt their resource collection while potentially gaining you a needed resource.
+
+## RECOMMENDED ACTION: Action 0
+Playing the knight card is the better strategic choice because:
+1. It allows you to potentially slow down your opponent who is ahead
+2. You can steal a resource you need (like wood, wheat or ore)
+3. It contributes toward the "Largest Army" special victory points
+4. Playing it now ensures you get its benefit before potentially collecting more resources that might put you at risk of a robber roll

@@ -1,0 +1,59 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [0, 2, 0, 2, 3]
+        - Settlements: [6, 22]
+        - Cities: []
+        - Victory Points (VP): 2
+        - Roads Available: 13
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_KNIGHT_CARD: 'PLAY_KNIGHT_CARD'>, value=None)
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.ROLL: 'ROLL'>, value=None)
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_KNIGHT_CARD: 'PLAY_KNIGHT_CARD'>, value=None): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.ROLL: 'ROLL'>, value=None): 1
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+# Game Analysis
+
+Looking at the current game state:
+- Resources: [0 Brick, 2 Wood, 0 Sheep, 2 Wheat, 3 Ore]
+- Two settlements established (6, 22)
+- No cities yet
+- 2 VP currently
+- Both available actions have the same heuristic score
+
+## Action: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.ROLL: 'ROLL'>, value=None)
+
+## Justification:
+I'm choosing to roll the dice rather than play a Knight card because:
+
+1. Resource accumulation is critical at this stage - rolling gives us a chance to gain more resources based on our settlement positions.
+
+2. Our current resource set (especially the 3 Ore and 2 Wheat) suggests we're close to being able to build a city (costs 3 Ore + 2 Wheat). Rolling might give us the final resources needed.
+
+3. Playing a Knight card is most valuable when:
+   - Moving the robber would significantly hamper an opponent
+   - We need the "Largest Army" bonus
+   - We need to protect resources from a 7 roll
+
+4. Without specific information about robber placement or opponent positions, the Knight card's strategic value is limited compared to the potential resource gain from rolling.
+
+5. We should save development cards like Knights for when their tactical advantage is clearer or when we're competing for Largest Army.

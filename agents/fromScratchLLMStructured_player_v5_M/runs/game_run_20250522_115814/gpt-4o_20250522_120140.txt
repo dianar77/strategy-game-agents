@@ -1,0 +1,36 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Here is the current game state:
+        Player Stats:
+        - Resources: [0, 3, 4, 0, 0]
+        - Settlements: [2, 4]
+        - Cities: []
+        - Victory Points: 2
+        - Roads Available: 13
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('SHEEP', 'SHEEP', 'SHEEP', 'SHEEP', 'WHEAT'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('SHEEP', 'SHEEP', 'SHEEP', 'SHEEP', 'ORE'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('SHEEP', 'SHEEP', 'SHEEP', 'SHEEP', 'BRICK'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('SHEEP', 'SHEEP', 'SHEEP', 'SHEEP', 'WOOD'))
+
+        Heuristic Scores for Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('SHEEP', 'SHEEP', 'SHEEP', 'SHEEP', 'WHEAT')): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('SHEEP', 'SHEEP', 'SHEEP', 'SHEEP', 'ORE')): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('SHEEP', 'SHEEP', 'SHEEP', 'SHEEP', 'BRICK')): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('SHEEP', 'SHEEP', 'SHEEP', 'SHEEP', 'WOOD')): 1
+
+        Please respond with the optimal action and briefly explain why it was chosen. Format:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the decision}
+        
+
+========================================
+
+Response:
+Action: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+
+Justification: All available actions have the same heuristic score of 1, and there is no clear advantage in performing a maritime trade given the lack of immediate utility for any of the resulting resources. Trading four "SHEEP" for a resource like "WHEAT," "ORE," "BRICK," or "WOOD" does not currently contribute to building settlements, roads, or other strategic goals due to either insufficient resources or no apparent follow-up moves. Ending the turn is therefore the optimal action to preserve resources and await better opportunities.

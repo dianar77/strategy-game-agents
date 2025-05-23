@@ -1,0 +1,64 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [0, 2, 5, 0, 1]
+        - Settlements: [22]
+        - Cities: [6]
+        - Victory Points (VP): 5
+        - Roads Available: 11
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('SHEEP', 'SHEEP', 'SHEEP', 'SHEEP', 'WOOD'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('SHEEP', 'SHEEP', 'SHEEP', 'SHEEP', 'WHEAT'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('SHEEP', 'SHEEP', 'SHEEP', 'SHEEP', 'BRICK'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('SHEEP', 'SHEEP', 'SHEEP', 'SHEEP', 'ORE'))
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('SHEEP', 'SHEEP', 'SHEEP', 'SHEEP', 'WOOD')): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('SHEEP', 'SHEEP', 'SHEEP', 'SHEEP', 'WHEAT')): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('SHEEP', 'SHEEP', 'SHEEP', 'SHEEP', 'BRICK')): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('SHEEP', 'SHEEP', 'SHEEP', 'SHEEP', 'ORE')): 1
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+# Action Analysis for Catanatron Game
+
+Looking at my current resources, I have:
+- Wood: 0
+- Brick: 2
+- Sheep: 5
+- Wheat: 0
+- Ore: 1
+
+## Action: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('SHEEP', 'SHEEP', 'SHEEP', 'SHEEP', 'WHEAT'))
+
+## Justification:
+Trading sheep for wheat is the most strategic choice for several reasons:
+
+1. Resource balance: I have excess sheep (5) but no wheat, which is creating an imbalance in my resource portfolio.
+
+2. Future opportunities: Wheat is critical for:
+   - Building new settlements (costs wood, brick, sheep, wheat)
+   - Upgrading settlements to cities (costs ore and wheat)
+
+3. With 5 VP already and cities established, my next priority should be expansion. Getting wheat sets me up for potential settlement building on my next turn if I can acquire wood.
+
+4. The maritime trade is a 4:1 ratio which is not ideal, but necessary given my resource constraints. This trade creates more balance in my resources and opens up more options for my next turn than simply ending my turn with excess sheep.
+
+After this trade, I'll have 1 wheat, which paired with my existing 2 brick and 1 ore puts me in a better position to act strategically in upcoming turns.

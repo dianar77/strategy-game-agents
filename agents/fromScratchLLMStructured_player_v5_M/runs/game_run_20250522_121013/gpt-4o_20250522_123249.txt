@@ -1,0 +1,42 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [0, 3, 1, 0, 2]
+        - Settlements: []
+        - Cities: [23, 16]
+        - Victory Points (VP): 7
+        - Roads Available: 6
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_KNIGHT_CARD: 'PLAY_KNIGHT_CARD'>, value=None)
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_KNIGHT_CARD: 'PLAY_KNIGHT_CARD'>, value=None): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None): 1
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+**Action:** Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+
+**Justification:**  
+Given the current game state:
+1. You lack sufficient resources to take impactful actions (e.g., building a settlement, road, or upgrading to a city). The resource pool [0, 3, 1, 0, 2] does not permit major progress based on standard Catan gameplay rules.
+2. Playing a Knight Card in this scenario has a heuristic score of 1, matching the score for ending the turn. However, there is no immediate strategic advantage to deploying the Knight Card. There is nothing to block, steal, or redirect at this moment that aligns with the stated priorities (maximize VP and expansion strategies).
+3. Ending the turn efficiently cycles to your next turn, stopping you from delaying progress and allowing you to gather more resources via dice rolls or trades on subsequent turns.
+
+While both actions have the same heuristic score, "end turn" helps maintain momentum without squandering potentially valuable tools (like the Knight Card) for minimal return.

@@ -1,0 +1,33 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [2, 0, 0, 2, 0]
+        - Settlements: []
+        - Cities: [12, 10]
+        - Victory Points (VP): 4
+        - Roads Available: 9
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None): 1
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+Action: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)  
+Justification: Based on the current game state, I have insufficient resources to build settlements (requirement: 1 Wood, 1 Brick, 1 Wheat, 1 Sheep) or cities (requirement: 2 Wheat, 3 Ore). With [2 Wood, 0 Brick, 0 Sheep, 2 Wheat, 0 Ore], none of these critical actions are possible. Additionally, there are no roads or blocking actions presented as an option in this turn. The only available action is to "END_TURN." While this is low-impact and not ideal, it allows me to collect resources on the next turn, possibly enabling actions to optimize Victory Points in the future. I will prioritize impactful actions once resource diversity improves.

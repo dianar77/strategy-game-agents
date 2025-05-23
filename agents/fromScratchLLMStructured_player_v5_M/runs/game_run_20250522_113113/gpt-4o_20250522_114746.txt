@@ -1,0 +1,50 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Here is the current game state:
+        <catanatron.game.Game object at 0x7f1782b6ccd0>
+
+        Here are the actions you can choose from:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WOOD', 'WOOD', 'WOOD', 'WOOD', 'SHEEP'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WOOD', 'WOOD', 'WOOD', 'WOOD', 'ORE'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WOOD', 'WOOD', 'WOOD', 'WOOD', 'BRICK'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WOOD', 'WOOD', 'WOOD', 'WOOD', 'WHEAT'))
+
+        Please provide the best action to take based on maximizing Victory Points (VP) and achieving strategic goals.
+        
+
+========================================
+
+Response:
+To determine the best action, let’s carefully consider the options. Here's the decision-making process:
+
+1. **Overview of Strategic Goals in Catan**:
+    - Maximizing Victory Points (VP) should be our priority.
+    - Critical ways to earn VP involve building Settlements, Cities, or Development Cards, as well as working toward Largest Army or Longest Road.
+    - Maritime Trade can allow us to convert excess resources into critical ones needed for key builds.
+
+2. **Review Current Actions**:
+    - The available actions involve ending the turn immediately or trading 4 WOOD to get 1 unit of another resource.
+    - Trading can be valuable if we are short on a specific resource necessary for a build.
+
+3. **Strategic Evaluation**:
+    - We need more information about your inventory of resources, how close you are to building Settlements, Roads, Cities, or Development Cards, and your current board position. However, we can make educated guesses based on standard strategies:
+      - **If you are close to building a Settlement (you need BRICK and WHEAT)**: Trade WOOD for BRICK or WHEAT, depending on which is more urgently needed.
+      - **If you are close to building a City (you need WHEAT and ORE)**: Trade WOOD for ORE or WHEAT.
+      - **If you are trying to acquire Development Cards (you need SHEEP, WHEAT, and ORE)**: Prioritize those resources as well.
+
+4. **Prioritize Trade**:
+    - Trading 4 WOOD is costly, but if you have an excess and are unable to make moves without converting resources, it makes sense.
+
+### Recommendation:
+Without knowing your exact resource inventory, I recommend **trading 4 WOOD for WHEAT**. Here's why:
+- WHEAT is often a limiting factor in many critical builds (Settlements, Cities, or Development Cards).
+- It’s a versatile resource and often pairs with other resources you may already have, unlocking future actions.
+
+If WHEAT is already abundantly available in your inventory, the second choice would be to trade for **ORE**, since it is essential for upgrading to Cities or purchasing Development Cards.
+
+**Best Action**:
+```python
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WOOD', 'WOOD', 'WOOD', 'WOOD', 'WHEAT'))
+```

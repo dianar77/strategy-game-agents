@@ -1,0 +1,58 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [0, 3, 0, 2, 0]
+        - Settlements: [12, 21]
+        - Cities: []
+        - Victory Points (VP): 4
+        - Roads Available: 7
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None): 1
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+Based on the provided game state, your current resource count and available heuristic scores suggest that your only listed action is to end your turn (`ActionType.END_TURN`). However, let's carefully assess to confirm this before proceeding.
+
+### Evaluation of the Situation:
+1. **Resource Analysis:**
+   - Resource count: [0, 3, 0, 2, 0] (Brick: 3, Wheat: 2, others: 0).
+   - To build a **settlement**, you need (1 Brick, 1 Wood, 1 Wheat, 1 Sheep). You lack Wood and Sheep right now.
+   - To build a **road**, you need (1 Brick, 1 Wood). You lack Wood.
+   - Upgrading a **settlement to a city** requires (3 Ore, 2 Wheat). You have the required Wheat but lack Ore.
+   - As no immediate constructions or upgrades are possible, resource collection (via dice rolls) is necessary to prepare for future actions.
+
+2. **VP Maximization Priorities:**
+   - Your current VP count is 4.
+   - Expanding with settlements and roads is key to gaining access to more resources and increasing future production.
+   - Once resource acquisition is stable, upgrading to cities becomes a focus for higher VP returns.
+
+3. **Impactful Actions:**
+   - There are no actions listed that directly involve building settlements, roads, or upgrading cities.
+   - Ending the turn is a low-impact action but unavoidable in this situation, as no meaningful moves are possible with your current resources.
+
+### Strategic Justification:
+Ending the turn allows the game to progress to the next dice roll, where you can potentially collect resources needed to take action toward the priorities (building settlements/roads or upgrading). While ending the turn is not ideal from an efficiency standpoint, it is the only available choice right now given the constraints of the game state.
+
+---
+
+### Response:
+**Action:** Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)  
+**Justification:** With your current resources, no impactful actions (such as building a settlement or road) are available. Ending the turn allows for resource collection during the next dice roll, enabling future actions toward VP maximization.

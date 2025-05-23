@@ -1,0 +1,67 @@
+Prompt:
+Current Game State:
+Your color: Color.BLUE
+Your victory points: 2
+Your resources: {'WOOD': 0, 'BRICK': 0, 'SHEEP': 0, 'WHEAT': 3, 'ORE': 0}
+Your buildings: {'settlements': 2, 'cities': 0, 'roads': 2}
+
+Opponents:
+- Color.RED: 3 victory points, Buildings: {'settlements': 1, 'cities': 1, 'roads': 5}
+
+Strategic Considerations:
+- Early Game: Focus on expanding by building roads and settlements.
+- Prioritize securing BRICK and WOOD resources for expansion.
+
+Available Actions (18):
+Action 0: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((0, 0, 0), None, None))
+Action 1: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((1, -1, 0), None, None))
+Action 2: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((0, -1, 1), None, None))
+Action 3: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((-1, 0, 1), <Color.RED: 'RED'>, None))
+Action 4: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((-1, 1, 0), <Color.RED: 'RED'>, None))
+Action 5: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((0, 1, -1), <Color.RED: 'RED'>, None))
+Action 6: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((1, 0, -1), None, None))
+Action 7: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((2, -2, 0), None, None))
+Action 8: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((1, -2, 1), None, None))
+Action 9: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((-1, -1, 2), <Color.RED: 'RED'>, None))
+Action 10: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((-2, 0, 2), <Color.RED: 'RED'>, None))
+Action 11: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((-2, 1, 1), None, None))
+Action 12: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((-2, 2, 0), None, None))
+Action 13: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((-1, 2, -1), <Color.RED: 'RED'>, None))
+Action 14: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((0, 2, -2), None, None))
+Action 15: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((1, 1, -2), None, None))
+Action 16: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((2, 0, -2), None, None))
+Action 17: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((2, -1, -1), None, None))
+
+For robber placement: Consider targeting the player with the most victory points.
+
+Analyze each available action and recommend the best one. Consider your current resources, victory points, and building opportunities. Aim to maximize your chances of winning by securing key resources and building strategically.
+
+Specify your choice by indicating 'RECOMMENDED ACTION: Action X' where X is the action index.
+
+========================================
+
+Response:
+# Analysis of Robber Placement Options
+
+I need to move the robber to disrupt my opponent's resource production while potentially stealing a resource card. Let me analyze the available actions.
+
+## Current Game State Assessment
+- I have 2 victory points compared to RED's 3 points
+- I have only wheat (3) in my resources
+- RED is ahead with more victory points and has both settlements and a city
+
+## Robber Placement Strategy
+Looking at the options, I notice several actions (3, 4, 5, 9, 10, 13) that allow me to target RED directly. These are the most valuable options since:
+1. They allow me to steal a resource from RED
+2. They block RED from producing resources on that hex
+
+Since RED is ahead of me with 3 victory points (including a city), disrupting their resource production is strategically valuable. The best move would be to place the robber on a hex that:
+- Is adjacent to RED's settlement or city (especially the city)
+- Ideally blocks a resource I need (BRICK or WOOD)
+
+Among the options that target RED, actions 3, 4, 5, 9, 10, and 13 all allow me to steal from RED. Without knowing exactly which resources these hexes produce, I'll prioritize targeting RED's city if possible.
+
+Based on the available information, any of these actions targeting RED would be beneficial, with a slight preference for targeting productive hexes near RED's city.
+
+## RECOMMENDED ACTION: Action 4
+I recommend placing the robber at coordinates (-1, 1, 0) which targets RED. This allows me to both block resource production on that hex and steal a resource card from RED, helping me catch up while slowing down the leading player.

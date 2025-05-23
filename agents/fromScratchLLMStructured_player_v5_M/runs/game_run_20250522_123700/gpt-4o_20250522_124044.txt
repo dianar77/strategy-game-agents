@@ -1,0 +1,47 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [1, 1, 0, 1, 1]
+        - Settlements: [0, 10]
+        - Cities: []
+        - Victory Points (VP): 7
+        - Roads Available: 6
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_KNIGHT_CARD: 'PLAY_KNIGHT_CARD'>, value=None)
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.ROLL: 'ROLL'>, value=None)
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_KNIGHT_CARD: 'PLAY_KNIGHT_CARD'>, value=None): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.ROLL: 'ROLL'>, value=None): 1
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+### Action: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.ROLL: 'ROLL'>, value=None)
+
+### Justification:
+In this situation, rolling the dice is the optimal choice. Here's the reasoning:
+
+1. **Resource Diversity and Expansion Potential**: Resources are currently limited ([1, 1, 0, 1, 1]), and rolling the dice provides an opportunity to gather more resources through the game's resource generation mechanic. These resources are essential for pursuing early-game priorities like building settlements and roads.
+
+2. **Action Impact vs. Alternatives**: The "PLAY_KNIGHT_CARD" action typically serves a defensive/offensive purpose, such as blocking an opponent's progress or forcing a resource discard. However, with the current heuristic score of 1 and no indication of urgent blocking against opponents, playing the knight card does not strategically advance our position at this point.
+
+3. **Alignment with Strategy**: By rolling, we align with the first priority of maximizing resource income to enable expansion (building new settlements and roads). This creates opportunities for resource diversity and sets the stage for future development (e.g., cities).
+
+4. **Avoiding Inaction**: Ending turns or playing low-impact actions without strategic advantage stalls the game. Rolling dice maintains momentum and keeps resource accumulation in focus. 
+
+Overall, rolling the dice is the better choice to prepare for resource-dependent expansions and align our play with the victory-points-maximization strategy.

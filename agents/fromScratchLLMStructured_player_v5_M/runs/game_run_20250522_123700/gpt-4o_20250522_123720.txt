@@ -1,0 +1,45 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [0, 1, 2, 1, 0]
+        - Settlements: [0, 10]
+        - Cities: []
+        - Victory Points (VP): 2
+        - Roads Available: 12
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None): 1
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+### Action: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+
+### Justification:
+Looking at the current game state:
+1. **Resource Availability:** You currently have [0, 1, 2, 1, 0] resources. Unfortunately, this resource combination doesn't allow for building a road, settlement, or upgrading to a city. To build a settlement (costing 1 brick, 1 wood, 1 wheat, and 1 sheep), or a road (costing 1 brick and 1 wood), more resources are needed. The same applies for upgrading to a city (requiring 3 ore and 2 wheat).
+
+2. **Strategic Priorities:** 
+   - Priority 1 (Building settlements and roads): You lack the necessary resources for either action.
+   - Priority 2 (Upgrading settlements to cities): Similarly, the resources required (ore and wheat) are insufficient.
+   - Priority 3 (Blocking opponents): There is no indication of an opportunity or need to block opponents here.
+
+3. **Available Actions:** The only action presented is `END_TURN`. Since resource generation depends on dice rolls or trading during other players' turns, you must wait before taking impactful actions. Ending the turn is currently the only option.
+
+In conclusion, while ending the turn is not a direct VP-generating action, it is the only viable option to progress toward acquiring resources for future impactful moves.

@@ -1,0 +1,49 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [1, 0, 0, 0, 1]
+        - Settlements: [3, 5, 21, 20]
+        - Cities: []
+        - Victory Points (VP): 6
+        - Roads Available: 0
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_KNIGHT_CARD: 'PLAY_KNIGHT_CARD'>, value=None)
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.ROLL: 'ROLL'>, value=None)
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_KNIGHT_CARD: 'PLAY_KNIGHT_CARD'>, value=None): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.ROLL: 'ROLL'>, value=None): 1
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+I need to evaluate which action will provide the most strategic value given the current game state.
+
+Action: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.ROLL: 'ROLL'>, value=None)
+
+Justification: I'm choosing to roll the dice instead of playing the Knight card because:
+
+1. Our resources are extremely limited (only 1 brick and 1 wood), and rolling gives us the opportunity to collect more resources based on our settlement positions. With 4 settlements (at positions 3, 5, 21, and 20), we likely have decent resource coverage on the board.
+
+2. Knight cards are most valuable when:
+   - You need to move the robber to block an opponent's key resource
+   - You're close to achieving Largest Army for VP
+   - You need to prevent resource loss from a 7 being rolled
+
+3. Since we have 6 VP already but very limited resources, our priority should be gathering more resources to build cities (which require ore and grain, both of which we currently lack). Rolling gives us that opportunity.
+
+4. With 0 roads available and limited resources, we can't currently expand further until we get more resources, making the roll more valuable than playing a development card at this moment.

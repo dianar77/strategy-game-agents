@@ -1,0 +1,58 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [1, 2, 0, 2, 2]
+        - Settlements: []
+        - Cities: [12, 10]
+        - Victory Points (VP): 4
+        - Roads Available: 0
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None): 1
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+The presented game state provides limited options for progression due to the lack of significant resources to build or expand. Reviewing the only available action and context:
+
+---
+
+### Evaluation:
+1. **Current Resources**: [1, 2, 0, 2, 2] 
+   - These do not meet the requirements for building a settlement (1 brick, 1 wood, 1 grain, 1 sheep = [1, 1, 1, 1]).
+   - Nor are they sufficient for upgrading a settlement to a city (2 grain, 3 ore = [0, 2, 3]).
+
+2. **Settlements**: None exist, leaving no settlements to upgrade to cities.
+
+3. **Roads Available**: 0, which prevents building roads to expand for resource diversity.
+
+4. **Actions Available**: Only one action, `END_TURN`.
+
+5. **Heuristic Insight**: The `END_TURN` action has a low score (1), meaning it's not strategically impactful, but currently unavoidable due to resource constraints and lack of alternative actions.
+
+---
+
+### Conclusion:
+Given the absence of actionable options beyond ending the turn, there is no alternative that can advance VP or other priorities.
+
+---
+
+### Response:
+**Action**: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)  
+**Justification**: Ending the turn is unavoidable due to resource constraints, lack of settlements for upgrades, and no available roads to expand. Ending the turn allows for resource production in future turns, enabling progression toward the core objective of maximizing Victory Points.

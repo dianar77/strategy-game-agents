@@ -1,0 +1,40 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [0, 3, 0, 0, 0]
+        - Settlements: [4, 0]
+        - Cities: []
+        - Victory Points (VP): 3
+        - Roads Available: 13
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_KNIGHT_CARD: 'PLAY_KNIGHT_CARD'>, value=None)
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_KNIGHT_CARD: 'PLAY_KNIGHT_CARD'>, value=None): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None): 1
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+### Action: **Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_KNIGHT_CARD: 'PLAY_KNIGHT_CARD'>, value=None)**  
+### Justification:  
+Given the current game state, the **PLAY_KNIGHT_CARD** action should be chosen because it represents an impactful move over the low-impact alternative of simply ending the turn. By playing a knight card:  
+1. **Blocking Opponent Progress:** Playing a knight card allows you to potentially move the robber and block an opponent's resource generation, strategically hindering their ability to expand and gain VP. This aligns with priority #3.  
+2. **Potential Resource Gain:** Moving the robber can grant you a stolen resource if placed on an opponent's hex, which can help increase your resource pool, which is currently very limited ([0, 3, 0, 0, 0]).
+
+While the heuristic scores are equal (1), ending a turn offers no immediate strategic progression toward expanding settlements or other VP-generating actions. Playing the knight card ensures active disruption of your opponent and potentially sets up better resourcing for future impactful moves.

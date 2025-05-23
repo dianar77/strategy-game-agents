@@ -1,0 +1,82 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Here is the current game state:
+        <catanatron.game.Game object at 0x7f1784423450>
+
+        Here are the actions you can choose from:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(23, 52))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(22, 49))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(2, 3))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(2, 9))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(6, 7))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(0, 5))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WOOD', 'WOOD', 'WOOD', 'WOOD', 'SHEEP'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WOOD', 'WOOD', 'WOOD', 'WOOD', 'ORE'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WOOD', 'WOOD', 'WOOD', 'WOOD', 'BRICK'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WOOD', 'WOOD', 'WOOD', 'WOOD', 'WHEAT'))
+
+        Please provide the best action to take based on maximizing Victory Points (VP) and achieving strategic goals.
+        
+
+========================================
+
+Response:
+To decide on the best action, we must prioritize gaining Victory Points (VP) and executing strategic moves that bring us closer to victory. Here's a breakdown of the logic:
+
+### Key Considerations:
+1. **Building Roads**:
+   - Roads are crucial for expanding settlement and city-building opportunities.
+   - Road placements could also help contend for the **Longest Road** bonus if applicable.
+
+2. **Maritime Trade**:
+   - Trading resources is a strong move if it leads directly to building settlements, cities, or roads. However, trading wood alone for other resources (like sheep, ore, brick, or wheat) may not immediately advance you towards VP unless a specific resource is blocking your strategy.
+
+3. **End Turn**:
+   - Ending your turn without taking significant action should only be done if no productive move is available or you are saving resources for a stronger turn.
+
+### Evaluation of the Actions:
+
+#### **Building Roads**:
+1. Action: `BUILD_ROAD (23, 52)`
+2. Action: `BUILD_ROAD (22, 49)`
+3. Action: `BUILD_ROAD (2, 3)`
+4. Action: `BUILD_ROAD (2, 9)`
+5. Action: `BUILD_ROAD (6, 7)`
+6. Action: `BUILD_ROAD (0, 5)`
+
+We should prioritize building roads that:
+   - **Extend your road length** towards settlement or city sites.
+   - Block rival players from critical expansions or the **Longest Road**.
+   - Lead to high-value territories (resource-rich hexes or ports).
+
+Without knowing the map state, **BUILD_ROAD (2, 3)** and **BUILD_ROAD (2, 9)** seem potentially valuable as they extend from the road system. If another road option accomplishes a similar goal closer to a resource jackpot, we should choose it.
+
+#### **Maritime Trade**:
+1. Maritime trade options allow you to trade **4 WOOD** for 1 desired resource:
+   - Trade for `SHEEP`, `ORE`, `BRICK`, or `WHEAT`.
+   
+   - Focus on immediate needs:
+     - **Sheep** and **Brick** may help you build settlements.
+     - **Ore** and **Wheat** are vital for cities, though this depends on your current resources.
+
+If trading wood directly enables building a settlement or city, we should strongly favor this.
+
+#### **End Turn**:
+- This is a low-priority action unless no viable options exist.
+
+---
+
+### Recommended Action:
+If a road placement further advances settlement expansion or blocks opponents:
+- **Build Road**: Look for the most strategically advantageous road placement. Likely candidates are **BUILD_ROAD (2, 3)** or **BUILD_ROAD (2, 9)** pending a full map assessment.
+
+If resource trading directly enables a settlement or city:
+- Use Maritime Trade to trade `WOOD` for the most critical resource (`SHEEP`, `ORE`, `BRICK`, or `WHEAT`).
+
+If the above are not immediately impactful:
+- **Build Road** in another location to strengthen your position (e.g., **BUILD_ROAD (23, 52)** or similar).
+
+Given the lack of additional game state information, my recommendation is:
+**BUILD_ROAD (2, 3)** for expanding your setup towards new settlements.

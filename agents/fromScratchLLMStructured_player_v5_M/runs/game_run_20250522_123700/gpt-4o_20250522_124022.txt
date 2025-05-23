@@ -1,0 +1,56 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [0, 1, 0, 4, 0]
+        - Settlements: [0, 10]
+        - Cities: []
+        - Victory Points (VP): 7
+        - Roads Available: 7
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_KNIGHT_CARD: 'PLAY_KNIGHT_CARD'>, value=None)
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WHEAT', 'WHEAT', 'WHEAT', 'WHEAT', 'WOOD'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WHEAT', 'WHEAT', 'WHEAT', 'WHEAT', 'ORE'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WHEAT', 'WHEAT', 'WHEAT', 'WHEAT', 'SHEEP'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WHEAT', 'WHEAT', 'WHEAT', 'WHEAT', 'BRICK'))
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_KNIGHT_CARD: 'PLAY_KNIGHT_CARD'>, value=None): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WHEAT', 'WHEAT', 'WHEAT', 'WHEAT', 'WOOD')): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WHEAT', 'WHEAT', 'WHEAT', 'WHEAT', 'ORE')): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WHEAT', 'WHEAT', 'WHEAT', 'WHEAT', 'SHEEP')): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WHEAT', 'WHEAT', 'WHEAT', 'WHEAT', 'BRICK')): 1
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+### **Response:**
+**Action:** Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WHEAT', 'WHEAT', 'WHEAT', 'WHEAT', 'BRICK'))
+
+**Justification:**
+1. **Maximizing VP Growth via Expansion (Priority 1):**
+   - The current resource stockpile includes 4 units of WHEAT but lacks essential resources like BRICK and WOOD, which are needed to build roads and settlements. Trading WHEAT for BRICK helps correct this imbalance and prepares for settlement construction (which requires BRICK and WOOD alongside SHEEP and WHEAT).
+
+2. **Strategic Resource Diversity:**
+   - Settlements allow access to a range of resources, increasing flexibility in future turns. The expansion strategy is critical at this stage to position for city upgrades later.
+
+3. **Avoiding Low-impact Alternatives:**
+   - Other actions, such as PLAY_KNIGHT_CARD or ending the turn, are less impactful because they do not directly contribute to enhancing resource diversity or VP growth.
+   - Maritime trades for other resources (WOOD, ORE, SHEEP) are less relevant at the moment, as cities and development cards are not immediate priorities.
+
+The chosen trade prepares for settlement construction, aligning with the key goal of early expansion.

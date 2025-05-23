@@ -1,0 +1,44 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [1, 0, 0, 0, 1]
+        - Settlements: [3, 5, 21, 20]
+        - Cities: []
+        - Victory Points (VP): 6
+        - Roads Available: 0
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_KNIGHT_CARD: 'PLAY_KNIGHT_CARD'>, value=None)
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_KNIGHT_CARD: 'PLAY_KNIGHT_CARD'>, value=None): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None): 1
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+I need to analyze the current game state and available actions to make the optimal decision.
+
+Looking at my resources, I have [1, 0, 0, 0, 1] which means I have 1 brick and 1 wood, but no sheep, wheat, or ore. 
+
+My options are limited to:
+1. Play a knight card
+2. End my turn
+
+Action: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_KNIGHT_CARD: 'PLAY_KNIGHT_CARD'>, value=None)
+
+Justification: Playing the knight card is the better strategic choice for several reasons. First, it moves the robber to a new location, which can potentially block my opponent's resource generation while freeing up one of my own resource-producing hexes if the robber was affecting me. Second, playing knight cards contributes toward earning the "Largest Army" card worth 2 VP. Since I already have 6 VP, getting closer to the Largest Army bonus could put me in a winning position. Finally, playing the knight allows me to steal a resource from an opponent, which could give me materials I need for my next building phase. With no roads available and insufficient resources for other builds, this is more productive than simply ending my turn.

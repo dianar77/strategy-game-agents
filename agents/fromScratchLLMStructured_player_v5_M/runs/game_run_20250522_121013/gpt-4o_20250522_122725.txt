@@ -1,0 +1,67 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [1, 0, 1, 0, 4]
+        - Settlements: [23, 16]
+        - Cities: []
+        - Victory Points (VP): 2
+        - Roads Available: 13
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_MONOPOLY: 'PLAY_MONOPOLY'>, value='WOOD')
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_MONOPOLY: 'PLAY_MONOPOLY'>, value='BRICK')
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_MONOPOLY: 'PLAY_MONOPOLY'>, value='SHEEP')
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_MONOPOLY: 'PLAY_MONOPOLY'>, value='WHEAT')
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_MONOPOLY: 'PLAY_MONOPOLY'>, value='ORE')
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_KNIGHT_CARD: 'PLAY_KNIGHT_CARD'>, value=None)
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('ORE', 'ORE', 'ORE', 'ORE', 'WHEAT'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('ORE', 'ORE', 'ORE', 'ORE', 'WOOD'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('ORE', 'ORE', 'ORE', 'ORE', 'SHEEP'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('ORE', 'ORE', 'ORE', 'ORE', 'BRICK'))
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_MONOPOLY: 'PLAY_MONOPOLY'>, value='WOOD'): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_MONOPOLY: 'PLAY_MONOPOLY'>, value='BRICK'): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_MONOPOLY: 'PLAY_MONOPOLY'>, value='SHEEP'): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_MONOPOLY: 'PLAY_MONOPOLY'>, value='WHEAT'): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_MONOPOLY: 'PLAY_MONOPOLY'>, value='ORE'): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_KNIGHT_CARD: 'PLAY_KNIGHT_CARD'>, value=None): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('ORE', 'ORE', 'ORE', 'ORE', 'WHEAT')): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('ORE', 'ORE', 'ORE', 'ORE', 'WOOD')): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('ORE', 'ORE', 'ORE', 'ORE', 'SHEEP')): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('ORE', 'ORE', 'ORE', 'ORE', 'BRICK')): 1
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+### Action: **Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('ORE', 'ORE', 'ORE', 'ORE', 'WHEAT'))**
+
+### Justification:
+1. **Analyzing Priorities:**
+   - The top priority is to build settlements and roads early for resource diversity. However, the resource pool lacks the critical resources (brick and wood) necessary to build roads or settlements. Thus, maritime trade can be used to convert surplus ORE to a more needed resource crucial for development.
+   - Maritime trade for WHEAT addresses this as wheat is a fundamental resource for upgrading settlements to cities (priority #2) and purchasing development cards for future strategies.
+
+2. **Maximizing Resource Utility:**
+   - ORE in your current hand is over-accumulated with no immediate building utility. Using maritime trade makes ORE more useful by converting it into WHEAT that can be stockpiled for key moves (e.g., city upgrades or settlements with brick+wood trades).
+   - This aligns with prioritizing the path toward upgrading settlements for enhanced victory point gains.
+
+3. **Avoiding Low-Impact Actions:**
+   - Actions like PLAY_MONOPOLY or PLAY_KNIGHT_CARD have no immediate utility based on the game state and VP priorities. Similarly, ending the turn offers no direct forward movement.
+   - Sufficient maritime trade is available to improve the resource mix instead of delaying resource optimization.
+
+By selecting this **maritime trade action**, you take an actionable step toward gathering the necessary resources to build cities and settlements in subsequent turns, advancing your VP growth efficiently.

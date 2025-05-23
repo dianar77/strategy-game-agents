@@ -1,0 +1,42 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Here is the current game state:
+        Player Stats:
+        - Resources: [5, 0, 0, 0, 2]
+        - Settlements: [0, 2]
+        - Cities: []
+        - Victory Points: 2
+        - Roads Available: 12
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WOOD', 'WOOD', 'WOOD', 'WOOD', 'WHEAT'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WOOD', 'WOOD', 'WOOD', 'WOOD', 'BRICK'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WOOD', 'WOOD', 'WOOD', 'WOOD', 'SHEEP'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WOOD', 'WOOD', 'WOOD', 'WOOD', 'ORE'))
+
+        Heuristic Scores for Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WOOD', 'WOOD', 'WOOD', 'WOOD', 'WHEAT')): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WOOD', 'WOOD', 'WOOD', 'WOOD', 'BRICK')): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WOOD', 'WOOD', 'WOOD', 'WOOD', 'SHEEP')): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WOOD', 'WOOD', 'WOOD', 'WOOD', 'ORE')): 1
+
+        Please respond with the optimal action and briefly explain why it was chosen. Format:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the decision}
+        
+
+========================================
+
+Response:
+Given the current state of the game, all available actions have equal heuristic scores (1). However, selecting an action should consider the player's available resources, their goals, and potential strategic benefits. Here's the optimal action:
+
+### Action: **Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WOOD', 'WOOD', 'WOOD', 'WOOD', 'BRICK'))**
+
+### Justification:
+- The player's resources show an excess of **WOOD** (5 units) but no **BRICK**, which is necessary for building more roads or settlements.
+- Trading 4 units of **WOOD** for **BRICK** balances the resource pool and facilitates future actions like building roads or settlements, which are critical for advancing victory points and controlling more areas.
+- While other trades (e.g., for **WHEAT, SHEEP, ORE**) might be useful in the long term, **BRICK** is the immediate priority for progressing toward strategic goals like expansion.
+- **Ending the turn** without trading wastes an opportunity to optimize resources.

@@ -1,0 +1,53 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Here is the current game state:
+        <catanatron.game.Game object at 0x7f1782faf7d0>
+
+        Here are the actions you can choose from:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WHEAT', 'WHEAT', 'WHEAT', 'WHEAT', 'WOOD'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WOOD', 'WOOD', 'WOOD', 'WOOD', 'SHEEP'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WOOD', 'WOOD', 'WOOD', 'WOOD', 'BRICK'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WOOD', 'WOOD', 'WOOD', 'WOOD', 'WHEAT'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WOOD', 'WOOD', 'WOOD', 'WOOD', 'ORE'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WHEAT', 'WHEAT', 'WHEAT', 'WHEAT', 'BRICK'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WHEAT', 'WHEAT', 'WHEAT', 'WHEAT', 'SHEEP'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WHEAT', 'WHEAT', 'WHEAT', 'WHEAT', 'ORE'))
+
+        Please provide the best action to take based on maximizing Victory Points (VP) and achieving strategic goals.
+        
+
+========================================
+
+Response:
+To maximize victory points and achieve strategic goals in Catan, it's important to analyze the resources involved in maritime trades and determine which trades would best support progressing toward building settlements, cities, and development cards, as these contribute to victory points. Additionally, consider whether to prioritize valuable resources like **ORE**, **WHEAT**, and **BRICK**, which are critical for advancing toward cities and building settlements.
+
+### Analysis:
+1. **WHEAT** and **ORE** are vital for upgrading settlements to cities (2 Victory Points each). These should be prioritized if you aim to boost victory points quickly.
+2. **BRICK** and **WOOD** are required for roads and settlements. These are essential for expanding into new areas to control more tiles, potentially gaining resources and strategic positioning.
+3. **SHEEP** is crucial for settlements and development cards but slightly less critical than WHEAT and ORE for cities.
+
+Given the available actions:
+- Maritime trading with **WOOD** 4x can yield WHEAT, ORE, BRICK, SHEEP, or more WOOD.
+- Trading with **WHEAT** 4x allows similar options.
+
+### Recommended Action:
+If you do not already have enough WHEAT or ORE to upgrade a settlement to a city, the best trade would likely be:
+**Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WOOD', 'WOOD', 'WOOD', 'WOOD', 'ORE'))**
+
+This prioritizes acquiring ORE, enabling you to upgrade a settlement to a city in combination with WHEAT. Cities significantly boost victory points and resource production.
+
+If you already have sufficient ORE and WHEAT for a city or need BRICK for expansion:
+**Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WOOD', 'WOOD', 'WOOD', 'WOOD', 'BRICK'))**
+
+This supports settlement construction and expansion, opening pathways to more victory points.
+
+If no immediate trade aligns with city/settlement goals, the fallback option is:
+**Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>**  
+This preserves resources for a better opportunity moving forward.
+
+### TLDR:
+- Trade WOOD for ORE if you aim to upgrade settlements into cities (high VP impact).
+- Trade WOOD for BRICK if you aim to expand the board with settlements and roads.
+- End turn if no trade significantly advances your victory points or strategic goals.

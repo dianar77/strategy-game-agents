@@ -1,0 +1,76 @@
+Prompt:
+Current Game State:
+Your color: Color.BLUE
+Your victory points: 4
+Your resources: {'WOOD': 0, 'BRICK': 1, 'SHEEP': 3, 'WHEAT': 1, 'ORE': 0}
+Your buildings: {'settlements': 2, 'cities': 0, 'roads': 3}
+
+Opponents:
+- Color.RED: 6 victory points, Buildings: {'settlements': 4, 'cities': 0, 'roads': 10}
+
+Strategic Considerations:
+- Early Game: Focus on expanding by building roads and settlements.
+- Prioritize securing BRICK and WOOD resources for expansion.
+
+Available Actions (18):
+Action 0: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((0, 0, 0), <Color.RED: 'RED'>, None))
+Action 1: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((1, -1, 0), None, None))
+Action 2: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((-1, 0, 1), <Color.RED: 'RED'>, None))
+Action 3: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((-1, 1, 0), <Color.RED: 'RED'>, None))
+Action 4: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((0, 1, -1), <Color.RED: 'RED'>, None))
+Action 5: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((1, 0, -1), <Color.RED: 'RED'>, None))
+Action 6: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((2, -2, 0), None, None))
+Action 7: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((1, -2, 1), None, None))
+Action 8: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((0, -2, 2), None, None))
+Action 9: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((-1, -1, 2), None, None))
+Action 10: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((-2, 0, 2), None, None))
+Action 11: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((-2, 1, 1), <Color.RED: 'RED'>, None))
+Action 12: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((-2, 2, 0), <Color.RED: 'RED'>, None))
+Action 13: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((-1, 2, -1), <Color.RED: 'RED'>, None))
+Action 14: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((0, 2, -2), <Color.RED: 'RED'>, None))
+Action 15: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((1, 1, -2), <Color.RED: 'RED'>, None))
+Action 16: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((2, 0, -2), None, None))
+Action 17: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((2, -1, -1), None, None))
+
+For robber placement: Consider targeting the player with the most victory points.
+
+Analyze each available action and recommend the best one. Consider your current resources, victory points, and building opportunities. Aim to maximize your chances of winning by securing key resources and building strategically.
+
+Specify your choice by indicating 'RECOMMENDED ACTION: Action X' where X is the action index.
+
+========================================
+
+Response:
+# Robber Placement Analysis
+
+Looking at the current game state, I need to choose where to place the robber to maximize my strategic advantage.
+
+## Game Assessment
+- I'm at 4 victory points, while the Red player has 6 points and is leading
+- I'm lacking WOOD and ORE resources, with only 1 BRICK and 1 WHEAT
+- Red player has made significant progress with 4 settlements and 10 roads
+
+## Strategic Priorities
+1. Slow down Red since they're already 2 points ahead
+2. Target hexes that might have resources I need (particularly WOOD)
+3. Choose a hex where I can steal from Red to potentially gain needed resources
+
+## Action Analysis
+Since these are all MOVE_ROBBER actions, I need to consider:
+- Which hexes are likely producing valuable resources for Red
+- Which locations allow me to steal from Red (the only opponent)
+
+The actions numbered 0, 2, 3, 4, 5, 11, 12, 13, 14, and 15 all specifically target Red for resource theft, which is ideal given Red's lead in victory points.
+
+Among these options, I should target a hex that:
+- Is likely producing important resources for Red
+- May be a high-probability number tile (though I don't have this information)
+- Disrupts Red's development strategy
+
+Based on Red having many roads and settlements, they likely have good access to BRICK and WOOD. Targeting those production hexes would be optimal.
+
+Without specific information about the resource production on these hexes, the best general strategy is to place the robber on a hex adjacent to Red's settlements and steal from them to slow their progress.
+
+## RECOMMENDED ACTION: Action 5
+
+Action 5 places the robber at coordinate (1, 0, -1) and targets Red for stealing. This is a balanced position on the board that could be blocking a valuable resource hex while ensuring I can steal from Red. This helps diminish their lead while potentially gaining a resource I need for expansion.

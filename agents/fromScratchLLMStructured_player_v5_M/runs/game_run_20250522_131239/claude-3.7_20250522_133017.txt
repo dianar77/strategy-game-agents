@@ -1,0 +1,56 @@
+Prompt:
+
+You are an AI assistant helping a player make strategic decisions in a game of Catan.
+
+AVAILABLE ACTIONS:
+Action 0: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((0, 0, 0), None, None))
+Action 1: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((1, -1, 0), None, None))
+Action 2: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((0, -1, 1), <Color.RED: 'RED'>, None))
+Action 3: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((-1, 1, 0), <Color.RED: 'RED'>, None))
+Action 4: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((0, 1, -1), <Color.RED: 'RED'>, None))
+Action 5: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((1, 0, -1), None, None))
+Action 6: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((2, -2, 0), None, None))
+Action 7: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((1, -2, 1), None, None))
+Action 8: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((0, -2, 2), <Color.RED: 'RED'>, None))
+Action 9: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((-1, -1, 2), <Color.RED: 'RED'>, None))
+Action 10: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((-2, 0, 2), <Color.RED: 'RED'>, None))
+Action 11: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((-2, 1, 1), <Color.RED: 'RED'>, None))
+Action 12: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((-2, 2, 0), <Color.RED: 'RED'>, None))
+Action 13: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((-1, 2, -1), <Color.RED: 'RED'>, None))
+Action 14: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((0, 2, -2), <Color.RED: 'RED'>, None))
+Action 15: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((1, 1, -2), None, None))
+Action 16: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((2, 0, -2), None, None))
+Action 17: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((2, -1, -1), None, None))
+
+Which action should I choose? Analyze each option and recommend the best action by returning the action index (e.g., "Action 2").
+Provide your final recommendation at the end in the format: "RECOMMENDED ACTION: Action X"
+
+
+========================================
+
+Response:
+I'll analyze the robber movement options to determine the best strategic choice.
+
+When moving the robber, the main goals are:
+1. Block an opponent's high-value resource production
+2. Target opponents who are ahead or pose threats
+3. Potentially steal a resource card
+4. Avoid hexes that benefit you
+
+Looking at the options, several allow stealing from the RED player (Actions 2, 3, 4, 8, 9, 10, 11, 12, 13, 14). These are generally better than actions where you can't steal.
+
+Let me evaluate which hexes would be most impactful to block:
+- Actions that target key number tiles (6s and 8s) would be most disruptive
+- Actions that target a player with settlements or cities on multiple sides of the hex maximize impact
+- Actions that block resources the opponent needs are strategic
+
+Without seeing the full board state (resource types and number tokens), I'll focus on the fact that we can steal from RED in multiple locations.
+
+Actions 2, 3, and 4 involve tiles near the center of the board, which are often high-value locations.
+Actions 8-14 are on the outer ring of the board.
+
+Since RED has settlements/cities on multiple hexes, they likely have a strong position. Blocking their most productive hex and stealing a resource would be optimal.
+
+Given the available information, Action 3 or Action 4 is likely best as they target central hexes where RED has presence, but without seeing the actual board values, I'm making an educated guess.
+
+RECOMMENDED ACTION: Action 3

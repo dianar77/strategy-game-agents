@@ -1,0 +1,45 @@
+Prompt:
+
+You are an AI assistant helping a player make strategic decisions in a game of Catan.
+
+AVAILABLE ACTIONS:
+["Action 0: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((0, 0, 0), <Color.RED: 'RED'>, None))", "Action 1: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((1, -1, 0), None, None))", "Action 2: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((0, -1, 1), <Color.RED: 'RED'>, None))", "Action 3: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((-1, 0, 1), <Color.RED: 'RED'>, None))", "Action 4: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((-1, 1, 0), <Color.RED: 'RED'>, None))", "Action 5: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((0, 1, -1), None, None))", "Action 6: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((1, 0, -1), None, None))", "Action 7: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((2, -2, 0), None, None))", "Action 8: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((1, -2, 1), None, None))", "Action 9: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((0, -2, 2), None, None))", "Action 10: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((-1, -1, 2), <Color.RED: 'RED'>, None))", "Action 11: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((-2, 1, 1), <Color.RED: 'RED'>, None))", "Action 12: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((-2, 2, 0), <Color.RED: 'RED'>, None))", "Action 13: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((-1, 2, -1), None, None))", "Action 14: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((0, 2, -2), None, None))", "Action 15: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((1, 1, -2), None, None))", "Action 16: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((2, 0, -2), None, None))", "Action 17: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((2, -1, -1), None, None))"]
+
+Which action should I choose? Analyze each option and recommend the best action by returning the action index (e.g., "Action 2").
+Provide your final recommendation at the end in the format: "RECOMMENDED ACTION: Action X"
+
+
+========================================
+
+Response:
+# Robber Placement Analysis for Catan
+
+I'll analyze the robber placement options to determine which is most strategic for you (BLUE player) against RED.
+
+## Understanding the Options
+The actions show coordinates (x,y,z) for hex placement and whether you can steal from another player (RED in this case).
+
+### Actions with Steal Opportunity
+Several actions allow you to steal from RED:
+- Action 0: Hex (0,0,0) - likely the center hex
+- Action 2: Hex (0,-1,1)
+- Action 3: Hex (-1,0,1)
+- Action 4: Hex (-1,1,0)
+- Action 10: Hex (-1,-1,2)
+- Action 11: Hex (-2,1,1)
+- Action 12: Hex (-2,2,0)
+
+### Strategic Analysis
+When placing the robber, I want to:
+1. Block a productive hex that RED relies on
+2. Steal a resource from RED
+3. Minimize impact on my own (BLUE) settlements
+
+Without seeing the full board state (resource types, settlement positions, player scores), I'll recommend targeting RED's strongest position.
+
+Based on typical Catan board layouts, hexes closer to the center tend to have higher probability numbers and more settlements around them. The most central coordinates that allow stealing from RED are (0,0,0), (-1,0,1), and (0,-1,1).
+
+## Recommendation
+Action 0 places the robber on the center hex (0,0,0) and allows stealing from RED, which is likely to be a high-value position.
+
+RECOMMENDED ACTION: Action 0

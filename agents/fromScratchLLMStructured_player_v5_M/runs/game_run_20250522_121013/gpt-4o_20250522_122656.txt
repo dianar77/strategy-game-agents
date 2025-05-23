@@ -1,0 +1,40 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [0, 0, 0, 1, 1]
+        - Settlements: [23, 16]
+        - Cities: []
+        - Victory Points (VP): 2
+        - Roads Available: 13
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_KNIGHT_CARD: 'PLAY_KNIGHT_CARD'>, value=None)
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_KNIGHT_CARD: 'PLAY_KNIGHT_CARD'>, value=None): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None): 1
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+**Action:** Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)  
+**Justification:**  
+Given the current game state, you lack sufficient resources to perform high-impact actions such as building roads, settlements, or upgrading settlements to cities. Your resource pool [0, 0, 0, 1, 1] (with 1 wheat and 1 ore but no wood, brick, or sheep) does not allow for any production or expansion moves at this moment.  
+
+The only other available action, **PLAY_KNIGHT_CARD**, has no clear strategic advantage in this context since it won't help block opponents or gain meaningful tactical advantage due to the absence of any blocking strategy detailed in the game state. With both actions scoring equally low heuristic values (1), the prudent choice is to **END_TURN** and wait for a better resource roll that aligns with your expansion priorities.  
+
+Ending the turn avoids unnecessary play of the knight card, preserving it for a future turn where blocking or stealing could be more strategically impactful. Therefore, ending the turn is the most resource-efficient and contextually optimal decision to progress toward your VP maximization goal.

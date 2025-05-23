@@ -1,0 +1,22 @@
+Traceback (most recent call last):
+  File "/share/edc/home/nbelle/miniconda3/envs/catan/bin/catanatron-play", line 33, in <module>
+    sys.exit(load_entry_point('catanatron-experimental', 'console_scripts', 'catanatron-play')())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/share/edc/home/nbelle/miniconda3/envs/catan/lib/python3.11/site-packages/click/core.py", line 1130, in __call__
+    return self.main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/share/edc/home/nbelle/miniconda3/envs/catan/lib/python3.11/site-packages/click/core.py", line 1055, in main
+    rv = self.invoke(ctx)
+         ^^^^^^^^^^^^^^^^
+  File "/share/edc/home/nbelle/miniconda3/envs/catan/lib/python3.11/site-packages/click/core.py", line 1404, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/share/edc/home/nbelle/miniconda3/envs/catan/lib/python3.11/site-packages/click/core.py", line 760, in invoke
+    return __callback(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/share/edc/home/nbelle/projects/strategy-game-agents/catanatron/catanatron_experimental/catanatron_experimental/play.py", line 180, in simulate
+    player = cli_player.import_fn(*params)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/share/edc/home/nbelle/projects/strategy-game-agents/agents/fromScratchLLMStructured_player_v5_M/foo_player.py", line 17, in __init__
+    super().__init__(color, name=f"FooPlayer{color}")
+TypeError: Player.__init__() got an unexpected keyword argument 'name'

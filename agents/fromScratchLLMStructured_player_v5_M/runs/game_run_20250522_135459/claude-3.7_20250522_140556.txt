@@ -1,0 +1,50 @@
+Prompt:
+Current Game State:
+Your color: Color.BLUE
+Your victory points: 2
+Your resources: {'WOOD': 0, 'BRICK': 0, 'SHEEP': 0, 'WHEAT': 1, 'ORE': 4}
+Your buildings: {'settlements': 2, 'cities': 0, 'roads': 2}
+
+Opponents:
+- Color.RED: 2 victory points, Buildings: {'settlements': 2, 'cities': 0, 'roads': 3}
+
+Available Actions (5):
+Action 0: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+Action 1: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('ORE', 'ORE', 'ORE', 'ORE', 'WHEAT'))
+Action 2: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('ORE', 'ORE', 'ORE', 'ORE', 'SHEEP'))
+Action 3: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('ORE', 'ORE', 'ORE', 'ORE', 'WOOD'))
+Action 4: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('ORE', 'ORE', 'ORE', 'ORE', 'BRICK'))
+
+Analyze each available action and recommend the best one. Consider your current resources, victory points, and building opportunities. Aim to maximize your chances of winning by securing key resources and building strategically.
+
+Specify your choice by indicating 'RECOMMENDED ACTION: Action X' where X is the action index.
+
+========================================
+
+Response:
+# Game State Analysis
+
+Let me evaluate the current situation and available actions:
+
+## Current Resources and Buildings
+- You have 4 ORE and 1 WHEAT
+- 2 settlements and 2 roads built
+- Currently at 2 victory points
+
+## Available Actions Analysis
+- **Action 0**: End your turn without doing anything
+- **Actions 1-4**: Maritime trades trading 4 ORE for different resources (WHEAT, SHEEP, WOOD, or BRICK)
+
+## Strategic Considerations
+
+Looking at your resources, you have an abundance of ORE but lack other resources. You need 3 ORE + 2 WHEAT to build a city (worth 2 VP), so you're just 1 WHEAT short of being able to build a city. For a new settlement (worth 1 VP), you would need WOOD, BRICK, WHEAT, and SHEEP.
+
+Given that you already have 1 WHEAT, trading for another WHEAT would bring you closest to being able to build a city, which gives you more victory points per resources spent compared to a settlement.
+
+However, if we're planning for future turns, BRICK or WOOD could be valuable for building roads and eventually new settlements, since you'll need to expand your presence on the board.
+
+## Recommendation
+
+**RECOMMENDED ACTION: Action 1** (Maritime trade 4 ORE for 1 WHEAT)
+
+This will give you 2 WHEAT and 0 ORE, positioning you to potentially build a city next turn if you acquire more ORE. This is the most efficient path to gaining additional victory points given your current position.

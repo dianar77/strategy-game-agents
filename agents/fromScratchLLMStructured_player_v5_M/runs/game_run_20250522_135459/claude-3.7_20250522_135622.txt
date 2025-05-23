@@ -1,0 +1,67 @@
+Prompt:
+Current Game State:
+Your color: Color.BLUE
+Your victory points: 2
+Your resources: {'WOOD': 1, 'BRICK': 1, 'SHEEP': 0, 'WHEAT': 1, 'ORE': 0}
+Your buildings: {'settlements': 2, 'cities': 0, 'roads': 2}
+
+Opponents:
+- Color.RED: 2 victory points, Buildings: {'settlements': 2, 'cities': 0, 'roads': 2}
+
+Available Actions (7):
+Action 0: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+Action 1: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(0, 1))
+Action 2: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(0, 20))
+Action 3: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(31, 32))
+Action 4: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(4, 5))
+Action 5: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(5, 16))
+Action 6: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(29, 30))
+
+Analyze each available action and recommend the best one. Consider your current resources, victory points, and building opportunities. Aim to maximize your chances of winning by securing key resources and building strategically.
+
+Specify your choice by indicating 'RECOMMENDED ACTION: Action X' where X is the action index.
+
+========================================
+
+Response:
+# Game State Analysis
+
+I'll analyze the current game state and available actions to make a strategic recommendation.
+
+## Current Resources
+- WOOD: 1
+- BRICK: 1
+- SHEEP: 0
+- WHEAT: 1
+- ORE: 0
+
+## Building Costs Reminder
+- Road: 1 WOOD + 1 BRICK
+- Settlement: 1 WOOD + 1 BRICK + 1 SHEEP + 1 WHEAT
+- City: 2 WHEAT + 3 ORE
+
+## Analysis of Available Actions
+
+First, I notice we have exactly the resources needed to build one road (1 WOOD + 1 BRICK). We have 6 possible road locations to choose from, so I need to evaluate which would be most strategic.
+
+When placing roads, we want to:
+1. Expand toward valuable resource hexes
+2. Block opponent expansion paths if possible
+3. Work toward the "longest road" special card
+4. Create paths to future settlement locations
+
+Since we have 2 settlements already, extending our road network is the logical next step toward building our 3rd settlement once we gather those resources.
+
+Without seeing the full board layout, I need to consider which road placement maximizes our future opportunities. Roads that extend from our current positions and lead toward diverse resources would be ideal.
+
+Since all actions are BUILD_ROAD with different coordinates, and without seeing the full board visualization, I would need to choose based on these coordinates to determine which provides the best expansion path.
+
+Action 1 through Action 6 all involve building roads at different locations. Without more context about the board state, I'll recommend building a road that likely extends our current network.
+
+## Recommendation
+
+Since I can't visually see which road placement leads to the most valuable future building spots, I'll recommend using our resources to build a road rather than ending our turn.
+
+**RECOMMENDED ACTION: Action 1**
+
+This builds a road at coordinates (0, 1), which I'm assuming connects to one of our existing settlements and extends our network in a promising direction. After building this road, we should focus on gathering the remaining resources needed for our next settlement (SHEEP).

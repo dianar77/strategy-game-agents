@@ -1,0 +1,60 @@
+Prompt:
+Current Game State:
+Your color: Color.BLUE
+Your victory points: 3
+Your resources: {'WOOD': 1, 'BRICK': 0, 'SHEEP': 6, 'WHEAT': 0, 'ORE': 0}
+Your buildings: {'settlements': 1, 'cities': 1, 'roads': 5}
+
+Opponents:
+- Color.RED: 9 victory points, Buildings: {'settlements': 1, 'cities': 3, 'roads': 15}
+
+Available Actions (5):
+Action 0: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+Action 1: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('SHEEP', 'SHEEP', 'SHEEP', 'SHEEP', 'WOOD'))
+Action 2: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('SHEEP', 'SHEEP', 'SHEEP', 'SHEEP', 'ORE'))
+Action 3: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('SHEEP', 'SHEEP', 'SHEEP', 'SHEEP', 'BRICK'))
+Action 4: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('SHEEP', 'SHEEP', 'SHEEP', 'SHEEP', 'WHEAT'))
+
+Analyze each available action and recommend the best one. Consider your current resources, victory points, and building opportunities. Aim to maximize your chances of winning by securing key resources and building strategically.
+
+Specify your choice by indicating 'RECOMMENDED ACTION: Action X' where X is the action index.
+
+========================================
+
+Response:
+# Game State Analysis
+
+Let me analyze the current situation:
+
+- You have 3 victory points (vs. 9 for the opponent)
+- Your resources are heavily skewed toward SHEEP (6), with only 1 WOOD and nothing else
+- You have 1 settlement, 1 city, and 5 roads available to build
+- The opponent is far ahead with 9 victory points
+
+## Action Analysis
+
+You can either end your turn or perform maritime trades, exchanging 4 sheep for another resource:
+
+**Action 0:** End your turn without doing anything
+- This wastes your opportunity to improve your resource diversity
+
+**Action 1-4:** Trade 4 sheep for either wood, ore, brick, or wheat
+- You currently have 6 sheep, so you can perform one such trade
+- You already have 1 wood, but no ore, brick, or wheat
+
+## Strategic Considerations
+
+1. You're significantly behind in victory points (3 vs 9)
+2. You need to build more settlements (worth 1 VP each) or cities (worth 2 VP each)
+3. For a settlement, you need: 1 wood, 1 brick, 1 sheep, 1 wheat
+4. For a city, you need: 2 wheat, 3 ore
+
+Given your current resources, trading for brick or wheat would get you closer to building a settlement, as you already have wood and sheep.
+
+## Recommendation
+
+Since you need to build quickly to catch up, and you're one brick away from having the wood+brick combination needed for roads (which lead to settlements), I recommend trading for brick.
+
+RECOMMENDED ACTION: Action 3 (Maritime trade: 4 sheep for 1 brick)
+
+This will give you wood and brick, allowing you to build a road, which is the first step toward placing a new settlement to gain more victory points.

@@ -1,0 +1,58 @@
+Prompt:
+Current Game State:
+Your color: Color.BLUE
+Your victory points: 3
+Your resources: {'WOOD': 0, 'BRICK': 1, 'SHEEP': 5, 'WHEAT': 0, 'ORE': 0}
+Your buildings: {'settlements': 1, 'cities': 1, 'roads': 3}
+
+Opponents:
+- Color.RED: 6 victory points, Buildings: {'settlements': 0, 'cities': 2, 'roads': 9}
+
+Available Actions (5):
+Action 0: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+Action 1: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('SHEEP', 'SHEEP', 'SHEEP', 'SHEEP', 'WOOD'))
+Action 2: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('SHEEP', 'SHEEP', 'SHEEP', 'SHEEP', 'ORE'))
+Action 3: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('SHEEP', 'SHEEP', 'SHEEP', 'SHEEP', 'BRICK'))
+Action 4: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('SHEEP', 'SHEEP', 'SHEEP', 'SHEEP', 'WHEAT'))
+
+Analyze each available action and recommend the best one. Consider your current resources, victory points, and building opportunities. Aim to maximize your chances of winning by securing key resources and building strategically.
+
+Specify your choice by indicating 'RECOMMENDED ACTION: Action X' where X is the action index.
+
+========================================
+
+Response:
+# Game Analysis
+
+Let's analyze the current situation:
+
+## Current Status
+- You have 3 victory points vs. opponent's 6 points
+- Your resources: 1 BRICK, 5 SHEEP, no WOOD, WHEAT, or ORE
+- Your buildings: 1 settlement, 1 city, 3 roads
+- Opponent has 2 cities and 9 roads
+
+## Action Analysis
+
+You're significantly behind in victory points (3 vs 6) and need to catch up. Your only viable actions are to either end your turn or trade 4 SHEEP for another resource.
+
+**Trading Options:**
+- Trade 4 SHEEP for WOOD (Action 1)
+- Trade 4 SHEEP for ORE (Action 2)
+- Trade 4 SHEEP for BRICK (Action 3)
+- Trade 4 SHEEP for WHEAT (Action 4)
+
+To build anything meaningful:
+- Road: Needs 1 WOOD + 1 BRICK (you have 1 BRICK)
+- Settlement: Needs 1 WOOD + 1 BRICK + 1 SHEEP + 1 WHEAT
+- City: Needs 2 WHEAT + 3 ORE
+
+Since you're behind and need to expand, getting WOOD seems most strategic since it would allow you to build a road with your existing BRICK. Roads are essential for expanding to new settlements, which is what you need to catch up.
+
+Trading for WHEAT could be considered, but you'd still need WOOD to complete a settlement.
+
+## Recommendation
+
+RECOMMENDED ACTION: Action 1
+
+Trading 4 SHEEP for WOOD will allow you to immediately build a road, expanding your network and positioning you for future settlement building, which is critical for catching up to your opponent.

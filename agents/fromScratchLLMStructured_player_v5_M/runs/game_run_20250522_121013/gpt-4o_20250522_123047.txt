@@ -1,0 +1,37 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [0, 0, 0, 2, 3]
+        - Settlements: [16]
+        - Cities: [23]
+        - Victory Points (VP): 6
+        - Roads Available: 9
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_CITY: 'BUILD_CITY'>, value=16)
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_CITY: 'BUILD_CITY'>, value=16): 15
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+**Action:** Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_CITY: 'BUILD_CITY'>, value=16)
+
+**Justification:**  
+Building a city on Settlement 16 is the optimal move because it aligns with the second priority in the goal: upgrading settlements to cities for higher Victory Point (VP) returns. Cities generate more resources during production and increase VP, directly contributing to long-term growth and resource diversity. The heuristic score of "15" for this action, compared to "1" for ending the turn, clearly indicates its significant strategic value. Additionally, upgrading a settlement to a city is impactful at this stage, as it advances toward maximizing VP efficiently. Ending the turn without building the city would be a missed opportunity to capitalize on available resources and achieve progress.

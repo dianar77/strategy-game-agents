@@ -1,0 +1,51 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [0, 1, 0, 3, 0]
+        - Settlements: [12, 21, 15]
+        - Cities: []
+        - Victory Points (VP): 3
+        - Roads Available: 2
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None): 1
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+It seems like there is only one action available currently:
+
+**Action Available**:
+- **Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)**
+
+Given this scenario:
+
+1. **Resource Analysis**: You currently have the resources `[0, 1, 0, 3, 0]` (1 wheat and 3 brick). None of these resources allow you to build a settlement, road, or upgrade to a city (as settlements require every resource except ore, roads require 1 brick + 1 wood, and cities require wheat and ore). This means we're unable to take any impactful building actions this turn.
+
+2. **Limited Action Options**: Since you have no alternative actions to ending the turn, you cannot progress directly until new resources are acquired (via dice rolls or trade on the next turn).
+
+3. **Strategic Expansion Priority**: Currently, you have 3 settlements which already unlock resource diversity on your tiles. The next steps will likely involve building roads and new settlements when resources are available. Ending the turn here is necessary to progress the game state.
+
+---
+
+### Action:
+**Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)**
+
+### Justification:
+Ending the turn is unavoidable as there are no other impactful actions that can be taken with the current game state and resources. This will allow you to advance to the next stage of the game where dice rolls or trades may provide the resources needed to take more impactful VP-maximizing actions. While it's not optimal to end too many turns without progress, this specific scenario leaves no other choice.

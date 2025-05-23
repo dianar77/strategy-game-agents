@@ -1,0 +1,33 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [1, 0, 3, 0, 1]
+        - Settlements: [7, 16]
+        - Cities: []
+        - Victory Points (VP): 3
+        - Roads Available: 9
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None): 1
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+Action: END_TURN
+Justification: Since there is only one available action (END_TURN), I must take this action despite wanting to be more strategic. With my current resources [1, 0, 3, 0, 1] (representing [Brick, Ore, Sheep, Wheat, Wood]), I don't have sufficient materials to build roads (need Brick+Wood), settlements (need Brick+Wood+Sheep+Wheat), or cities (need Ore+Wheat). The best strategy now is to end my turn and wait for new resource collection to enable more impactful actions in the next round. With settlements at positions 7 and 16, I'll hopefully collect resources on the next dice roll to execute expansion plans.

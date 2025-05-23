@@ -1,0 +1,37 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [0, 0, 0, 2, 0]
+        - Settlements: [0, 10]
+        - Cities: []
+        - Victory Points (VP): 8
+        - Roads Available: 1
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None): 1
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+Action: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+
+Justification: 
+Given the current game state, you lack sufficient resources to perform other impactful actions, such as building settlements, roads, or upgrading to cities. With resources [0, 0, 0, 2, 0], you are two sheep cards short of being able to build a settlement (even presuming you already have an unoccupied intersection available). Building additional roads also requires resources you don't currently possess (wood and brick). Therefore, the most strategic choice is to end the turn, allowing you to gather more resources in the next round and be in a better position to act on higher-priority goals, such as settlement expansion or eventual city upgrades.
+
+Avoidance of unnecessary actions has been adhered to while focusing on what brings about meaningful VP growth in future turns. Ending the turn prematurely here is a necessity due to resource constraints.

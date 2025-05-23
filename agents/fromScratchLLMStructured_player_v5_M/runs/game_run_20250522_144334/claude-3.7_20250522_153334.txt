@@ -1,0 +1,46 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [0, 2, 1, 1, 2]
+        - Settlements: [6, 22]
+        - Cities: []
+        - Victory Points (VP): 2
+        - Roads Available: 13
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_KNIGHT_CARD: 'PLAY_KNIGHT_CARD'>, value=None)
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUY_DEVELOPMENT_CARD: 'BUY_DEVELOPMENT_CARD'>, value=None)
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_KNIGHT_CARD: 'PLAY_KNIGHT_CARD'>, value=None): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUY_DEVELOPMENT_CARD: 'BUY_DEVELOPMENT_CARD'>, value=None): 7
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+I'll analyze the current game state and available actions to determine the optimal play.
+
+Action: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUY_DEVELOPMENT_CARD: 'BUY_DEVELOPMENT_CARD'>, value=None)
+
+Justification: Buying a development card is clearly the best choice among the available actions, with a heuristic score of 7 compared to just 1 for the other options. Looking at my resources [0, 2, 1, 1, 2], I have the exact combination needed for a development card (1 ore, 1 wheat, 1 sheep). While playing a knight card could be useful for moving the robber or working toward the Largest Army bonus, purchasing a new development card offers several potential benefits:
+
+1. It could be a Victory Point card (immediate hidden VP)
+2. It could be a Knight card (adding defensive capability and working toward Largest Army)
+3. It could be a progress card like Road Building, Monopoly, or Year of Plenty
+
+Since I'm early in the game with only 2 VP, investing in development cards now can provide strategic options later when I might need specific resources or advantages. The high heuristic score confirms this is the optimal choice given my current position and available actions.

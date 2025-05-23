@@ -1,0 +1,73 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [0, 1, 1, 0, 5]
+        - Settlements: []
+        - Cities: [10, 22]
+        - Victory Points (VP): 6
+        - Roads Available: 3
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('ORE', 'ORE', 'ORE', 'ORE', 'WHEAT'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('ORE', 'ORE', 'ORE', 'ORE', 'WOOD'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('ORE', 'ORE', 'ORE', 'ORE', 'SHEEP'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('ORE', 'ORE', 'ORE', 'ORE', 'BRICK'))
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('ORE', 'ORE', 'ORE', 'ORE', 'WHEAT')): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('ORE', 'ORE', 'ORE', 'ORE', 'WOOD')): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('ORE', 'ORE', 'ORE', 'ORE', 'SHEEP')): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('ORE', 'ORE', 'ORE', 'ORE', 'BRICK')): 1
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+Given the current game state and goals, let's evaluate the best action.
+
+### Analysis of the Current Game State:
+- **Resources**: [0 brick, 1 wood, 1 sheep, 0 wheat, 5 ore]. You have a substantial amount of ore but are missing essential resources to build a settlement or road (brick and wheat). Settlements require brick, wood, wheat, and sheep, while roads require brick and wood.
+- **Settlements & Cities**: No available settlements, but two cities on tiles with coordinates [10, 22]. Cities are high VP contributors but don't help with expanding for resource diversity.
+- **VP (Victory Points)**: Currently at 6.
+- **Roads Available**: 3. Expansion through road-building is critical early-game but requires brick and wood, which you lack.
+
+### Available Actions Evaluation:
+1. **END_TURN**:
+   - Ending the turn without making meaningful progress delays your game. It yields a heuristic score of 1 because it's a passive action but doesn't actively block your opponents or increase your VP potential.
+
+2. **MARITIME_TRADE (ORE for WHEAT)**:
+   - This action converts ore into wheat. Wheat is required for settlements but isn't immediately useful since you're also missing brick. Trading for wheat may help you stock resources for upgrading to cities if you already had a settlement pipeline, but that's not the case here.
+
+3. **MARITIME_TRADE (ORE for WOOD, SHEEP, or BRICK)**:
+   - Trading ore for **brick** could set up eventual road-building; however, without wood, you can’t immediately build roads.
+   - Trading ore for **wood** complements settlement building; however, without brick, a road is still incomplete and cannot directly contribute to the strategy now.
+   - Trading ore for **sheep** is not strategic at this stage because you lack both wheat and brick to use it effectively in settlement or road-building.
+
+### Optimal Action:
+The highest-impact trade right now is **ORE for BRICK**, as it positions you closer to building roads (and subsequently settlements). Roads are critical to expanding and accessing diverse resources—essential in the early-game phase.
+
+---
+
+### Action:
+`Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('ORE', 'ORE', 'ORE', 'ORE', 'BRICK'))`
+
+---
+
+### Justification:
+- **Strategic Impact**: Trading ore for brick positions you toward road-building, which is vital for early-game expansion. Roads allow you to reach new settlement locations, increasing resource diversity and setting up future upgrades to cities.
+- **Efficiency**: Since you cannot currently build anything without brick, it's the most limiting resource. This action directly addresses your missing resource requirements.
+- **VP Growth**: Expansion through roads leads to settlements, which is the most efficient way to increase VP early in the game. Focus on fulfilling your priorities in the proper sequence.

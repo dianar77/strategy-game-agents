@@ -1,0 +1,62 @@
+Prompt:
+
+You are an AI assistant helping a player make strategic decisions in a game of Catan.
+
+AVAILABLE ACTIONS:
+Action 0: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((1, -1, 0), <Color.RED: 'RED'>, None))
+Action 1: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((0, -1, 1), None, None))
+Action 2: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((-1, 0, 1), None, None))
+Action 3: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((-1, 1, 0), <Color.RED: 'RED'>, None))
+Action 4: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((0, 1, -1), <Color.RED: 'RED'>, None))
+Action 5: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((1, 0, -1), <Color.RED: 'RED'>, None))
+Action 6: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((2, -2, 0), None, None))
+Action 7: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((1, -2, 1), None, None))
+Action 8: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((0, -2, 2), None, None))
+Action 9: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((-1, -1, 2), None, None))
+Action 10: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((-2, 0, 2), None, None))
+Action 11: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((-2, 1, 1), None, None))
+Action 12: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((-2, 2, 0), None, None))
+Action 13: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((-1, 2, -1), <Color.RED: 'RED'>, None))
+Action 14: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((0, 2, -2), None, None))
+Action 15: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((1, 1, -2), None, None))
+Action 16: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((2, 0, -2), None, None))
+Action 17: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MOVE_ROBBER: 'MOVE_ROBBER'>, value=((2, -1, -1), <Color.RED: 'RED'>, None))
+
+Which action should I choose? Analyze each option and recommend the best action by returning the action index (e.g., "Action 2").
+Provide your final recommendation at the end in the format: "RECOMMENDED ACTION: Action X"
+
+
+========================================
+
+Response:
+# Catan Robber Movement Analysis
+
+I need to analyze where to move the robber to maximize my strategic advantage. Let's examine the options:
+
+## Understanding the Actions
+Each action represents moving the robber to a specific hex coordinate, with some allowing me to steal from Red player.
+
+### Actions That Allow Stealing from Red:
+- Actions 0, 3, 4, 5, 13, and 17: Move robber and steal from Red
+
+### Actions Without Stealing:
+- All other actions: Just move the robber without stealing
+
+## Strategic Analysis
+
+Moving the robber to disrupt an opponent while also stealing a resource is clearly advantageous. Among the options that allow stealing from Red:
+
+1. I should target hexes with:
+   - High-probability number tokens (6 or 8)
+   - Multiple Red settlements/cities
+   - Resources Red needs most
+
+2. I should avoid:
+   - Hexes that would heavily disrupt my own resource generation
+   - Hexes that are unlikely to produce (low probability numbers)
+
+Without knowing the exact board configuration, the best strategy is to choose an action that allows me to steal from Red, as this provides immediate benefit.
+
+Among actions 0, 3, 4, 5, 13, and 17, I'd recommend Action 4 - placing the robber at (0,1,-1) and stealing from Red - as central hexes tend to have better numbers and are more likely to disrupt important resource production.
+
+## RECOMMENDED ACTION: Action 4

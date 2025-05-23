@@ -1,0 +1,44 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [1, 0, 1, 1, 1]
+        - Settlements: [5, 3]
+        - Cities: []
+        - Victory Points (VP): 2
+        - Roads Available: 10
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUY_DEVELOPMENT_CARD: 'BUY_DEVELOPMENT_CARD'>, value=None)
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUY_DEVELOPMENT_CARD: 'BUY_DEVELOPMENT_CARD'>, value=None): 7
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+I'll analyze the game state and available actions to make the optimal choice for the Catanatron Minigame.
+
+Action: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUY_DEVELOPMENT_CARD: 'BUY_DEVELOPMENT_CARD'>, value=None)
+
+Justification: Buying a development card is clearly the best option here with a heuristic score of 7 versus 1 for ending the turn. Looking at my resources [1, 0, 1, 1, 1], I have exactly what's needed for a development card (1 grain, 1 ore, and 1 wool). Development cards provide several strategic advantages:
+
+1. They can yield immediate Victory Points (VP cards)
+2. They can provide Knights which help with blocking opponents and building toward the Largest Army bonus (2 VP)
+3. They offer special action cards (Monopoly, Road Building, Year of Plenty) which can significantly boost my position later
+
+Since I already have 2 settlements (2 VP) but limited resources for immediate expansion, a development card represents the most efficient use of my current resources. Ending the turn would waste this opportunity and delay progress toward victory.

@@ -1,0 +1,52 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Here is the current game state:
+        <catanatron.game.Game object at 0x7f1784423450>
+
+        Here are the actions you can choose from:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('SHEEP', 'SHEEP', 'SHEEP', 'SHEEP', 'BRICK'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('SHEEP', 'SHEEP', 'SHEEP', 'SHEEP', 'ORE'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('SHEEP', 'SHEEP', 'SHEEP', 'SHEEP', 'WHEAT'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('SHEEP', 'SHEEP', 'SHEEP', 'SHEEP', 'WOOD'))
+
+        Please provide the best action to take based on maximizing Victory Points (VP) and achieving strategic goals.
+        
+
+========================================
+
+Response:
+In the current scenario, we are presented with the option to perform a maritime trade or to end the turn. The goal of maximizing Victory Points (VP) means prioritizing actions that get us closer to building settlements, cities, or roads, acquiring Development Cards, or achieving other objectives like Largest Army or Longest Road.
+
+### Analysis:
+1. **Maritime Trades**:
+   - You can exchange 4 sheep for one resource. The available trades are:
+     - 4 Sheep → 1 Brick
+     - 4 Sheep → 1 Ore
+     - 4 Sheep → 1 Wheat
+     - 4 Sheep → 1 Wood
+
+   To decide the best trade, we'll consider your ability to build settlements (require Brick/Wood), upgrade settlements to cities (need Wheat/Ore), and buy Development Cards (need Wheat/Ore/Sheep). Since we do not know your specific resource inventory, strategic priorities might look like this:
+   
+   - **Brick and Wood**: Settlements require these resources alongside Wheat and Sheep. If you lack these, trading for Brick/Wood could help you secure a new settlement.
+   - **Wheat and Ore**: Cities require Wheat and Ore. Trading for these resources would help transform settlements into cities, yielding VP faster.
+   - **Development Cards**: Important for Longest Army and special VP cards. Requires Wheat/Ore/Sheep.
+
+2. **Ending the Turn**:
+   - If initiating a maritime trade does not advance your VP or strategic goals (perhaps if you already have sufficient resources or no immediate goals can be fulfilled), ending your turn would be optimal.
+
+---
+
+### Recommendation:
+Without knowing specific inventory or board goals, the following general priorities can guide the decision:
+- If you're close to building a **settlement**, trade for **Brick** or **Wood**.
+- If you're close to building a **city**, trade for **Wheat** or **Ore**.
+- If buying a **Development Card** is within reach, trade for **Wheat** or **Ore**.
+- If maritime trade does not immediately align with any of your goals, **end the turn**.
+
+### Probable Best Action:
+Assuming city-building or Development Card acquisition is a priority, trading **4 Sheep → 1 Wheat** or **4 Sheep → 1 Ore** is likely the best move. If settlement-building is more immediate, then **4 Sheep → 1 Brick** or **4 Sheep → 1 Wood** might be better.
+
+If none of these trades move you closer to your strategic goals, choose:
+**Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>)**.

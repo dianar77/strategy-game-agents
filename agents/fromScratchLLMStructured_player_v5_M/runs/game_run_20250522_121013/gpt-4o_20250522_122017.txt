@@ -1,0 +1,42 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [0, 1, 1, 1, 2]
+        - Settlements: [10, 22]
+        - Cities: []
+        - Victory Points (VP): 2
+        - Roads Available: 10
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_KNIGHT_CARD: 'PLAY_KNIGHT_CARD'>, value=None)
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUY_DEVELOPMENT_CARD: 'BUY_DEVELOPMENT_CARD'>, value=None)
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_KNIGHT_CARD: 'PLAY_KNIGHT_CARD'>, value=None): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUY_DEVELOPMENT_CARD: 'BUY_DEVELOPMENT_CARD'>, value=None): 7
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+### Action: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUY_DEVELOPMENT_CARD: 'BUY_DEVELOPMENT_CARD'>, value=None)
+
+### Justification:
+- **Resource Utilization**: While building settlements and roads is a crucial early priority, your resources [0, 1, 1, 1, 2] (Brick, Lumber, Ore, Wheat, Sheep) are insufficient for settlement construction (requires Brick, Lumber, Wheat, and Sheep). Thus, buying a development card is the best use of available resources.
+- **Heuristic Scores**: Buying a development card has the highest strategic score (7), indicating its potential for maximizing VP and improving late-game opportunities. Development cards can offer VP or useful abilities (e.g., year of plenty, monopoly, road building), which help accomplish your goals indirectly.
+- **Avoiding Low-Impact Actions**: Playing a knight card prematurely (score: 1) has little strategic benefit without a clear blocking target, and ending the turn without taking action does not advance your position.
+- **VP Optimization**: Development cards may include Victory Points or tools for managing resources and blocking opponents. Purchasing more cards gives flexibility for long-term VP growth and counters stronger opponents during mid-game transitions.

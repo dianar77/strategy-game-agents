@@ -1,0 +1,43 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [0, 1, 0, 1, 0]
+        - Settlements: [0, 10]
+        - Cities: []
+        - Victory Points (VP): 7
+        - Roads Available: 5
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_KNIGHT_CARD: 'PLAY_KNIGHT_CARD'>, value=None)
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_KNIGHT_CARD: 'PLAY_KNIGHT_CARD'>, value=None): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None): 1
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+### Action: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+
+### Justification:
+Neither of the available actions significantly advances your Victory Points (VP) or directly aligns with your priorities—expanding settlements/roads early or upgrading to cities. 
+
+- The **PLAY_KNIGHT_CARD** action has a heuristic score of 1, indicating that it offers no immediate strategic advantage, such as blocking an opponent's expansion or securing resource diversity. Additionally, you currently lack resources to act upon what might follow playing the knight (e.g., building settlements or upgrading cities), rendering this action low-impact at this moment.
+  
+- While **END_TURN** also has a heuristic score of 1, it passes the turn for a better opportunity in the next round where you might collect more resources. This sets you up for potentially fruitful actions like building settlements, roads, or upgrading settlements to cities, depending on resource rolls.
+
+Given the current game state and priorities, **END_TURN** is the best choice to avoid wasting resources or effort on a low-impact knight play. It prepares you for more impactful decisions on future turns.

@@ -1,0 +1,33 @@
+Prompt:
+
+            You are an expert Catan player helping choose where to place the robber.
+            
+            Information about opponents:
+            [{'color': 'RED', 'vp': 2, 'cards': 5}]
+            
+            Information about possible robber placement options:
+            [{'coord': '((0, 0, 0), None, None)', 'error': "'CatanMap' object has no attribute 'number_to_tile'"}, {'coord': "((1, -1, 0), <Color.RED: 'RED'>, None)", 'error': "'CatanMap' object has no attribute 'number_to_tile'"}, {'coord': "((0, -1, 1), <Color.RED: 'RED'>, None)", 'error': "'CatanMap' object has no attribute 'number_to_tile'"}, {'coord': '((-1, 0, 1), None, None)', 'error': "'CatanMap' object has no attribute 'number_to_tile'"}, {'coord': '((-1, 1, 0), None, None)', 'error': "'CatanMap' object has no attribute 'number_to_tile'"}, {'coord': "((0, 1, -1), <Color.RED: 'RED'>, None)", 'error': "'CatanMap' object has no attribute 'number_to_tile'"}, {'coord': '((1, 0, -1), None, None)', 'error': "'CatanMap' object has no attribute 'number_to_tile'"}, {'coord': '((2, -2, 0), None, None)', 'error': "'CatanMap' object has no attribute 'number_to_tile'"}, {'coord': '((0, -2, 2), None, None)', 'error': "'CatanMap' object has no attribute 'number_to_tile'"}, {'coord': '((-1, -1, 2), None, None)', 'error': "'CatanMap' object has no attribute 'number_to_tile'"}, {'coord': '((-2, 0, 2), None, None)', 'error': "'CatanMap' object has no attribute 'number_to_tile'"}, {'coord': '((-2, 1, 1), None, None)', 'error': "'CatanMap' object has no attribute 'number_to_tile'"}, {'coord': '((-2, 2, 0), None, None)', 'error': "'CatanMap' object has no attribute 'number_to_tile'"}, {'coord': '((-1, 2, -1), None, None)', 'error': "'CatanMap' object has no attribute 'number_to_tile'"}, {'coord': "((0, 2, -2), <Color.RED: 'RED'>, None)", 'error': "'CatanMap' object has no attribute 'number_to_tile'"}, {'coord': "((1, 1, -2), <Color.RED: 'RED'>, None)", 'error': "'CatanMap' object has no attribute 'number_to_tile'"}, {'coord': '((2, 0, -2), None, None)', 'error': "'CatanMap' object has no attribute 'number_to_tile'"}, {'coord': '((2, -1, -1), None, None)', 'error': "'CatanMap' object has no attribute 'number_to_tile'"}]
+            
+            Choose the best robber placement strategy considering:
+            1. Target the player with the most victory points
+            2. Target a player with many resource cards to steal from
+            3. Block an important resource tile (brick or wood are usually valuable early)
+            4. Block tiles with high probability numbers (6 or 8)
+            
+            Return only the coordinate of your chosen placement (e.g., '(0, 0, 0)').
+            
+
+========================================
+
+Response:
+Based on the given criteria and the available options where RED is the only opponent and their tiles are specified, the best placement would target RED given that they have both the highest victory points and many resource cards. Out of the possible placements, the following tiles belong to RED:
+
+1. `((1, -1, 0), <Color.RED: 'RED'>, None)`
+2. `((0, -1, 1), <Color.RED: 'RED'>, None)`
+3. `((0, 1, -1), <Color.RED: 'RED'>, None)`
+4. `((0, 2, -2), <Color.RED: 'RED'>, None)`
+5. `((1, 1, -2), <Color.RED: 'RED'>, None)`
+
+As I am unable to see the actual resource tiles (e.g., brick, wood) or number values, I would prioritize placing the robber on a tile that RED owns while focusing on limiting their resource generation. Without additional context or number-to-tile information, the first RED-owned tile listed appears to be sufficient:
+
+**`(1, -1, 0)`**

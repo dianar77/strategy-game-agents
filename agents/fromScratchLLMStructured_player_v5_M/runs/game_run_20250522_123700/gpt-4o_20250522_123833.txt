@@ -1,0 +1,41 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [0, 3, 1, 0, 2]
+        - Settlements: [0, 10]
+        - Cities: []
+        - Victory Points (VP): 5
+        - Roads Available: 10
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_KNIGHT_CARD: 'PLAY_KNIGHT_CARD'>, value=None)
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_KNIGHT_CARD: 'PLAY_KNIGHT_CARD'>, value=None): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None): 1
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+### Action: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_KNIGHT_CARD: 'PLAY_KNIGHT_CARD'>, value=None)
+
+### Justification:
+- **Strategic VP Growth:** Playing a Knight Card is currently the best option, as it allows us to interact with the board by potentially blocking an opponent's key resource tile or securing favorable positioning for future resource gain. This action aligns with Priority 3 (blocking opponent progress).
+- **Avoiding Redundancy:** Ending the turn without taking a decisive action would be a low-impact and repetitive move, failing to utilize available opportunities effectively. It does not contribute to VP growth or strategic positioning.
+- **Future Objectives:** Playing a Knight Card moves us closer to the "Largest Army" bonus, which can contribute to VP growth later in the game.
+
+While both actions are scored equally (heuristic score = 1), playing the Knight Card offers a tangible benefit, whereas ending the turn provides none. Therefore, playing the Knight Card is the optimal choice.

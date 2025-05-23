@@ -1,0 +1,51 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [2, 1, 0, 1, 1]
+        - Settlements: []
+        - Cities: [12, 10]
+        - Victory Points (VP): 4
+        - Roads Available: 5
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.ROLL: 'ROLL'>, value=None)
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.ROLL: 'ROLL'>, value=None): 1
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+### Action: `Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.ROLL: 'ROLL'>, value=None)`
+
+### Justification:
+1. **Resource Accumulation is Crucial Early Game:**
+   - Currently, you have an insufficient resource pool ([2, 1, 0, 1, 1]) to perform high-impact actions (e.g., building settlements or upgrading settlements to cities).
+   - Rolling is necessary to gather random resources and evaluate future strategic options based on the dice outcome.
+
+2. **Expanding for Resource Diversity:**
+   - Since you have no settlements on the board yet, it's critical to roll and collect resources to eventually build settlements. Settlements yield diverse resource income, giving you greater flexibility for future moves.
+
+3. **Following Minigame Priorities:**
+   - Building roads and settlements is a core goal early on, but these require more resources than you currently have. For example:
+     - A settlement typically requires 1 Brick, 1 Wood, 1 Wheat, and 1 Sheep, but you're lacking Brick and Sheep right now.
+     - Roads typically require Brick and Wood, and you're missing Brick.
+   - Accumulating resources through a roll might provide the missing components required for construction.
+  
+4. **No Alternative High-Impact Actions Available:**
+   - With the current heuristic score of 1 for rolling and no other actionable options, rolling to proceed with the game and build your resource base is the only optimal move at this stage.
+
+By rolling now, you'll gain the resources necessary to make future impactful decisions aligned with the victory point optimization priorities.

@@ -1,0 +1,39 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [0, 2, 0, 0, 0]
+        - Settlements: [4, 0]
+        - Cities: []
+        - Victory Points (VP): 3
+        - Roads Available: 13
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_KNIGHT_CARD: 'PLAY_KNIGHT_CARD'>, value=None)
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_KNIGHT_CARD: 'PLAY_KNIGHT_CARD'>, value=None): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None): 1
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+**Action:** Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+
+**Justification:**  
+Currently, you do not have sufficient resources to take a meaningful action such as building roads, settlements, or upgrading to cities. The only other action available is to play a knight card, which does not provide immediate VP gain or resource benefits in this context and has a low heuristic score of 1, just like ending the turn. However, playing a knight card without strategic intent (e.g., blocking an opponent or gaining Largest Army) is wasteful.  
+
+Ending the turn allows for resource accumulation, which is necessary to advance development priorities (such as expanding settlements and upgrading to cities), aligning with the goal of maximizing VP efficiently. Until you acquire resources needed for impactful actions, ending the turn is the optimal choice.

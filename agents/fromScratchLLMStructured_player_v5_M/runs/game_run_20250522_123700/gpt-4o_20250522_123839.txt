@@ -1,0 +1,39 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [0, 3, 1, 0, 3]
+        - Settlements: [0, 10]
+        - Cities: []
+        - Victory Points (VP): 5
+        - Roads Available: 10
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None): 1
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+**Action:** None (Take no immediate action)
+
+**Justification:**  
+The only available action provided is `END_TURN`, which carries a low heuristic score of 1 and does not improve the VP situation or progress priorities. Since the game state indicates insufficient resources to build a settlement or road (minimum needs are usually [1 wood, 1 brick] for roads or [1 wood, 1 brick, 1 wheat, and 1 sheep] for settlements), there are currently no productive actions to execute.
+
+Ending the turn here might seem necessary due to the lack of build options, but it is recommended to reanalyze the board situation before automatically passing the turn. Ideally, trading resources (if trading is available) or planning to secure resources on the next player action should be considered.
+
+Make sure to explore external factors like trading, potential dice rolls, or board strategy to unlock more impactful actions in the future.

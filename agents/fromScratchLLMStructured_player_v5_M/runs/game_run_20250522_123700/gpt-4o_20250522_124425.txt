@@ -1,0 +1,47 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [1, 1, 1, 0, 1]
+        - Settlements: [0, 10]
+        - Cities: []
+        - Victory Points (VP): 9
+        - Roads Available: 0
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.ROLL: 'ROLL'>, value=None)
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.ROLL: 'ROLL'>, value=None): 1
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+### Action: `Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.ROLL: 'ROLL'>, value=None)`
+
+### Justification:
+Given the current game state and the available action, rolling the dice is the only viable step toward progressing the game and gathering additional resources. Here's the reasoning broken down by priority:
+
+1. **Maximizing Victory Points (VP):**
+   - With only 1 resource of each type (except for no ore), you currently lack the necessary resources to build anything significant (such as a settlement or a city). Rolling the dice is required to gain new resources to enable actions that generate VP.
+   
+2. **Avoiding Stalemate and Low-Impact Actions:**
+   - The heuristic score of rolling the dice is 1, which indicates it's a low-risk mandatory action to move forward.
+   - Ending the turn unnecessarily or taking no action is not an option.
+   
+3. **Strategic Outlook:**
+   - Rolling the dice will provide the opportunity to collect resources, potentially gaining the diversity needed to take impactful actions in subsequent turns, such as building settlements (priority 1) or upgrading to cities (priority 2).
+
+Although the strategic impact of this action is minimal in the immediate moment, it sets you up for future opportunities and aligns with the overarching strategy of efficiently increasing your VP count.

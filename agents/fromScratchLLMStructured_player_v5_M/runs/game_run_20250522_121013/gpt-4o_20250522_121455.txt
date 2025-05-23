@@ -1,0 +1,46 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [2, 0, 0, 3, 0]
+        - Settlements: []
+        - Cities: [12, 10]
+        - Victory Points (VP): 4
+        - Roads Available: 2
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None): 1
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+It seems you've presented an incomplete set of actions, with only the "END_TURN" action available. In the current context of the game state, you have limited resources ([2, 0, 0, 3, 0]) and no settlements yet, but you already have 2 cities and 4 Victory Points.
+
+**Review of the situation:**
+- You cannot build a new settlement because you lack the required resources (1 Brick, 1 Wood, 1 Wheat, and 1 Sheep).
+- Upgrading settlements to cities is not possible because cities have already replaced your initial settlements, and further city upgrades are not an option.
+- Only the "END_TURN" action is available with a low heuristic score—indicating it's not impactful, but potentially necessary because no better actions are presented.
+
+### Action: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+
+### Justification:
+1. **Resource Constraints**: Your current resources are insufficient for taking any meaningful action. You cannot build settlements, roads, or upgrade cities at this time.
+2. **Lack of Alternative Actions**: The absence of actions besides "END_TURN" leaves no other viable options in the current turn.
+3. **Economic Reset for Future Turns**: Ending the turn will enable resource production on the opponents' rolls, which may potentially improve your resource diversity and allow you to advance towards building settlements or roads in the next turn.
+
+If more actions become available in the future, such as building settlements or roads, taking those actions should be prioritized based on their strategic impact. For now, you must conclude your turn to move the game forward efficiently.

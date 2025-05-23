@@ -1,0 +1,58 @@
+Prompt:
+Current Game State:
+Your color: Color.BLUE
+Your victory points: 3
+Your resources: {'WOOD': 0, 'BRICK': 1, 'SHEEP': 3, 'WHEAT': 0, 'ORE': 5}
+Your buildings: {'settlements': 1, 'cities': 1, 'roads': 3}
+
+Opponents:
+- Color.RED: 6 victory points, Buildings: {'settlements': 0, 'cities': 2, 'roads': 9}
+
+Available Actions (5):
+Action 0: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+Action 1: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('ORE', 'ORE', 'ORE', 'ORE', 'WHEAT'))
+Action 2: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('ORE', 'ORE', 'ORE', 'ORE', 'SHEEP'))
+Action 3: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('ORE', 'ORE', 'ORE', 'ORE', 'WOOD'))
+Action 4: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('ORE', 'ORE', 'ORE', 'ORE', 'BRICK'))
+
+Analyze each available action and recommend the best one. Consider your current resources, victory points, and building opportunities. Aim to maximize your chances of winning by securing key resources and building strategically.
+
+Specify your choice by indicating 'RECOMMENDED ACTION: Action X' where X is the action index.
+
+========================================
+
+Response:
+# Game State Analysis
+
+Let me analyze the current situation:
+
+- You have 3 victory points vs. opponent's 6 points (you're behind)
+- Your resources: 1 BRICK, 3 SHEEP, 0 WOOD, 0 WHEAT, 5 ORE
+- Your buildings: 1 settlement, 1 city, 3 roads
+- Available actions are to end turn or perform various maritime trades
+
+## Resource Analysis
+You have an abundance of ORE (5) and sufficient SHEEP (3), but you're lacking WOOD and WHEAT completely, with only 1 BRICK.
+
+## Maritime Trade Options
+The available maritime trades all involve trading 4 ORE for one of:
+- WHEAT (Action 1)
+- SHEEP (Action 2) - not useful since you already have 3
+- WOOD (Action 3)
+- BRICK (Action 4) - less useful since you already have 1
+
+## Strategic Considerations
+Looking at your resources, you're currently unable to build any major structures:
+- Settlement needs WOOD, BRICK, WHEAT, SHEEP (missing WOOD and WHEAT)
+- City needs 3 ORE and 2 WHEAT (missing WHEAT)
+- Development Card needs ORE, WHEAT, SHEEP (missing WHEAT)
+- Road needs WOOD and BRICK (missing WOOD)
+
+Getting WHEAT would give you the most immediate options, as you could then potentially build a development card (with 1 ORE, 1 WHEAT, 1 SHEEP).
+
+## Recommendation
+Since you're behind in victory points, you need to capitalize on your ORE surplus to get resources that enable building.
+
+RECOMMENDED ACTION: Action 1 (Trade 4 ORE for 1 WHEAT)
+
+This will allow you to potentially purchase a development card on your next turn (if you still have the other resources), which could give you a victory point, a knight, or other advantages.

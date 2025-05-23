@@ -1,0 +1,42 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [0, 1, 2, 0, 2]
+        - Settlements: [10, 22]
+        - Cities: []
+        - Victory Points (VP): 2
+        - Roads Available: 10
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.ROLL: 'ROLL'>, value=None)
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.ROLL: 'ROLL'>, value=None): 1
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+Based on the current game state and priorities, the optimal action is as follows:
+
+**Action:** `Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.ROLL: 'ROLL'>, value=None)`
+
+**Justification:**
+- Rolling the dice is the only action currently available, as indicated by the game state. It is essential to roll the dice to collect resources and set up for future impactful actions, such as building roads, settlements, or upgrading to cities.
+- Building settlements and upgrading to cities require resources we currently lack (e.g., we need more wood, brick, and wheat), so rolling is critical to gather diverse resources for subsequent actions.
+- Ending the turn prematurely would not be optimal since accumulating resources aligns with our ultimate goal of maximizing VP efficiently.
+- This action’s heuristic score is 1, indicating that while it may not directly increase VP or block opponents at this step, it is the necessary and logical foundational step to enable more valuable actions on subsequent turns to grow our VP efficiently.
+
+Thus, the roll action is the most strategic move at this point in the game.

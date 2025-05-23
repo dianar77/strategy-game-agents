@@ -1,0 +1,39 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [0, 2, 1, 0, 0]
+        - Settlements: [4, 0]
+        - Cities: []
+        - Victory Points (VP): 2
+        - Roads Available: 13
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.ROLL: 'ROLL'>, value=None)
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.ROLL: 'ROLL'>, value=None): 1
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+### Action: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.ROLL: 'ROLL'>, value=None)
+
+### Justification:
+- **Resource Generation is Crucial:** With a current resource pool of [0, 2, 1, 0, 0] (representing brick, wood, sheep, wheat, and ore respectively), there are not enough resources to take impactful build actions such as settlements or roads. Rolling is necessary to generate resources for future moves.
+- **Heuristic Alignment:** The available action of rolling has a heuristic score of 1, indicating it is the best option currently, even if it is foundational rather than directly impactful. This aligns with early-game strategies to expand and build.
+- **Foundation First:** Building settlements and roads early is the primary priority for resource diversity and subsequent growth. Future expansion and upgrades depend on having sufficient resources, which can only be achieved by rolling.
+
+By rolling, resources can be gained, enabling more impactful actions in the subsequent turns. This is the optimal move given the current state and priorities.

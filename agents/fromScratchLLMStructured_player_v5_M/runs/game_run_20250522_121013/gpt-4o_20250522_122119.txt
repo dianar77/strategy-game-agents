@@ -1,0 +1,43 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [0, 0, 0, 1, 0]
+        - Settlements: [22]
+        - Cities: [10]
+        - Victory Points (VP): 5
+        - Roads Available: 9
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_KNIGHT_CARD: 'PLAY_KNIGHT_CARD'>, value=None)
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_KNIGHT_CARD: 'PLAY_KNIGHT_CARD'>, value=None): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None): 1
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+Based on the given game state and available actions:
+
+### Action: `Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_KNIGHT_CARD: 'PLAY_KNIGHT_CARD'>, value=None)`
+
+### Justification:
+1. **VP Optimization**: Playing a Knight Card can help you progress toward the "Largest Army" bonus, which provides 2 additional Victory Points if you achieve it. This aligns with maximizing VP and prepares you for future advantages.
+2. **Strategic Blocking**: Using the Knight Card allows you to move the Robber strategically, which can block an opponent's key resource production. This inhibits their growth, indirectly benefiting you.
+3. **Turn Efficiency**: Ending the turn without taking any impactful action (given your limited resources) is a low-priority move. Playing the Knight Card offers more strategic value than simply ending the turn.
+
+In this scenario, playing the Knight Card is the optimal choice, as it helps advance your board position toward VP growth while adding a strategic component by disrupting opponents. Ending the turn adds no immediate benefit or progress given your current state.

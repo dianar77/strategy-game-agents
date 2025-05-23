@@ -1,0 +1,60 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [0, 4, 2, 0, 1]
+        - Settlements: [22]
+        - Cities: [10]
+        - Victory Points (VP): 5
+        - Roads Available: 9
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('BRICK', 'BRICK', 'BRICK', 'BRICK', 'SHEEP'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('BRICK', 'BRICK', 'BRICK', 'BRICK', 'WHEAT'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('BRICK', 'BRICK', 'BRICK', 'BRICK', 'WOOD'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('BRICK', 'BRICK', 'BRICK', 'BRICK', 'ORE'))
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('BRICK', 'BRICK', 'BRICK', 'BRICK', 'SHEEP')): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('BRICK', 'BRICK', 'BRICK', 'BRICK', 'WHEAT')): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('BRICK', 'BRICK', 'BRICK', 'BRICK', 'WOOD')): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('BRICK', 'BRICK', 'BRICK', 'BRICK', 'ORE')): 1
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+### Action: **Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)**
+        
+### Justification:
+Based on the current game state and the provided heuristic scores, no meaningful progression toward resource diversity, settlements, or cities can be made at the moment. Here's the reasoning:
+
+1. **Resources Analysis**:
+   - Current resources: `[0 BRICK, 4 SHEEP, 2 WHEAT, 0 WOOD, 1 ORE]`
+   - To build a settlement, the required resources are **1 BRICK, 1 WOOD, 1 SHEEP, 1 WHEAT**, but you lack both BRICK and WOOD. Maritime trades could potentially exchange 4 SHEEP for BRICK or WOOD, but even after one trade, you would still not have enough resources to make any meaningful progress toward building a settlement.
+   - You also do not have sufficient resources to upgrade an existing settlement into a city (requires 2 WHEAT and 3 ORE).
+
+2. **Maritime Trades**:
+   - Trading 4 SHEEP (via Maritime Trade) for BRICK, WOOD, WHEAT, or ORE would deplete your high resource (SHEEP) without immediately enabling a next-step action (e.g., building a settlement or city). This would waste resources without significant progress toward gaining VP.
+
+3. **Available Roads**:
+   - While you have 9 roads available, you lack the resources (BRICK and WOOD) required to build a road to further expand. Therefore, road-building is not an option this turn.
+
+4. **Action Heuristic**:
+   - All heuristic scores are equal (1) because none of the given actions would directly help optimize VP growth during this turn. Ending the turn preserves your current resources while aiming for a better resource roll in the next turn, when more impactful actions may be available.
+
+### Strategic Conclusion:
+Given the lack of actionable opportunities to improve VP based on the most efficient priorities, the optimal move is to **end the turn** and wait for better resource acquisition during the next roll.

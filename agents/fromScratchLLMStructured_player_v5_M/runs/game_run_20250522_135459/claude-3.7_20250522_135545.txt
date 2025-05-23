@@ -1,0 +1,50 @@
+Prompt:
+Current Game State:
+Your color: Color.BLUE
+Your victory points: 2
+Your resources: {'WOOD': 0, 'BRICK': 0, 'SHEEP': 1, 'WHEAT': 0, 'ORE': 0}
+Your buildings: {'settlements': 2, 'cities': 0, 'roads': 1}
+
+Opponents:
+- Color.RED: 2 victory points, Buildings: {'settlements': 2, 'cities': 0, 'roads': 2}
+
+Available Actions (2):
+Action 0: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(30, 31))
+Action 1: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_ROAD: 'BUILD_ROAD'>, value=(29, 30))
+
+Analyze each available action and recommend the best one. Consider your current resources, victory points, and building opportunities. Aim to maximize your chances of winning by securing key resources and building strategically.
+
+Specify your choice by indicating 'RECOMMENDED ACTION: Action X' where X is the action index.
+
+========================================
+
+Response:
+# Game State Analysis
+
+Looking at your current state:
+- You have 2 victory points (likely from your 2 settlements)
+- Your only resource is 1 sheep
+- You have built 2 settlements, 0 cities, and 1 road
+- Your opponent has a similar position with 2 settlements but has 2 roads
+
+## Action Analysis
+
+Both available actions are BUILD_ROAD options:
+- Action 0: Build a road between vertices 30 and 31
+- Action 1: Build a road between vertices 29 and 30
+
+To build a road, you would typically need 1 wood and 1 brick, but since you only have 1 sheep and no other resources, it appears the game might be in a special phase where road building is allowed without the normal resource requirements (likely the initial setup phase).
+
+Without knowing the full board layout including resource tiles, ports, and existing building positions, I'll need to make a recommendation based on connectivity principles:
+
+- Roads are crucial for expanding your settlement network
+- Action 1 connects vertices 29 and 30, which could open up a new area for expansion
+- Action 0 connects vertices 30 and 31, which could do the same
+
+Without knowing the exact board configuration, both roads might be equally valuable. However, the ordering suggests Action 0 might lead to better building opportunities or resources.
+
+## Recommendation
+
+RECOMMENDED ACTION: Action 0
+
+Building a road between vertices 30 and 31 will help you expand your network and potentially reach new valuable building spots in future turns.

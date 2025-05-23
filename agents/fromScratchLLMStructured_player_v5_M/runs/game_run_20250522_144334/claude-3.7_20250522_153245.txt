@@ -1,0 +1,48 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [0, 2, 1, 1, 1]
+        - Settlements: [6, 22]
+        - Cities: []
+        - Victory Points (VP): 2
+        - Roads Available: 13
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUY_DEVELOPMENT_CARD: 'BUY_DEVELOPMENT_CARD'>, value=None)
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUY_DEVELOPMENT_CARD: 'BUY_DEVELOPMENT_CARD'>, value=None): 7
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+I'll analyze the current game state and available actions to determine the best strategic move.
+
+Action: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUY_DEVELOPMENT_CARD: 'BUY_DEVELOPMENT_CARD'>, value=None)
+
+Justification: Buying a development card is clearly the optimal choice here for several reasons:
+1. The heuristic score strongly favors this action (7 vs 1 for ending turn)
+2. We have exactly the right resources for a development card (1 ore, 1 sheep, 1 wheat)
+3. Development cards provide multiple strategic advantages:
+   - Potential immediate VP cards to advance our score
+   - Knight cards can disrupt opponents and contribute to Largest Army (2 VP)
+   - Monopoly/Year of Plenty/Road Building cards provide powerful resource advantages
+4. Our current board position is established with 2 settlements, so investing in development cards can diversify our strategy
+5. Ending our turn without using our resources would waste an opportunity to improve our position
+
+The only other option is to end our turn without using our resources, which provides no strategic benefit. By purchasing a development card now, we maintain momentum and create options for future turns.

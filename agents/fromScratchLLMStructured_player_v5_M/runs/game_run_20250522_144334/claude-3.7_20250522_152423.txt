@@ -1,0 +1,41 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [0, 1, 2, 0, 1]
+        - Settlements: [3, 5, 21]
+        - Cities: []
+        - Victory Points (VP): 5
+        - Roads Available: 1
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None): 1
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+I'll analyze the current game state and determine the optimal action.
+
+Action: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+
+Justification: Based on the current game state, ending my turn is the only available action. With resources [0, 1, 2, 0, 1] (representing [Brick, Wood, Sheep, Wheat, Ore]), I don't have enough materials to build anything meaningful. I currently need:
+- Settlement: 1 brick, 1 wood, 1 sheep, 1 wheat (missing brick and wheat)
+- Road: 1 brick, 1 wood (missing brick)
+- City upgrade: 2 wheat, 3 ore (missing wheat and more ore)
+
+Since I have 3 settlements already providing resource diversity and a decent VP foundation (5 points), ending my turn now to collect more resources on the next roll is the strategically correct move. With my next resource collection, I'll likely be able to make progress toward either a city upgrade (needing wheat and more ore) or expanding with new roads and settlements.

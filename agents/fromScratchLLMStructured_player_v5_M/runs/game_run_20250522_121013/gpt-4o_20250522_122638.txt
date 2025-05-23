@@ -1,0 +1,43 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [0, 3, 1, 1, 1]
+        - Settlements: [23, 16]
+        - Cities: []
+        - Victory Points (VP): 2
+        - Roads Available: 13
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUY_DEVELOPMENT_CARD: 'BUY_DEVELOPMENT_CARD'>, value=None)
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUY_DEVELOPMENT_CARD: 'BUY_DEVELOPMENT_CARD'>, value=None): 7
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+### Action: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUY_DEVELOPMENT_CARD: 'BUY_DEVELOPMENT_CARD'>, value=None)
+
+### Justification:  
+While building settlements, roads, or upgrading settlements to cities are higher-priority actions for maximizing VP, they are unavailable in this instance due to insufficient resources. Given the current game state:  
+
+- **Resource Analysis**: The resources you possess ([0, 3, 1, 1, 1]) allow for purchasing a development card (typically costing 1 ore, 1 wheat, and 1 sheep).  
+- **Development Card Utility**: Buying a development card introduces the potential for future benefits, such as VP cards (e.g., "Victory Point"), resources (e.g., "Monopoly" or "Year of Plenty"), or military advantage (e.g., "Knight"). These benefits can accelerate progress toward settlements, cities, or strategic blocking of opponents.  
+- **Limited Alternative Value**: Ending the turn has minimal impact and ranks significantly lower in strategic value with a heuristic score of only 1. Taking no impactful action now would slow progress toward victory.  
+
+Thus, purchasing a development card maximizes your immediate potential for strategic growth and aligns with the priority of efficiently increasing VP gains.

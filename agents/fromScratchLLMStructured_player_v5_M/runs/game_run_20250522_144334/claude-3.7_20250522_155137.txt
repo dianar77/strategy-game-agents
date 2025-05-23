@@ -1,0 +1,53 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [0, 0, 2, 0, 0]
+        - Settlements: [5, 3]
+        - Cities: []
+        - Victory Points (VP): 2
+        - Roads Available: 10
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_KNIGHT_CARD: 'PLAY_KNIGHT_CARD'>, value=None)
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_KNIGHT_CARD: 'PLAY_KNIGHT_CARD'>, value=None): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None): 1
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+# Action Analysis
+
+Looking at the current game state:
+- I have 2 Grain resources
+- No other resources available
+- 5 Settlement and 3 City pieces left to build
+- Currently at 2 Victory Points
+- No immediate building options available
+
+## Action: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_KNIGHT_CARD: 'PLAY_KNIGHT_CARD'>, value=None)
+
+## Justification:
+Playing the Knight card is the better option because:
+1) It allows me to move the robber, potentially blocking a key hex for my opponent
+2) It contributes toward building the "Largest Army" special card (worth 2 VP)
+3) I can steal a resource from an opponent, which could provide immediate value
+4) Since I cannot build anything with just 2 Grain, ending my turn without taking action would waste an opportunity
+5) Playing development cards like Knight doesn't consume my actual turn, so I can still trade or build if I get useful resources from the steal
+
+Ending my turn without taking any action would be a wasted opportunity when I have a Knight card that can potentially improve my position.

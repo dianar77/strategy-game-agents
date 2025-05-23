@@ -1,0 +1,45 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [0, 1, 2, 2, 0]
+        - Settlements: [0, 10]
+        - Cities: []
+        - Victory Points (VP): 8
+        - Roads Available: 2
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None): 1
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+Based on the provided game state and priorities, there seems to be a contradiction in the description of available actions and the directive to avoid repetitive or low-impact actions, like ending turns unnecessarily. The *only* explicitly available action provided is `Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)`, with a heuristic score of 1. Therefore, I'd proceed cautiously:
+
+---
+
+### Action:
+**Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)**
+
+---
+
+### Justification:
+- No other actions (like building settlements, upgrading to cities, or building roads) are listed as available.
+- Ending the turn is a low-impact move based on the heuristic score of 1, but it is the only move explicitly permitted.
+- Current resources `[0, 1, 2, 2, 0]` (Brick, Lumber, Ore, Wheat, Sheep) are insufficient to efficiently build a settlement (cost: `[1, 1, 0, 1, 1]`) or upgrade settlements to cities (cost: `[0, 0, 3, 2, 0]`), aligning with the lack of listed actions for immediate VP growth.
+- Ending the turn will allow resource generation on the next dice roll, potentially improving your ability to execute impactful VP-oriented strategies (e.g., building settlements or upgrading to cities) in a subsequent turn.

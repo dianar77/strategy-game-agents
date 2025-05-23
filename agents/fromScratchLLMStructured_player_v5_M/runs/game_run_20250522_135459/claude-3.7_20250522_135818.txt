@@ -1,0 +1,55 @@
+Prompt:
+Current Game State:
+Your color: Color.BLUE
+Your victory points: 2
+Your resources: {'WOOD': 0, 'BRICK': 0, 'SHEEP': 0, 'WHEAT': 2, 'ORE': 3}
+Your buildings: {'settlements': 2, 'cities': 0, 'roads': 3}
+
+Opponents:
+- Color.RED: 4 victory points, Buildings: {'settlements': 0, 'cities': 2, 'roads': 3}
+
+Available Actions (3):
+Action 0: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+Action 1: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_CITY: 'BUILD_CITY'>, value=0)
+Action 2: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_CITY: 'BUILD_CITY'>, value=30)
+
+Analyze each available action and recommend the best one. Consider your current resources, victory points, and building opportunities. Aim to maximize your chances of winning by securing key resources and building strategically.
+
+Specify your choice by indicating 'RECOMMENDED ACTION: Action X' where X is the action index.
+
+========================================
+
+Response:
+# Game State Analysis
+
+Let me analyze the current situation:
+
+- You have 2 victory points (from your 2 settlements)
+- Your opponent has 4 victory points (from 2 cities)
+- You have 2 wheat and 3 ore, which is exactly enough for building a city (costs 2 wheat + 3 ore)
+- You have two options to upgrade one of your settlements to a city
+
+## Action Analysis:
+
+**Action 0: End Turn**
+- This would waste your resources and opportunity to gain victory points
+- Your opponent is ahead with 4 points, so you need to catch up
+
+**Action 1: Build City at location 0**
+- Would upgrade one of your settlements to a city
+- Gains you +1 victory point (cities are worth 2 points vs 1 for settlements)
+- Will double your resource production at that location
+
+**Action 2: Build City at location 30**
+- Same benefits as Action 1, just at a different settlement location
+- Without knowing the board layout, it's hard to determine which location is better
+
+Since both city-building options use the same resources and provide the same immediate benefits, either Action 1 or 2 is preferable to ending your turn. The optimal choice between them depends on which settlement is on better resource tiles, but that information isn't provided.
+
+## Recommendation
+
+Since building a city increases your victory points and resource production, and you have exactly the required resources, you should definitely build a city. Without information about the resource tiles at locations 0 and 30, I'll recommend:
+
+RECOMMENDED ACTION: Action 1
+
+Note: If you have information about which settlement is on better resource tiles, you may want to choose accordingly between Action 1 and Action 2.

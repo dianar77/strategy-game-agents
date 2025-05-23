@@ -1,0 +1,60 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [2, 0, 0, 0, 1]
+        - Settlements: []
+        - Cities: [12, 10]
+        - Victory Points (VP): 4
+        - Roads Available: 0
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.ROLL: 'ROLL'>, value=None)
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.ROLL: 'ROLL'>, value=None): 1
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+### Current Assessment:
+1. **Resources Breakdown**:
+   - You currently have [2, 0, 0, 0, 1], likely meaning resources correspond to **wood, brick, wheat, sheep, ore** (in standard Catan order).
+   - With this setup, you lack the resources necessary for both building roads or settlements, which usually require **wood & brick** for roads and **wood, brick, wheat, sheep** for settlements.
+   - You also do not have enough ore or wheat to upgrade to a city (usually requires **3 ore + 2 wheat**).
+
+2. **VP Maximization**:
+   - Your current VP is at **4**, boosted by **2 cities**, but you lack settlements and roads to expand further and diversify your resource production.
+
+3. **Action Evaluation**:
+   - The only available action is `<ActionType.ROLL: 'ROLL'>`. Rolling the dice is necessary to generate resources since no other options are available at this stage.
+   - Heuristic score of "1" for this action suggests it's necessary for now, but not inherently impactful at this moment.
+
+---
+
+### Chosen Action:
+**Action: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.ROLL: 'ROLL'>, value=None)**
+
+---
+
+### Justification:
+1. **Resource Generation**: Rolling the dice is the necessary next step to collect resources you currently lack. Without additional resources, you cannot take meaningful actions to expand or upgrade.
+
+2. **Priorities Alignment**:
+   - **Settlement Expansion**: Rolling is the critical step to obtaining the missing resources (brick and sheep) required to build a settlement. Diversifying resources will become possible after this.
+   - **City Upgrades**: While cities provide higher VP, you currently cannot upgrade without ore and wheat. Rolling increases the chance of obtaining these.
+   - **Opponent Blocking**: You cannot block opponents effectively without roads or settlements, both requiring additional resources.
+
+3. **No Other Options Available**: Ending the turn or taking no action would be inefficient and counterintuitive to VP maximization.

@@ -1,0 +1,36 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [0, 2, 0, 1, 2]
+        - Settlements: [4, 0]
+        - Cities: []
+        - Victory Points (VP): 3
+        - Roads Available: 13
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None): 1
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+Action: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+
+Justification: Based on the current game state and available resources, you lack the necessary materials to take other impactful actions, such as building roads, settlements, or upgrading settlements to cities. The resources [0, 2, 0, 1, 2] (where the presumed breakdown is Brick, Lumber, Ore, Grain, and Wool) are insufficient to construct a settlement (requiring [1 Brick, 1 Lumber, 1 Grain, 1 Wool]), upgrade to a city (requiring [3 Ore, 2 Grain]), or even build a road (requiring [1 Brick, 1 Lumber]). 
+
+Given no other choices and no other actions available in this turn, the optimal action is to end the turn and wait for future resource rolls, trades, or opportunities to take impactful actions. Ending the turn now avoids unnecessary delays and allows the game to progress.

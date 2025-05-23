@@ -1,0 +1,48 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [0, 2, 1, 0, 0]
+        - Settlements: [0, 10]
+        - Cities: []
+        - Victory Points (VP): 9
+        - Roads Available: 0
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None): 1
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+Given your game state and the priorities outlined, here's the analysis:
+
+**Game State Observations:**
+1. **Resources:** [0, 2, 1, 0, 0] – You currently lack several key resources (e.g., brick, wood, and wheat), making building settlements difficult without trading or resource collection.
+2. **Settlements:** [0, 10] – You have reached the limit of settlements and cannot build more. Upgrading settlements into cities is the next logical step for VP.
+3. **Cities:** [] – Upgrading settlements to cities would efficiently boost your VP by +1 for each upgrade.
+4. **Roads Available:** 0 – With no roads available, you cannot expand territory for additional resource diversity or settlement placement.
+
+Given that the heuristic score for the **END_TURN** action is low (1), and there are no impactful actions available due to resource constraints, ending the turn might be the only option here.
+
+---
+
+**Chosen Action:**
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+
+**Justification:**
+You currently lack sufficient resources and roads to take impactful actions (e.g., building or upgrading). By ending your turn, you can aim to collect more resources in the next round, strategically positioning yourself to upgrade settlements to cities for higher VP gains or to build roads/routes when resources become more diverse. Ending the turn now avoids wasting time with repetitive actions and positions you for better progress in future rounds.

@@ -1,0 +1,53 @@
+Prompt:
+Current Game State:
+Your color: Color.BLUE
+Your victory points: 2
+Your resources: {'WOOD': 1, 'BRICK': 0, 'SHEEP': 3, 'WHEAT': 5, 'ORE': 0}
+Your buildings: {'settlements': 2, 'cities': 0, 'roads': 2}
+
+Opponents:
+- Color.RED: 2 victory points, Buildings: {'settlements': 2, 'cities': 0, 'roads': 4}
+
+Strategic Considerations:
+- Early Game: Focus on expanding by building roads and settlements.
+- Prioritize securing BRICK and WOOD resources for expansion.
+
+Available Actions (5):
+Action 0: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+Action 1: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WHEAT', 'WHEAT', 'WHEAT', 'WHEAT', 'WOOD'))
+Action 2: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WHEAT', 'WHEAT', 'WHEAT', 'WHEAT', 'BRICK'))
+Action 3: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WHEAT', 'WHEAT', 'WHEAT', 'WHEAT', 'SHEEP'))
+Action 4: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WHEAT', 'WHEAT', 'WHEAT', 'WHEAT', 'ORE'))
+
+Analyze each available action and recommend the best one. Consider your current resources, victory points, and building opportunities. Aim to maximize your chances of winning by securing key resources and building strategically.
+
+Specify your choice by indicating 'RECOMMENDED ACTION: Action X' where X is the action index.
+
+========================================
+
+Response:
+# Game State Analysis
+
+Looking at your current position:
+- You have 2 victory points (2 settlements)
+- You have plenty of WHEAT (5) and SHEEP (3), but only 1 WOOD and no BRICK or ORE
+- You can't build settlements or roads without BRICK
+- You're in the early game where expansion is critical
+
+## Action Analysis
+
+Action 0: End your turn without making any moves. This doesn't improve your position.
+
+Actions 1-4: Maritime trades that exchange 4 WHEAT for another resource:
+- Action 1: Trade for WOOD - You already have 1 WOOD, but need BRICK more urgently
+- Action 2: Trade for BRICK - This would give you 1 BRICK, which combined with your existing WOOD would allow you to build a road
+- Action 3: Trade for SHEEP - You already have 3 SHEEP, so this isn't a priority
+- Action 4: Trade for ORE - Not immediately useful since you need BRICK and WOOD first for expansion
+
+## Strategic Recommendation
+
+Since your priority is expansion and you need BRICK for both roads and settlements, getting BRICK is most valuable. The 4:1 trade ratio is expensive, but you have excess WHEAT to spare, and BRICK is essential for your strategy.
+
+RECOMMENDED ACTION: Action 2 (Trade 4 WHEAT for 1 BRICK)
+
+This will allow you to build a road on your next turn (using your 1 WOOD and the new BRICK), continuing your expansion strategy while still maintaining 1 WHEAT and your other resources.

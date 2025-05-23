@@ -1,0 +1,47 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [0, 1, 2, 0, 2]
+        - Settlements: [4, 0]
+        - Cities: []
+        - Victory Points (VP): 2
+        - Roads Available: 13
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.ROLL: 'ROLL'>, value=None)
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.ROLL: 'ROLL'>, value=None): 1
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+### Action: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.ROLL: 'ROLL'>, value=None)
+
+### Justification:
+Currently, the only available action in this turn is to **ROLL**. Rolling is a necessary step to generate resources, which is critical to achieving your priorities of building settlements, roads, and later upgrading to cities.
+
+#### Key Considerations:
+1. **Resources are Limited (Current: [0, 1, 2, 0, 2]):**
+   - You currently have two Wheat (2), two Ore (2), and one Sheep (1), but no Brick (0) or Wood (0). Rolling can help you acquire additional resources to balance your inventory, enabling the construction of roads (requiring Brick and Wood) or settlements (requiring Brick, Wood, Wheat, and Sheep).
+
+2. **Action Heuristic Score:**  
+   - The action of rolling has a heuristic score of 1, indicating that it is the next logical move to progress the game.
+
+3. **No Other Actions Available:**  
+   - Since no other valid, impactful actions are present right now, rolling is the required step to proceed in preparation for building settlements and roads, as per Priority 1.
+
+Moving forward, after the roll, analyze the resource income and adapt accordingly toward achieving a settlement or road build.

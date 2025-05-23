@@ -1,0 +1,42 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [0, 2, 0, 0, 1]
+        - Settlements: []
+        - Cities: [12, 10]
+        - Victory Points (VP): 4
+        - Roads Available: 7
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None): 1
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+The current game state indicates that we have limited resources at the moment ([0, 2, 0, 0, 1]), meaning we cannot afford to build roads, settlements, or upgrade settlements to cities right now. Additionally, the available action is to end the turn, which provides no immediate development but is currently the only option.
+
+### Chosen Action
+**Action:** `Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)`
+
+### Justification:
+- **Resource Limitation:** With only 2 sheep (2nd resource type) and 1 brick (5th resource type), the resources are insufficient to pursue any impactful development action. Building a settlement requires at least 1 lumber, 1 brick, 1 wheat, and 1 sheep, and none of these thresholds are met. Similarly, upgrading a city or building roads is not feasible at this moment.
+- **Strategic Pause:** Ending the turn allows you to collect more resources based on your settlement placements when the dice are rolled. This opens the possibility for impactful actions in subsequent turns.
+- **No Alternatives:** Ending the turn is the only action available based on the information provided. There's no reason to delay this.
+
+Although "ending turn" is a low-impact action, it is the only viable choice in this game state. Future turns will focus on resource accumulation and pursuing higher VP growth actions, such as building more settlements to expand resource diversity.

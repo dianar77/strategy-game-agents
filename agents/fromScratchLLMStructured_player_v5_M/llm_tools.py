@@ -8,6 +8,7 @@ from langchain_core.rate_limiters import InMemoryRateLimiter
 import time
 import httpx  # Ensure httpx is imported to catch HTTPStatusError
 from langchain_aws import ChatBedrockConverse
+from base_llm import MistralLLM, BaseLLM, AnthropicLLM, AzureOpenAILLM
 
 
 
@@ -16,12 +17,20 @@ class LLM:
         # Initialize the LLM with the desired model and parameters
         # For example, using OpenAI's GPT-3.5-turbo
 
-        self.llm = AzureChatOpenAI(
-            model="gpt-4o-mini",
-            azure_endpoint="https://gpt-amayuelas.openai.azure.com/",
-            api_version = "2024-12-01-preview"
-        )
-        self.model_name = "gpt-4o-mini"
+        # self.llm = AzureChatOpenAI(
+        #     model="gpt-4o-mini",
+        #     azure_endpoint="https://gpt-amayuelas.openai.azure.com/",
+        #     api_version = "2024-12-01-preview"
+        # )
+        # self.model_name = "gpt-4o-mini"
+
+        #self.llm = AzureOpenAILLM(model_name="gpt-4o")
+        #self.llm = MistralLLM(model_name="mistral-large-latest")
+        self.llm = AnthropicLLM()
+
+        self.model_name = self.llm.model
+
+
         self.save_dir = f"agents/fromScratchLLMStructured_player_v5_M/runs/game_run_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
         # Set the environment variable to disable tracing
         os.environ["LANGCHAIN_TRACING_V2"] = "false"
@@ -31,13 +40,14 @@ class LLM:
         # Use the LLM to generate a response based on the prompt
 
         # Create a message
-        msg = HumanMessage(content=prompt)
+        #msg = HumanMessage(content=prompt)
 
         # Message list
-        messages = [msg]
+        #messages = [msg]
 
         # Invoke the model with a list of messages 
-        response = self.llm.invoke(messages).content
+        #response = self.llm.invoke(messages).content
+        response = self.llm.query(prompt)
 
         log_path = os.path.join(self.save_dir, f"{self.model_name}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt")
         if not os.path.exists(self.save_dir):

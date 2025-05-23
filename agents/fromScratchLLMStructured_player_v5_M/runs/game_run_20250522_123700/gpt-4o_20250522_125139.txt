@@ -1,0 +1,49 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [0, 2, 2, 0, 1]
+        - Settlements: [4, 0]
+        - Cities: []
+        - Victory Points (VP): 2
+        - Roads Available: 13
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None): 1
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+Based on the game state, it appears that you currently have limited resources: [0, 2, 2, 0, 1], corresponding to brick, lumber, ore, grain, and wool. You currently cannot afford to build a settlement, city, or other items, nor do you have specific actions available that can drive progress. The only action available right now is to end your turn.
+
+### Chosen Action:
+**Action: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)**
+
+### Justification:
+1. **Lack of Sufficient Resources**: 
+   - To build a settlement, you need [1 brick, 1 lumber, 1 grain, 1 wool] but are missing brick and grain.
+   - To upgrade a settlement to a city, you need [3 ore, 2 grain], but you only have 2 ore and 1 grain.
+   - No other actions are provided within your current game state, leaving "END TURN" as the sole option.
+
+2. **Efficient Resource Collection**:
+   - Ending your turn will allow the game to progress and production rolls to occur, potentially yielding the resources you need to pursue higher-priority actions like building settlements or roads.
+
+3. **No Strategic Alternatives**:
+   - Blocking opponents is not available, and no impactful actions can be taken this turn based on your resource constraints.
+
+While ending turns without impact should generally be avoided, in some cases (like now), it is the only available action to set yourself up for future opportunities.

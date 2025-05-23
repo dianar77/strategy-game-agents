@@ -1,0 +1,45 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [1, 0, 2, 1, 1]
+        - Settlements: [7, 16]
+        - Cities: []
+        - Victory Points (VP): 3
+        - Roads Available: 11
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUY_DEVELOPMENT_CARD: 'BUY_DEVELOPMENT_CARD'>, value=None)
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUY_DEVELOPMENT_CARD: 'BUY_DEVELOPMENT_CARD'>, value=None): 7
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+I'll analyze the current game state and available actions to make the optimal choice.
+
+Action: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUY_DEVELOPMENT_CARD: 'BUY_DEVELOPMENT_CARD'>, value=None)
+
+Justification: Looking at the current game state, I have resources [1, 0, 2, 1, 1] which represents 1 brick, 0 wood, 2 wheat, 1 sheep, and 1 ore. This is the exact combination needed to purchase a development card (1 sheep, 1 wheat, 1 ore). The heuristic score strongly suggests buying a development card (score of 7) over ending my turn (score of 1).
+
+Development cards provide several strategic advantages:
+1. They might give me Victory Point cards that immediately increase my VP count
+2. Knight cards can help block opponents and contribute toward the "Largest Army" bonus (2 VP)
+3. Road Building, Year of Plenty, or Monopoly cards provide powerful abilities for future turns
+
+Since I can't build roads, settlements, or cities with my current resources, and I have the exact resources needed for a development card, this is clearly the optimal move rather than ending my turn without taking any action.

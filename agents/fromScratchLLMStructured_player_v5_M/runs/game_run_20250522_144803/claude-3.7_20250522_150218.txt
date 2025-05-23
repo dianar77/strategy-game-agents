@@ -1,0 +1,63 @@
+Prompt:
+Current Game State:
+Your color: Color.BLUE
+Your victory points: 2
+Your resources: {'WOOD': 1, 'BRICK': 0, 'SHEEP': 0, 'WHEAT': 0, 'ORE': 3}
+Your buildings: {'settlements': 2, 'cities': 0, 'roads': 8}
+
+Opponents:
+- Color.RED: 8 victory points, Buildings: {'settlements': 2, 'cities': 2, 'roads': 15}
+
+Strategic Considerations:
+- Early Game: Focus on expanding by building roads and settlements.
+- Prioritize securing BRICK and WOOD resources for expansion.
+
+Available Actions (5):
+Action 0: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+Action 1: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('ORE', 'ORE', 'ORE', None, 'WHEAT'))
+Action 2: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('ORE', 'ORE', 'ORE', None, 'SHEEP'))
+Action 3: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('ORE', 'ORE', 'ORE', None, 'WOOD'))
+Action 4: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('ORE', 'ORE', 'ORE', None, 'BRICK'))
+
+Analyze each available action and recommend the best one. Consider your current resources, victory points, and building opportunities. Aim to maximize your chances of winning by securing key resources and building strategically.
+
+Specify your choice by indicating 'RECOMMENDED ACTION: Action X' where X is the action index.
+
+========================================
+
+Response:
+# Strategic Analysis for Current Game State
+
+## Current Situation Assessment
+- You're significantly behind with 2 victory points versus RED's 8 points
+- You have 3 ORE and 1 WOOD, which doesn't enable immediate building
+- You've built 2 settlements and 8 roads, but no cities
+- No settlement or road building actions are available this turn
+
+## Action Analysis
+
+**Action 0: END_TURN**
+- Ends your turn without making any progress
+- Doesn't improve your resource position
+
+**Actions 1-4: MARITIME_TRADE options**
+- All trade 3 ORE for 1 of another resource
+- This is a 3:1 maritime trade ratio (usually standard without harbor bonuses)
+
+**Trading considerations:**
+- Action 4 (get BRICK): BRICK + your existing WOOD would enable road building on a future turn
+- Action 3 (get WOOD): A second WOOD wouldn't help immediately without BRICK
+- Actions 1-2 (get WHEAT or SHEEP): These don't combine with your current resources for immediate building
+
+## Strategic Recommendation
+
+RECOMMENDED ACTION: Action 4
+
+Reasoning:
+1. Trading 3 ORE for 1 BRICK positions you to build roads on your next turn if you collect another WOOD
+2. Roads are critical for expansion and connecting to new resource hexes
+3. In the early game phase, expansion through roads and settlements is particularly important
+4. You're significantly behind in points, so you need to focus on expansion opportunities
+5. BRICK is notably scarce in your current resources and essential for expansion
+
+With this trade, you'll be just 1 WOOD away from building a road, which is a step toward catching up to your opponent through territorial expansion.

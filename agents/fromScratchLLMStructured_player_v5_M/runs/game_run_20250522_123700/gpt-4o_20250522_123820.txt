@@ -1,0 +1,53 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [0, 1, 0, 1, 1]
+        - Settlements: [0, 10]
+        - Cities: []
+        - Victory Points (VP): 4
+        - Roads Available: 10
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None): 1
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+### Action: **Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)**
+
+### Justification:
+Given the current game state and available options, we are limited to ending the turn as no other action is presented. Here's the reasoning behind this choice:
+
+1. **Insufficient Resources**:
+   - The resources [0, 1, 0, 1, 1] indicate that we cannot currently afford to build a settlement, road, or upgrade a settlement to a city. For instance:
+     - Settlements typically cost [1 Wood, 1 Brick, 1 Wheat, 1 Sheep].
+     - Roads typically cost [1 Wood, 1 Brick].
+     - Cities cost [2 Wheat, 3 Ore].
+   - None of these actions are currently viable due to resource constraints.
+
+2. **No Alternatives**:
+   - The only available listed action is **END_TURN**. Without other actionable options, the most efficient step is to wrap up this turn and wait for the next resource roll.
+
+3. **Strategic Efficiency**:
+   - Ending the turn allows us to:
+     - Accumulate more resources on the next turn through dice rolls.
+     - Reassess opportunities to build roads or settlements in line with our strategic priorities.
+   - Prolonging the turn without viable actions would be unproductive and result in wasted gameplay time.
+
+Although "END_TURN" is considered a low-impact action, it is the only permissible choice under the current constraints. Future turns should aim to prioritize building roads and settlements to diversify resources and increase VP.

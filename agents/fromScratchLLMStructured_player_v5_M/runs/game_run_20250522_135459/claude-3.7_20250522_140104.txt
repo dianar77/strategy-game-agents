@@ -1,0 +1,49 @@
+Prompt:
+Current Game State:
+Your color: Color.BLUE
+Your victory points: 3
+Your resources: {'WOOD': 3, 'BRICK': 0, 'SHEEP': 5, 'WHEAT': 0, 'ORE': 0}
+Your buildings: {'settlements': 1, 'cities': 1, 'roads': 4}
+
+Opponents:
+- Color.RED: 7 victory points, Buildings: {'settlements': 1, 'cities': 2, 'roads': 12}
+
+Available Actions (5):
+Action 0: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+Action 1: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('SHEEP', 'SHEEP', 'SHEEP', 'SHEEP', 'WOOD'))
+Action 2: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('SHEEP', 'SHEEP', 'SHEEP', 'SHEEP', 'ORE'))
+Action 3: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('SHEEP', 'SHEEP', 'SHEEP', 'SHEEP', 'BRICK'))
+Action 4: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('SHEEP', 'SHEEP', 'SHEEP', 'SHEEP', 'WHEAT'))
+
+Analyze each available action and recommend the best one. Consider your current resources, victory points, and building opportunities. Aim to maximize your chances of winning by securing key resources and building strategically.
+
+Specify your choice by indicating 'RECOMMENDED ACTION: Action X' where X is the action index.
+
+========================================
+
+Response:
+# Game State Analysis
+
+Looking at the current state:
+- You have 3 victory points
+- Your opponent has 7 victory points (they're ahead by 4 points)
+- You have 3 WOOD and 5 SHEEP, but no BRICK, WHEAT, or ORE
+- You've built 1 settlement, 1 city, and 4 roads
+
+## Action Analysis
+
+Your available actions are:
+- Action 0: End your turn
+- Actions 1-4: Maritime trades exchanging 4 SHEEP for either WOOD, ORE, BRICK, or WHEAT
+
+Given that you already have 3 WOOD, trading for more WOOD (Action 1) isn't optimal. Instead, you need resources you don't have:
+
+- BRICK would allow you to build more roads and potentially settlements
+- WHEAT is needed for cities (2 WHEAT + 3 ORE) and settlements (1 WHEAT + 1 SHEEP + 1 WOOD + 1 BRICK)
+- ORE is needed for cities and development cards
+
+Since you're 4 points behind your opponent, you need to focus on building. You still have settlements available, which require BRICK and WHEAT (among other resources you already have).
+
+Given your current situation, trading for BRICK seems most strategic as it's necessary for expansion with new settlements and roads.
+
+**RECOMMENDED ACTION: Action 3** (Trade 4 SHEEP for 1 BRICK)

@@ -1,0 +1,41 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [3, 3, 0, 0, 3]
+        - Settlements: []
+        - Cities: [12, 10]
+        - Victory Points (VP): 4
+        - Roads Available: 0
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None): 1
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+### Action: **Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)**  
+### Justification:  
+Given the current game state, the only available action is to end the turn. Although ending turns with no immediate impact is typically avoided in strategic decision-making, no other options for VP progression, resource acquisitions, or blocking opponents are currently accessible.   
+
+Key considerations:  
+- **Resources**: Your current resources [3, 3, 0, 0, 3] (likely Brick: 3, Wood: 3, Sheep: 0, Wheat: 0, Ore: 3) are insufficient to build a settlement (needs 1 Brick, 1 Wood, 1 Wheat, 1 Sheep) or upgrade to a city (needs 2 Wheat, 3 Ore).  
+- **Settlements**: With no settlements currently built, no new resources can be added to further options. Expanding settlements and roads will only be possible once you acquire Wheat and Sheep.  
+- **Roads Available**: Currently at 0. Expanding through settlements or roads is not possible without more resources and available roads.  
+
+Although the heuristic score for ending the turn is only 1, lack of other viable actions renders this the only logical choice. Ending your turn now will allow you to gather more resources in the next round and revisit impactful actions for progressing toward VP maximization.

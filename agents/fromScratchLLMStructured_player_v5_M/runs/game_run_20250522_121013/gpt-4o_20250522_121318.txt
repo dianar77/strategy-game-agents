@@ -1,0 +1,45 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [0, 1, 0, 1, 1]
+        - Settlements: []
+        - Cities: [12, 10]
+        - Victory Points (VP): 4
+        - Roads Available: 5
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None): 1
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+Based on the provided game state, it seems there are no immediate actionable options listed apart from ending the turn. Ending the turn is generally a low-impact action, but if there are no feasible moves due to resource constraints or unavailability of higher-impact actions (such as building roads, settlements, or cities), ending the turn might be necessary to replenish resources and regroup for the next turn.
+
+### Evaluation:
+1. **Build settlements and expand**: This requires sufficient resources, specifically lumber and brick (typically 1+1 of each for a road and more for settlements). Since resources currently include [0, 1, 0, 1, 1], with no lumber or brick available, building settlements or roads is not possible.
+2. **Upgrade settlements to cities**: Upgrading a settlement to a city generally requires significant resources such as ore and wheat in larger quantities, which are not available.
+3. **Block opponent progress**: Blocking opponents usually involves strategic road placement or other actions that interfere with their progress. Currently, there are insufficient resources or options to execute such strategies.
+
+With no active options to make progress, ending the turn becomes the only available choice.
+
+### Response:
+**Action**: `Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)`
+
+**Justification**: 
+Ending the turn is necessary due to resource constraints and lack of actionable moves. This will allow you to gather more resources on your next turn or pursue trades (if available later), enabling higher-impact actions that align with game priorities. While ending turns repeatedly is not ideal, it is the only option currently, as resource diversity cannot be achieved under the current state.

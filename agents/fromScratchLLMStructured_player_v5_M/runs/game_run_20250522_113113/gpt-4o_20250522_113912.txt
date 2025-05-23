@@ -1,0 +1,43 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Here is the current game state:
+        <catanatron.game.Game object at 0x7f1784423450>
+
+        Here are the actions you can choose from:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('BRICK', 'BRICK', 'BRICK', 'BRICK', 'WHEAT'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('BRICK', 'BRICK', 'BRICK', 'BRICK', 'ORE'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('BRICK', 'BRICK', 'BRICK', 'BRICK', 'SHEEP'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('BRICK', 'BRICK', 'BRICK', 'BRICK', 'WOOD'))
+
+        Please provide the best action to take based on maximizing Victory Points (VP) and achieving strategic goals.
+        
+
+========================================
+
+Response:
+Based on the given information, these are the considerations:
+
+1. **Available Actions:** You can either end your turn or perform maritime trades, exchanging four bricks for one of the following resources: wheat, ore, sheep, or wood.
+2. **Evaluation Criteria:** The goal is to maximize **Victory Points (VP)** while proceeding strategically towards your long-term goals like building settlements, cities, roads, or purchasing development cards.
+
+### Key Decision Factors:
+- **Resource Needs:** What do you currently lack to build settlements, cities, or roads, or to purchase development cards?
+  - *Wheat* is usually critical for building settlements or upgrading to cities.
+  - *Ore* is essential for cities (3 Ore + 2 Wheat needed).
+  - *Sheep* is frequently needed for settlements or development cards along with wheat and wood.
+  - *Wood* and *Brick* are critical for roads and settlements.
+- **Strategic Steps**:
+  - If you can soon build a settlement or city, prioritize trading for resources to support that.
+  - If you're aiming for development cards, trade for wheat, sheep, or ore based on your current inventory.
+
+### Suggested Action:
+Without more detailed state information (e.g., your resource inventory, board position, and game goals), **trading 4 Brick for Wheat** is the most balanced strategic move. Wheat is versatile and frequently a bottleneck resource for both settlements and cities, making it the safest choice to further your progression.
+
+### Therefore, the suggested action:
+```python
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('BRICK', 'BRICK', 'BRICK', 'BRICK', 'WHEAT'))
+``` 
+
+If you have specific context (e.g., you're closer to completing a city, settlement, or road), adjust trades accordingly!

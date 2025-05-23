@@ -1,0 +1,48 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [0, 2, 1, 0, 1]
+        - Settlements: [22]
+        - Cities: [10]
+        - Victory Points (VP): 5
+        - Roads Available: 8
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_KNIGHT_CARD: 'PLAY_KNIGHT_CARD'>, value=None)
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_KNIGHT_CARD: 'PLAY_KNIGHT_CARD'>, value=None): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None): 1
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+Based on the provided game scenario:
+
+### Action:
+Action: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+
+### Justification:
+The current heuristic scores for both available actions are tied at 1, meaning neither action immediately advances your position in a significant way. However:
+
+1. You lack sufficient resources to build settlements, roads, or upgrade settlements to cities at this time. Therefore, no immediate expansion or development is possible this turn.
+
+2. Playing the knight card without a clear strategic purpose (e.g., blocking an opponent’s high-producing resource or advancing toward the Largest Army bonus) does not provide immediate impact. Deploying the knight card prematurely would waste a potentially pivotal resource later.
+
+3. Ending the turn allows resource generation on opponents' rolls, enabling you to collect needed resources for the next turn, where more impactful decisions (like settlement or road building) can be executed.
+
+Instead of taking low-utility actions now, it is optimal to bide your time and strategically prepare for resourceful plays in subsequent turns.

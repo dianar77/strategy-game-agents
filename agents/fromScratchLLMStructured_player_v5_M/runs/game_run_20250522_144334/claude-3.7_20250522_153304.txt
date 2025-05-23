@@ -1,0 +1,55 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [0, 2, 0, 0, 0]
+        - Settlements: [6, 22]
+        - Cities: []
+        - Victory Points (VP): 2
+        - Roads Available: 13
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_MONOPOLY: 'PLAY_MONOPOLY'>, value='WOOD')
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_MONOPOLY: 'PLAY_MONOPOLY'>, value='BRICK')
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_MONOPOLY: 'PLAY_MONOPOLY'>, value='SHEEP')
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_MONOPOLY: 'PLAY_MONOPOLY'>, value='WHEAT')
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_MONOPOLY: 'PLAY_MONOPOLY'>, value='ORE')
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_KNIGHT_CARD: 'PLAY_KNIGHT_CARD'>, value=None)
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.ROLL: 'ROLL'>, value=None)
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_MONOPOLY: 'PLAY_MONOPOLY'>, value='WOOD'): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_MONOPOLY: 'PLAY_MONOPOLY'>, value='BRICK'): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_MONOPOLY: 'PLAY_MONOPOLY'>, value='SHEEP'): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_MONOPOLY: 'PLAY_MONOPOLY'>, value='WHEAT'): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_MONOPOLY: 'PLAY_MONOPOLY'>, value='ORE'): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_KNIGHT_CARD: 'PLAY_KNIGHT_CARD'>, value=None): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.ROLL: 'ROLL'>, value=None): 1
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+I'll analyze the available actions to determine the best strategic move.
+
+Action: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_MONOPOLY: 'PLAY_MONOPOLY'>, value='BRICK')
+
+Justification: The Monopoly card is a powerful development card that allows me to collect all of a specific resource type from all other players. Looking at my current resources [0, 2, 0, 0, 0], I have 2 BRICK but lack WOOD, which are the essential resources for building roads and settlements. Since early game priority is expanding with settlements and roads, I should target BRICK with the Monopoly card because:
+
+1. I already have some BRICK, so getting more would allow me to potentially build multiple roads or a settlement (if I also get WOOD from a future roll)
+2. BRICK is typically one of the most constrained resources in Catan and critical for early expansion
+3. By monopolizing BRICK, I'm not only gaining resources for myself but also hindering opponents' ability to expand, effectively blocking their progress
+4. Since the heuristic scores are all equal, choosing BRICK aligns best with the early-game priority of building settlements and roads
+
+This move sets me up for future expansion while potentially disrupting my opponents' development strategies.

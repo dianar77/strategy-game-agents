@@ -1,0 +1,50 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [0, 3, 2, 0, 3]
+        - Settlements: [0, 10]
+        - Cities: []
+        - Victory Points (VP): 5
+        - Roads Available: 10
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_KNIGHT_CARD: 'PLAY_KNIGHT_CARD'>, value=None)
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_KNIGHT_CARD: 'PLAY_KNIGHT_CARD'>, value=None): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None): 1
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+Based on your game state and the lack of impactful options available in this turn:
+
+### Action: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+
+### Justification:
+1. **Limited Resources for Expansion:**
+   - Current resources `[0, 3, 2, 0, 3]` are insufficient to build a settlement (requires [1 Brick, 1 Wood, 1 Wheat, 1 Sheep]) or a road (requires [1 Brick, 1 Wood]) to fulfill priority #1 (expansion through building settlements/roads).
+   - For priority #2 (upgrading settlements to cities), you're also lacking the required resources (3 Wheat, 2 Ore).
+
+2. **Low Impact of Playing a Knight Card:**
+   - Playing the Knight Card does not directly aid in resource collection or expansion this turn since no specific opponent block or strategic benefit from moving the robber was mentioned.
+   - With a heuristic score of `1`, it is currently a low-impact action.
+
+3. **Strategic Resource Accumulation:**
+   - Ending the turn allows you to proceed to the next resource collection phase, potentially acquiring the resources necessary to expand (build a settlement or roads) or upgrade settlements to cities in the next turn.
+
+In the absence of meaningful resource usage or impactful strategic moves, saving resources and moving to the next turn is the best option for maximizing VP growth efficiently.

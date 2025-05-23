@@ -1,0 +1,52 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [3, 0, 0, 2, 0]
+        - Settlements: []
+        - Cities: [12, 10]
+        - Victory Points (VP): 4
+        - Roads Available: 9
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None): 1
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+Given the current game state and the single Action provided:
+
+### Analysis:
+1. **Resources**: [3, 0, 0, 2, 0] (3 wood, 0 brick, 0 sheep, 2 wheat, 0 ore)
+   - This resource spread limits my ability to immediately build a settlement (1 wood, 1 brick, 1 sheep, 1 wheat required) or upgrade to a city (2 wheat, 3 ore required).
+   - The current resources are not sufficient to take a meaningful action like building settlements, upgrading to cities, or roads.
+   
+2. **Settlements and Cities**: No additional settlements available to build, and only two cities are contributing points at this time.
+3. **Strategies**:
+   - Priority 1: Expand resource diversity by building settlements and roads. However, the lack of brick makes it impossible for now.
+   - Priority 2: Upgrade settlements to cities, but insufficient ore and barely enough wheat make this not immediately feasible.
+   - Priority 3: Blocking opponent progress is unavailable as there are no presented actions for it.
+
+4. **Available Action**: The only action option is ending the turn.
+
+### Optimal Decision:
+#### Action: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+#### Justification:
+- Given the constraints of the resource pool and lack of other impactful actions, ending the turn is the only viable path forward.
+- Refraining from blocking or wasting resources (which is not an option here) preserves the integrity of the current strategy.
+- Ending the turn allows for potential future resource rolls to gather brick and ore for more valuable plays in the upcoming turns.

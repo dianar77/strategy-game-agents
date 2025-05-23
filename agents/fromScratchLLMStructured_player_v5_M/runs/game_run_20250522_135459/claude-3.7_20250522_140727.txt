@@ -1,0 +1,55 @@
+Prompt:
+Current Game State:
+Your color: Color.BLUE
+Your victory points: 2
+Your resources: {'WOOD': 0, 'BRICK': 1, 'SHEEP': 0, 'WHEAT': 2, 'ORE': 3}
+Your buildings: {'settlements': 2, 'cities': 0, 'roads': 2}
+
+Opponents:
+- Color.RED: 6 victory points, Buildings: {'settlements': 4, 'cities': 1, 'roads': 6}
+
+Available Actions (3):
+Action 0: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+Action 1: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_CITY: 'BUILD_CITY'>, value=26)
+Action 2: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.BUILD_CITY: 'BUILD_CITY'>, value=0)
+
+Analyze each available action and recommend the best one. Consider your current resources, victory points, and building opportunities. Aim to maximize your chances of winning by securing key resources and building strategically.
+
+Specify your choice by indicating 'RECOMMENDED ACTION: Action X' where X is the action index.
+
+========================================
+
+Response:
+# Action Analysis for BLUE Player
+
+Let me evaluate each available action based on the current game state:
+
+## Current Situation Overview
+- You have 2 victory points vs RED's 6 points
+- Your resources: 1 BRICK, 2 WHEAT, 3 ORE (good for city building)
+- You have 2 settlements that could potentially be upgraded to cities
+
+## Action Analysis
+
+**Action 0: END_TURN**
+- This would waste your current resources
+- You're significantly behind RED (2 vs 6 points) and need to make progress
+- Not recommended when you have productive moves available
+
+**Action 1: BUILD_CITY at position 26**
+- Upgrading a settlement to a city costs 3 ORE + 2 WHEAT
+- You have exactly these resources (3 ORE, 2 WHEAT)
+- This would give you +1 victory point (from 2 to 3)
+- Cities produce double resources compared to settlements
+
+**Action 2: BUILD_CITY at position 0**
+- Same resource cost as Action 1
+- Also gives +1 victory point
+- The choice between positions 26 and 0 depends on what resources those settlements produce
+
+Since both city upgrades cost the same and give the same victory point benefit, the optimal choice depends on which settlement is on better resource tiles. Without that information, either city build is much better than ending your turn.
+
+## RECOMMENDED ACTION: Action 1 or Action 2
+Since I don't have information about which settlement location (26 or 0) provides better resources, I recommend building a city. Either choice is superior to ending your turn given your current deficit to RED.
+
+If forced to choose one: **RECOMMENDED ACTION: Action 1** (Build city at position 26)

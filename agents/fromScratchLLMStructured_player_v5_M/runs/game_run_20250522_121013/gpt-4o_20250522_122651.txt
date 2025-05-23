@@ -1,0 +1,78 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [0, 4, 0, 0, 1]
+        - Settlements: [23, 16]
+        - Cities: []
+        - Victory Points (VP): 2
+        - Roads Available: 13
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_KNIGHT_CARD: 'PLAY_KNIGHT_CARD'>, value=None)
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('BRICK', 'BRICK', 'BRICK', 'BRICK', 'SHEEP'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('BRICK', 'BRICK', 'BRICK', 'BRICK', 'WHEAT'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('BRICK', 'BRICK', 'BRICK', 'BRICK', 'WOOD'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('BRICK', 'BRICK', 'BRICK', 'BRICK', 'ORE'))
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_KNIGHT_CARD: 'PLAY_KNIGHT_CARD'>, value=None): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('BRICK', 'BRICK', 'BRICK', 'BRICK', 'SHEEP')): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('BRICK', 'BRICK', 'BRICK', 'BRICK', 'WHEAT')): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('BRICK', 'BRICK', 'BRICK', 'BRICK', 'WOOD')): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('BRICK', 'BRICK', 'BRICK', 'BRICK', 'ORE')): 1
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+Based on the provided game state and the principles of maximizing Victory Points (VP) efficiently by prioritizing strategic expansion:
+
+### **Analysis:**
+1. **Current Resources**:  
+   - Resources: [0, 4, 0, 0, 1] = 0 Brick, 4 Sheep, 0 Wheat, 0 Wood, 1 Ore.  
+   - You currently don't have the required resources to build a settlement (Brick, Wood, Wheat, Sheep) or upgrade a settlement to a city (Wheat, Wheat, Ore, Ore, Ore).  
+   - Maritime trading is an option and offers a way to transform 4 Sheep into another resource, but none of the offered trades directly result in an immediate settlement or city.  
+
+2. **Action Scores**:  
+   - All maritime trade actions are scored at 1 heuristic point, indicating none have a clear immediate priority over another.  
+   - Playing the knight card has no apparent tactical advantage (like blocking an opponent or stealing a key resource).  
+   - Ending the turn does not provide progress toward the goal since there are meaningful trade options to explore.  
+
+3. **Goal Alignment**:  
+   The primary goal right now should be to accumulate resources to set up either a settlement or a city. Maritime Trading for **Wheat** would get you closer to building a settlement, as you'd only need Brick and Wood afterward. If this trade is not available (or unadvantageous), trading for **Ore** is a secondary step toward upgrading your settlement into a city.  
+
+---
+
+### **Decision:**  
+#### **Action:**
+`Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('BRICK', 'BRICK', 'BRICK', 'BRICK', 'WHEAT'))`
+
+#### **Justification:**
+1. **Strategic Value**:  
+   This trade converts 4 Sheep into 1 Wheat, which progresses you toward the resources needed to build a settlement (needs Brick, Wood, Wheat, Sheep).  
+
+2. **Better than Alternatives**:  
+   - Trading for Ore is less useful at this stage since you are farther from upgrading to a city than from building a settlement.  
+   - Trading for Wood or Sheep does not lead to immediate progress toward your current goals.  
+   - Ending your turn without trading wastes the opportunity to optimize your resources by capitalizing on maritime trade options.  
+
+3. **Resource Accumulation for Expansion**:  
+   Building settlements and roads early for resource diversity is critical. This trade aligns with the first priority by progressing toward a settlement (expansion potential).  
+
+---
+
+If a follow-up action is granted after this maritime trade, acquiring Brick and Wood via harvesting or additional trades will complete the settlement requirement.

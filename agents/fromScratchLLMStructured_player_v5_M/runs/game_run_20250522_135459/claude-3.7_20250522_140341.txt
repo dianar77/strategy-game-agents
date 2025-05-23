@@ -1,0 +1,64 @@
+Prompt:
+Current Game State:
+Your color: Color.BLUE
+Your victory points: 2
+Your resources: {'WOOD': 0, 'BRICK': 0, 'SHEEP': 0, 'WHEAT': 1, 'ORE': 2}
+Your buildings: {'settlements': 2, 'cities': 0, 'roads': 2}
+
+Opponents:
+- Color.RED: 3 victory points, Buildings: {'settlements': 3, 'cities': 0, 'roads': 3}
+
+Available Actions (5):
+Action 0: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+Action 1: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('ORE', 'ORE', None, None, 'WHEAT'))
+Action 2: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('ORE', 'ORE', None, None, 'BRICK'))
+Action 3: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('ORE', 'ORE', None, None, 'SHEEP'))
+Action 4: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('ORE', 'ORE', None, None, 'WOOD'))
+
+Analyze each available action and recommend the best one. Consider your current resources, victory points, and building opportunities. Aim to maximize your chances of winning by securing key resources and building strategically.
+
+Specify your choice by indicating 'RECOMMENDED ACTION: Action X' where X is the action index.
+
+========================================
+
+Response:
+# Action Analysis
+
+Let's analyze each available action considering the current game state:
+
+## Current Resources Assessment
+- You have 1 WHEAT and 2 ORE
+- You're lacking WOOD, BRICK, and SHEEP
+- With 2 victory points, you're behind RED (3 points)
+
+## Action Analysis
+
+**Action 0: End Turn**
+- Keeps your current resources (1 WHEAT, 2 ORE)
+- Doesn't advance your position but preserves your ORE for future use
+
+**Actions 1-4: Maritime Trade Options**
+All these options involve trading 2 ORE for one of the other resources:
+- Action 1: Trade 2 ORE for 1 WHEAT (giving you 2 WHEAT, 0 ORE)
+- Action 2: Trade 2 ORE for 1 BRICK (giving you 1 WHEAT, 1 BRICK, 0 ORE)
+- Action 3: Trade 2 ORE for 1 SHEEP (giving you 1 WHEAT, 1 SHEEP, 0 ORE)
+- Action 4: Trade 2 ORE for 1 WOOD (giving you 1 WHEAT, 1 WOOD, 0 ORE)
+
+## Strategic Considerations
+1. Building a road requires 1 WOOD + 1 BRICK
+2. Building a settlement requires 1 WOOD + 1 BRICK + 1 WHEAT + 1 SHEEP
+3. Upgrading to a city requires 2 WHEAT + 3 ORE
+
+Looking at your position:
+- You currently don't have enough resources for any immediate build
+- ORE is valuable for city upgrades (which give more victory points)
+- Trading for a single resource won't enable you to build anything this turn
+
+Since you're behind in victory points, working toward a new settlement would be valuable. This requires collecting WOOD, BRICK, and SHEEP (you already have WHEAT).
+
+## Recommendation
+Given the current state, I recommend ending your turn to preserve your ORE, which is valuable for city upgrades later.
+
+**RECOMMENDED ACTION: Action 0** (End Turn)
+
+Trading away your ORE now for a single resource wouldn't enable any builds this turn, and ORE is more difficult to get but crucial for city upgrades. It's better to keep your current resources and wait for additional resources from the next dice rolls.

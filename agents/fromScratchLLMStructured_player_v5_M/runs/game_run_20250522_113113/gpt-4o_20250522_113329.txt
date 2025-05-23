@@ -1,0 +1,43 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Here is the current game state:
+        <catanatron.game.Game object at 0x7f1784423450>
+
+        Here are the actions you can choose from:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('BRICK', 'BRICK', 'BRICK', 'BRICK', 'WHEAT'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('BRICK', 'BRICK', 'BRICK', 'BRICK', 'ORE'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('BRICK', 'BRICK', 'BRICK', 'BRICK', 'SHEEP'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('BRICK', 'BRICK', 'BRICK', 'BRICK', 'WOOD'))
+
+        Please provide the best action to take based on maximizing Victory Points (VP) and achieving strategic goals.
+        
+
+========================================
+
+Response:
+Based on the provided options, here is the analysis:
+
+### Options Available
+- **End Turn**: This option doesn't immediately advance your progress toward victory (no VP gain or resource optimization).
+- **Maritime Trade (4 BRICK for 1 WHEAT/ORE/SHEEP/WOOD)**: These trades offer an opportunity to exchange 4 BRICK for another resource, potentially enabling you to progress toward constructing Roads, Settlements, or Cities (which help maximize VP).
+
+### Assumptions
+We cannot directly access the game state or inventory details (resources you currently hold, available spaces for building, etc.). However, we do know:
+1. Maritime Trade typically implies you have excess resources (in this case, an abundance of BRICK) but need other resources.
+2. Maximizing VP means focusing on building Settlements, Cities, Roads, or acquiring Development Cards that translate into VPs or strategic advantages.
+
+### Strategic Recommendations
+- **Prioritize needed resources**:
+   - If you are close to building a Settlement, you need **WHEAT, SHEEP, and WOOD**.
+   - If you are close to upgrading a Settlement into a City, trade for **WHEAT or ORE**.
+   - If Roads are a priority or trades with opponents require it, choose **WOOD**.
+
+- **Best guess**:
+   Without further context about your inventory and goals, the most versatile trade would be **4 BRICK for 1 WHEAT**, as Wheat is a critical resource for both Settlements and Cities.
+
+### Recommended Action
+```plaintext
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('BRICK', 'BRICK', 'BRICK', 'BRICK', 'WHEAT'))
+```

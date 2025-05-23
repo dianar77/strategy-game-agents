@@ -1,0 +1,41 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [0, 3, 0, 0, 3]
+        - Settlements: [23, 16]
+        - Cities: []
+        - Victory Points (VP): 2
+        - Roads Available: 11
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_KNIGHT_CARD: 'PLAY_KNIGHT_CARD'>, value=None)
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.ROLL: 'ROLL'>, value=None)
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_KNIGHT_CARD: 'PLAY_KNIGHT_CARD'>, value=None): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.ROLL: 'ROLL'>, value=None): 1
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+### Action: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.ROLL: 'ROLL'>, value=None)
+
+### Justification:
+The game state currently shows you have limited resources: [0, 3, 0, 0, 3] (0 brick, 3 wood, 0 sheep, 0 wheat, 3 ore). These resources are insufficient for building a settlement or upgrading to a city. In Catan, rolling the dice is critical for generating resources based on the numbers assigned to your settlements. Gaining additional resources will help you progress towards building settlements or upgrading to cities, which directly increases Victory Points.
+
+Although you also have the option to play a knight card, its heuristic score is low (1), indicating it has limited strategic value in the current game state. Playing a knight card would primarily serve to potentially block opponents or move the robber, which doesn't directly address your need for resource diversity or VP generation at this moment. Therefore, rolling the dice maximizes your potential for growing resources and advancing towards your goals.
+
+Choosing impactful actions like rolling ensures you're not stalling progress and are making meaningful strides toward increasing your VP efficiently.

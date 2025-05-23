@@ -1,0 +1,61 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [5, 0, 0, 1, 1]
+        - Settlements: []
+        - Cities: [12, 10]
+        - Victory Points (VP): 4
+        - Roads Available: 4
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WOOD', 'WOOD', 'WOOD', 'WOOD', 'SHEEP'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WOOD', 'WOOD', 'WOOD', 'WOOD', 'BRICK'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WOOD', 'WOOD', 'WOOD', 'WOOD', 'WHEAT'))
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WOOD', 'WOOD', 'WOOD', 'WOOD', 'ORE'))
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WOOD', 'WOOD', 'WOOD', 'WOOD', 'SHEEP')): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WOOD', 'WOOD', 'WOOD', 'WOOD', 'BRICK')): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WOOD', 'WOOD', 'WOOD', 'WOOD', 'WHEAT')): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WOOD', 'WOOD', 'WOOD', 'WOOD', 'ORE')): 1
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+### Analysis:
+1. **Resources**: You currently have `[5, 0, 0, 1, 1]` which corresponds to **5 wood, 0 brick, 0 wheat, 1 sheep, and 1 ore**.
+   - You are heavy on wood but lack brick, wheat, and ore to progress toward either a settlement or city.
+   - You can use maritime trade to exchange surplus wood for other resources.
+
+2. **Goal Priority**:
+   - Currently, you have **no settlements** and only **2 cities** (at hexes 12 and 10).
+   - To maximize VP efficiently, you should aim to build a settlement and expand. For this, you need 1 brick, 1 wheat, 1 sheep, and 1 wood (you already have enough wood and sheep but lack brick and wheat).
+   - Cities cost 2 wheat and 3 ore, which are also beyond reach for the moment.
+
+3. **Available Actions**:
+   - Maritime trade allows you to exchange 4 wood (you have 5) for a resource you need. Among the options provided, **trading for brick or wheat** is the most impactful since they are necessary for building settlements.
+
+### Chosen Action:
+#### Action: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('WOOD', 'WOOD', 'WOOD', 'WOOD', 'BRICK'))
+
+### Justification:
+1. **Immediate Benefit**: Trading 4 wood for brick sets you up to build a settlement in the next turn. A settlement is crucial to expanding and accessing new resources, progressing toward Priority #1 (early game expansion).
+2. **Strategic Setup**: After this trade, your resources will be `[1, 1, 0, 1, 1]` — leaving you only 1 wheat short of building a settlement (you already have sufficient wood, sheep, and now brick). On your next turn, you can focus on obtaining wheat (through trade or rolling).
+3. **Avoiding Repetitive Actions**: The "END_TURN" action is a low-impact choice right now, as you have the opportunity to set up for expansion through resource trade.
+
+By choosing this action, you efficiently align with your VP-maximizing priorities instead of stagnating progress.

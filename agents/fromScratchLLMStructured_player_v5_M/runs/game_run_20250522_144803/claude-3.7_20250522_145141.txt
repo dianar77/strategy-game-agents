@@ -1,0 +1,61 @@
+Prompt:
+Current Game State:
+Your color: Color.BLUE
+Your victory points: 2
+Your resources: {'WOOD': 1, 'BRICK': 0, 'SHEEP': 4, 'WHEAT': 1, 'ORE': 0}
+Your buildings: {'settlements': 2, 'cities': 0, 'roads': 6}
+
+Opponents:
+- Color.RED: 5 victory points, Buildings: {'settlements': 1, 'cities': 1, 'roads': 8}
+
+Strategic Considerations:
+- Early Game: Focus on expanding by building roads and settlements.
+- Prioritize securing BRICK and WOOD resources for expansion.
+
+Available Actions (5):
+Action 0: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+Action 1: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('SHEEP', 'SHEEP', 'SHEEP', 'SHEEP', 'WOOD'))
+Action 2: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('SHEEP', 'SHEEP', 'SHEEP', 'SHEEP', 'WHEAT'))
+Action 3: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('SHEEP', 'SHEEP', 'SHEEP', 'SHEEP', 'ORE'))
+Action 4: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.MARITIME_TRADE: 'MARITIME_TRADE'>, value=('SHEEP', 'SHEEP', 'SHEEP', 'SHEEP', 'BRICK'))
+
+Analyze each available action and recommend the best one. Consider your current resources, victory points, and building opportunities. Aim to maximize your chances of winning by securing key resources and building strategically.
+
+Specify your choice by indicating 'RECOMMENDED ACTION: Action X' where X is the action index.
+
+========================================
+
+Response:
+# Game State Analysis
+
+Looking at the current game state:
+- You have 2 victory points vs. opponent's 5 points
+- Your resources: 1 WOOD, 0 BRICK, 4 SHEEP, 1 WHEAT, 0 ORE
+- You're lacking BRICK which is essential for road and settlement expansion
+
+## Action Analysis
+
+The available actions are:
+- End your turn
+- Trade 4 SHEEP for 1 WOOD
+- Trade 4 SHEEP for 1 WHEAT
+- Trade 4 SHEEP for 1 ORE
+- Trade 4 SHEEP for 1 BRICK
+
+Since you're in the early game and significantly behind in victory points, expansion should be your priority. You already have roads and need to build more settlements, which require WOOD, BRICK, SHEEP, and WHEAT.
+
+You currently have:
+- WOOD (1) - need more for expansion
+- BRICK (0) - critical resource you're completely missing
+- SHEEP (4) - you have excess
+- WHEAT (1) - have some but not enough
+
+## Best Action Determination
+
+Action 4 (trading 4 SHEEP for 1 BRICK) is optimal because:
+- BRICK is essential for building roads and settlements
+- You currently have 0 BRICK, making it impossible to expand
+- You have excess SHEEP to trade
+- This trade would give you 1 BRICK, 1 WOOD, and 1 WHEAT - getting you closer to building a settlement
+
+RECOMMENDED ACTION: Action 4

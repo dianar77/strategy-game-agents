@@ -1,0 +1,44 @@
+Prompt:
+
+        You are playing the Catanatron Minigame.
+        Your goal is to maximize Victory Points (VP) efficiently by following these priorities:
+        1. Build settlements and roads early to expand for resource diversity.
+        2. Upgrade settlements to cities later for higher VP returns.
+        3. Block opponent progress when strategically advantageous.
+
+        Current Game State:
+        - Resources: [1, 0, 3, 0, 0]
+        - Settlements: [5, 3]
+        - Cities: []
+        - Victory Points (VP): 2
+        - Roads Available: 10
+
+        Available Actions:
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_KNIGHT_CARD: 'PLAY_KNIGHT_CARD'>, value=None)
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None)
+
+        Heuristic Scores for Actions (strategic breakdown by priority):
+        Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_KNIGHT_CARD: 'PLAY_KNIGHT_CARD'>, value=None): 1
+Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.END_TURN: 'END_TURN'>, value=None): 1
+
+        Avoid repetitive or low-impact actions like ending turns unnecessarily. Instead, choose impactful actions that optimize VP growth.
+
+        Respond with:
+        Action: {Chosen Action}
+        Justification: {Reasoning behind the optimal choice}
+        
+
+========================================
+
+Response:
+I need to analyze the available actions in the context of my current resources and game state.
+
+Looking at my resources [1, 0, 3, 0, 0], I have 1 brick and 3 grain, but no wool, ore, or lumber. With this limited resource set, I can't build a settlement (requires brick, lumber, wool, grain), road (requires brick and lumber), or upgrade to a city (requires grain and ore).
+
+Available actions are:
+1. Play Knight Card
+2. End Turn
+
+Action: Action(color=<Color.BLUE: 'BLUE'>, action_type=<ActionType.PLAY_KNIGHT_CARD: 'PLAY_KNIGHT_CARD'>, value=None)
+
+Justification: Since both actions have equal heuristic scores of 1, playing the Knight Card is the more strategic choice. Playing a Knight Card allows me to move the robber to a new hex, potentially disrupting my opponent's resource production, and it may let me steal a resource card from them. Additionally, Knight Cards contribute to building the "Largest Army" for 2 VP later in the game. With my current limited resources, I can't build anything this turn, so taking a defensive/offensive action that interferes with my opponent while positioning myself for the "Largest Army" bonus is more valuable than simply ending my turn.
