@@ -5,9 +5,9 @@ import time
 import re
 from datetime import datetime
 
-LLM = "gpt-4o"  # The LLM used
-EVAL_PLAYER = "LLM"  # The player you want to evaluate (use the code/key)
-NUM_GAMES = 10
+LLM = "claude-3.7"  # The LLM used
+EVAL_PLAYER = "FOO_LLM_Claude_Test"  # The player you want to evaluate (use the code/key)
+NUM_GAMES = 5
 
 # Dictionary mapping player codes to their full names as they appear in summary
 AGENTS = {
@@ -26,6 +26,9 @@ AGENTS = {
     "FOO_S": "FooPlayer",
     "PR_LLM": "PromptRefiningLLMPlayer",
     "CR_LLM": "CodeRefiningLLMPlayer",
+    "FOO_LLM_Mistral_Test": "FooPlayer_LLM_Mistral_Test",
+    "FOO_LLM_GPT_Test": "FooPlayer_LLM_GPT_Test",
+    "FOO_LLM_Claude_Test": "FooPlayer_LLM_Claude_Test",
 }
 
 # List opponents from strongest to weakest
@@ -34,7 +37,7 @@ AGENTS = {
 OPPONENTS = ["AB"]
 
 def run_game(eval_player, opponent, num_games):
-    command = f"catanatron-play --players={opponent},{eval_player} --num={num_games} --output=data/ --json"
+    command = f"catanatron-play --players={opponent},{eval_player} --num={num_games} --output=data/ --json --config-vps-to-win=10"
     print(f"Running: {command}")
     start = time.time()
     result = subprocess.run(

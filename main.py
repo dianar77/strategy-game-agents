@@ -33,6 +33,7 @@ from agents.codeRefiningLLM_player.creator_agent import read_foo, write_foo, lis
 # from agents.fromScratchLLM_player.creator_agent import CreatorAgent as ScratchCreatorLLMAgent
 # from agents.fromScratchLLM_player.creator_agent import read_foo, write_foo, run_testfoo, list_local_files, read_local_file
 from agents.fromScratchLLM_player_v2.creator_agent import CreatorAgent as ScratchCreatorLLMAgentV2
+from agents.fromScratchLLMStructured_player_v5_M.creator_agent import CreatorAgent as ScratchCreatorLLMAgentV5M
 from agents.fromScratchLLM_player_v2.creator_agent import read_foo, write_foo, run_testfoo, list_local_files, read_local_file
 
 
@@ -51,7 +52,8 @@ def main():
     # cA.run_react_graph()
 
     #cA = ScratchCreatorLLMAgent()
-    cA = ScratchCreatorLLMAgentV2()
+    #cA = ScratchCreatorLLMAgentV2()
+    cA = ScratchCreatorLLMAgentV5M()
     #cA = PromptRefiningCreatorAgent(opponent="AB")
     #print(write_foo("print('Hello, world!')"))  # Write to foo_player.py
     #print(read_foo())

@@ -43,6 +43,9 @@ from agents.fromScratchLLMStructured_player_v2.foo_player import FooPlayer as Fo
 from agents.fromScratchLLMStructured_player_v3.foo_player import FooPlayer as FooLLMStructuredPlayerV3
 from agents.fromScratchLLMStructured_player_v4.foo_player import FooPlayer as FooLLMStructuredPlayerV4
 from agents.fromScratchLLMStructured_player_v5_M.foo_player import FooPlayer as FooLLMStructuredPlayerV5M
+from agents.testing_mistral.mistral_test import FooPlayer as FooLLMPlayerMistralTest
+from agents.testing_gpt.gpt_test import FooPlayer as FooLLMPlayerGPTTest
+from agents.testing_claude.claude_test import FooPlayer as FooLLMPlayerClaudeTest
 # from agents.fromScratchLLM_player_v2.runs.creator_20250508_112135_hitl.foo_player import FooPlayer as FooLLMPlayerV2_1
 # from catanatron_experimental.machine_learning.players.online_mcts_dqn import (
 #     OnlineMCTSDQNPlayer,
@@ -204,6 +207,24 @@ CLI_PLAYERS = [
         "FooPlayer_LLM_Structured_V5_M",
         "Player being created by creator agent that has more tools to edit FooPlayer's code. FooPlayer has access to query the LLM",
         FooLLMStructuredPlayerV5M
+    ),
+    CliPlayer(
+        "FOO_LLM_Mistral_Test",
+        "FooPlayer_LLM_Mistral_Test",
+        "Player being created by creator agent that has more tools to edit FooPlayer's code. FooPlayer has access to query the LLM",
+        FooLLMPlayerMistralTest
+    ),
+    CliPlayer(
+        "FOO_LLM_GPT_Test",
+        "FooPlayer_LLM_GPT_Test",
+        "Player being created by creator agent that has more tools to edit FooPlayer's code. FooPlayer has access to query the LLM",
+        FooLLMPlayerGPTTest
+    ),
+    CliPlayer(
+        "FOO_LLM_Claude_Test",
+        "FooPlayer_LLM_Claude_Test",
+        "Player being created by creator agent that has more tools to edit FooPlayer's code. FooPlayer has access to query the LLM",
+        FooLLMPlayerClaudeTest
     ),
 ]
 

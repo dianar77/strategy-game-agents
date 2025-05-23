@@ -1,0 +1,1143 @@
+PROMPT:
+You are playing Settlers of Catan. Your task is to analyze the game state and choose the best action from the available options.
+
+Rules:
+1. Think through your decision step by step, analyzing the game state, resources, and available actions
+2. Your aim is to WIN. That means 10 victory points.
+3. Put your final chosen action inside a box like \boxed{5}
+4. Your final answer must be a single integer corresponding to the action number
+5. If you want to create or update your strategic plan, put it in <plan> tags like:
+   <plan>Build roads toward port, then build settlement at node 13, then focus on city upgrades</plan>
+6. Analyze the recent resource changes to understand what resources you're collecting effectively
+7. Think about the next 2-3 turns, not just the immediate action
+
+Board Understanding Guide:
+- The RESOURCE & NODE GRID shows hexagonal tiles with their coordinates, resources, and dice numbers
+- The nodes connected to each tile are listed below each tile
+- 🔍 marks the robber's location, blocking resource production on that hex
+- Settlements/cities and their production are listed in the BUILDINGS section
+- Understanding the connectivity between nodes is crucial for road building strategy
+- Ports allow trading resources at better rates (2:1 or 3:1)
+
+TURN 1 | Player: BLUE | Action: BUILD_INITIAL_SETTLEMENT
+
+📊 GAME STATUS:
+  Longest Road: None (0 segments)
+  Largest Army: None (0 knights)
+  Robber Location: (1, 0, -1)
+
+🗺️ CATAN RESOURCE & NODE GRID:
+
+  🌾8 (0, -1, 1)                 ⛏️5 (1, -1, 0)                
+  nodes: 2,3,9,10,11,12         nodes: 1,2,6,7,8,9            
+
+  🧱10 (-1, 0, 1)                🌲4 (0, 0, 0)                  🏜️- (1, 0, -1) 🔍              
+  nodes: 3,4,12,13,14,15        nodes: 0,1,2,3,4,5            nodes: 0,1,6,20,22,23         
+
+  🐑9 (-1, 1, 0)                 🌾3 (0, 1, -1)                 
+  nodes: 4,5,15,16,17,18        nodes: 0,5,16,19,20,21        
+
+
+BUILDINGS:
+- 🔴 RED: 🏠 at node 2 (produces: 🌲4[⭐], ⛏️5[⭐⭐], 🌾8[⭐⭐⭐])
+
+ROADS:
+- 🔴 RED: (2, 9), (9, 2)
+
+PORTS:
+
+👥 PLAYERS:
+
+  RED Player:
+    Victory Points: 1/10
+    Resources: 0 cards (hidden)
+    Development Cards: None
+    Buildings:
+      🏠 Settlements: 1 
+      🏙️ Cities: 0 
+      🛣️ Roads: 1 built (Longest: 0)
+
+  👉 BLUE Player:
+    Victory Points: 0/10
+    Resources: None
+    Development Cards: None
+    Buildings:
+      🏠 Settlements: 0 
+      🏙️ Cities: 0 
+      🛣️ Roads: 0 built (Longest: 0)
+
+  🏦 Bank:
+    Development Cards: 25 remaining
+    Resources available for trade with bank or ports
+
+🎮 AVAILABLE ACTIONS:
+
+  Build Settlement Options:
+    [0] Build a settlement at node 0 (Cost: 1 🌲WOOD, 1 🧱BRICK, 1 🌾WHEAT, 1 🐑SHEEP)
+    [1] Build a settlement at node 4 (Cost: 1 🌲WOOD, 1 🧱BRICK, 1 🌾WHEAT, 1 🐑SHEEP)
+    [2] Build a settlement at node 5 (Cost: 1 🌲WOOD, 1 🧱BRICK, 1 🌾WHEAT, 1 🐑SHEEP)
+    [3] Build a settlement at node 6 (Cost: 1 🌲WOOD, 1 🧱BRICK, 1 🌾WHEAT, 1 🐑SHEEP)
+    [4] Build a settlement at node 7 (Cost: 1 🌲WOOD, 1 🧱BRICK, 1 🌾WHEAT, 1 🐑SHEEP)
+    [5] Build a settlement at node 8 (Cost: 1 🌲WOOD, 1 🧱BRICK, 1 🌾WHEAT, 1 🐑SHEEP)
+    [6] Build a settlement at node 10 (Cost: 1 🌲WOOD, 1 🧱BRICK, 1 🌾WHEAT, 1 🐑SHEEP)
+    [7] Build a settlement at node 11 (Cost: 1 🌲WOOD, 1 🧱BRICK, 1 🌾WHEAT, 1 🐑SHEEP)
+    [8] Build a settlement at node 12 (Cost: 1 🌲WOOD, 1 🧱BRICK, 1 🌾WHEAT, 1 🐑SHEEP)
+    [9] Build a settlement at node 13 (Cost: 1 🌲WOOD, 1 🧱BRICK, 1 🌾WHEAT, 1 🐑SHEEP)
+    [10] Build a settlement at node 14 (Cost: 1 🌲WOOD, 1 🧱BRICK, 1 🌾WHEAT, 1 🐑SHEEP)
+    [11] Build a settlement at node 15 (Cost: 1 🌲WOOD, 1 🧱BRICK, 1 🌾WHEAT, 1 🐑SHEEP)
+    [12] Build a settlement at node 16 (Cost: 1 🌲WOOD, 1 🧱BRICK, 1 🌾WHEAT, 1 🐑SHEEP)
+    [13] Build a settlement at node 17 (Cost: 1 🌲WOOD, 1 🧱BRICK, 1 🌾WHEAT, 1 🐑SHEEP)
+    [14] Build a settlement at node 18 (Cost: 1 🌲WOOD, 1 🧱BRICK, 1 🌾WHEAT, 1 🐑SHEEP)
+    [15] Build a settlement at node 19 (Cost: 1 🌲WOOD, 1 🧱BRICK, 1 🌾WHEAT, 1 🐑SHEEP)
+    [16] Build a settlement at node 20 (Cost: 1 🌲WOOD, 1 🧱BRICK, 1 🌾WHEAT, 1 🐑SHEEP)
+    [17] Build a settlement at node 21 (Cost: 1 🌲WOOD, 1 🧱BRICK, 1 🌾WHEAT, 1 🐑SHEEP)
+    [18] Build a settlement at node 22 (Cost: 1 🌲WOOD, 1 🧱BRICK, 1 🌾WHEAT, 1 🐑SHEEP)
+    [19] Build a settlement at node 23 (Cost: 1 🌲WOOD, 1 🧱BRICK, 1 🌾WHEAT, 1 🐑SHEEP)
+
+❓ Select action by number (0-19):
+
+
+Based on this information, which action number do you choose? Think step by step about your options, then put the final action number in a box like \boxed{1}.
+RESPONSE:
+Let's analyze the game's state and make the optimal decision step by step. Our goal is to maximize resource access, position ourselves advantageously, and aim towards winning with 10 victory points.
+
+---
+
+### Step 1: Evaluate Available Nodes for the Initial Settlement
+We are choosing our **first settlement location**. The factors we consider are:
+1. **Resource diversity and quality**: The tiles' resource types and production numbers (lower numbers are rarer, higher numbers produce more). We aim to collect resources efficiently by targeting high-yield tiles (5-9 range).
+2. **Future building options**: Nearby nodes for future road-building and settlement expansion.
+3. **Ports**: Proximity to ports for efficient trading in later turns.
+4. **Block opponent strategies**: Consider RED's position and expansion potential.
+
+---
+
+### Step 2: Analyze RED's Initial Placement
+RED has placed their first settlement on **node 2**, connecting to:
+- 🌲4 (decent production value),
+- ⛏️5 (high production of ore, ⭐⭐), and
+- 🌾8 (excellent production for wheat, ⭐⭐⭐).
+
+RED has a strong focus on **ore** and **wheat**, but they lack **brick** or **sheep**, which might slow their road-building and expansions. We might exploit this lack if we can secure these resources.
+
+---
+
+### Step 3: Analyze Nodes for BLUE
+We'll consider each viable node (0-23) and evaluate resource diversity, production, and strategic importance:
+
+#### High-Quality Nodes:
+- **Node 4** (🧱10, 🌲4, 🌾8): Great production and diversity.
+  - Resources: Brick (10), Wood (4), Wheat (8).
+  - Total production value: 8 (wheat) + 4 (wood) + 10 (brick) = **22**.
+  - Additional benefits: Strong baseline for building roads/settlements—brick and wood—and wheat for development cards or new settlements.
+
+- **Node 5** (🐑9, 🌾8, 🌾3): Strong wheat and sheep production.
+  - Resources: Wheat (8 and 3), Sheep (9).
+  - Total value: **20**.
+  - Drawback: No brick or wood means slow early road-building unless we trade.
+
+- **Node 11** (🧱10, 🌲4, 🐑9): Strong diversity and resource balance.
+  - Resources: Brick (10), Wood (4), Sheep (9).
+  - Total value: **23**.
+  - Additional benefits: Immediate access to road materials (wood and brick) and high-value sheep. Excellent starting point with good expansion options.
+
+- **Node 13** (🧱10, 🐑9, 🌾3): Decent diversity.
+  - Resources: Brick (10), Sheep (9), Wheat (3).
+  - Total value: **22**.
+  - Drawback: Moderate wheat production (value 3) can limit city-building potential early in the game.
+
+---
+
+#### Lower-Quality Nodes:
+- Nodes 0, 6, 7, 8, 10, 15, etc., have weaker access to high-value resources or poor diversity. We can safely rule them out.
+
+---
+
+### Step 4: Strategic Plan
+Our strategic priorities for the game:
+1. Begin on a high-production, diverse node, with brick and wood for road-building and sheep/wheat for flexibility.
+2. Expand toward nodes that add missing resources (e.g., ore or better wheat).
+3. Aim to secure ports for trading flexibility.
+4. Block RED's expansion where possible and target the **Longest Road** early.
+
+#### Settlement Choice
+Based on the analysis, **Node 11** is the best option:
+- It gives us a balance of 🧱brick (10), 🌲wood (4), and 🐑sheep (9).
+- It sets us up for early road-building and settlement expansion.
+- We can easily connect to other high-value nodes later.
+
+---
+
+### Final Choice
+\boxed{11}
+========================================
+PROMPT:
+You are playing Settlers of Catan. Your task is to analyze the game state and choose the best action from the available options.
+
+Rules:
+1. Think through your decision step by step, analyzing the game state, resources, and available actions
+2. Your aim is to WIN. That means 10 victory points.
+3. Put your final chosen action inside a box like \boxed{5}
+4. Your final answer must be a single integer corresponding to the action number
+5. If you want to create or update your strategic plan, put it in <plan> tags like:
+   <plan>Build roads toward port, then build settlement at node 13, then focus on city upgrades</plan>
+6. Analyze the recent resource changes to understand what resources you're collecting effectively
+7. Think about the next 2-3 turns, not just the immediate action
+
+Board Understanding Guide:
+- The RESOURCE & NODE GRID shows hexagonal tiles with their coordinates, resources, and dice numbers
+- The nodes connected to each tile are listed below each tile
+- 🔍 marks the robber's location, blocking resource production on that hex
+- Settlements/cities and their production are listed in the BUILDINGS section
+- Understanding the connectivity between nodes is crucial for road building strategy
+- Ports allow trading resources at better rates (2:1 or 3:1)
+
+TURN 1 | Player: BLUE | Action: BUILD_INITIAL_ROAD
+
+📊 GAME STATUS:
+  Longest Road: None (0 segments)
+  Largest Army: None (0 knights)
+  Robber Location: (1, 0, -1)
+
+🗺️ CATAN RESOURCE & NODE GRID:
+
+  🌾8 (0, -1, 1)                 ⛏️5 (1, -1, 0)                
+  nodes: 2,3,9,10,11,12         nodes: 1,2,6,7,8,9            
+
+  🧱10 (-1, 0, 1)                🌲4 (0, 0, 0)                  🏜️- (1, 0, -1) 🔍              
+  nodes: 3,4,12,13,14,15        nodes: 0,1,2,3,4,5            nodes: 0,1,6,20,22,23         
+
+  🐑9 (-1, 1, 0)                 🌾3 (0, 1, -1)                 
+  nodes: 4,5,15,16,17,18        nodes: 0,5,16,19,20,21        
+
+
+BUILDINGS:
+- 🔴 RED: 🏠 at node 2 (produces: 🌲4[⭐], ⛏️5[⭐⭐], 🌾8[⭐⭐⭐])
+- 🔵 BLUE: 🏠 at node 15 (produces: 🧱10[⭐], 🐑9[⭐⭐])
+
+ROADS:
+- 🔴 RED: (2, 9), (9, 2)
+
+PORTS:
+
+👥 PLAYERS:
+
+  RED Player:
+    Victory Points: 1/10
+    Resources: 0 cards (hidden)
+    Development Cards: None
+    Buildings:
+      🏠 Settlements: 1 
+      🏙️ Cities: 0 
+      🛣️ Roads: 1 built (Longest: 0)
+
+  👉 BLUE Player:
+    Victory Points: 1/10
+    Resources: None
+    Development Cards: None
+    Buildings:
+      🏠 Settlements: 1 
+      🏙️ Cities: 0 
+      🛣️ Roads: 0 built (Longest: 0)
+
+  🏦 Bank:
+    Development Cards: 25 remaining
+    Resources available for trade with bank or ports
+
+🎮 AVAILABLE ACTIONS:
+
+  Build Road Options:
+    [0] Build a road at edge (4, 15) (Cost: 1 🌲WOOD, 1 🧱BRICK)
+    [1] Build a road at edge (15, 17) (Cost: 1 🌲WOOD, 1 🧱BRICK)
+    [2] Build a road at edge (14, 15) (Cost: 1 🌲WOOD, 1 🧱BRICK)
+
+❓ Select action by number (0-2):
+
+
+Based on this information, which action number do you choose? Think step by step about your options, then put the final action number in a box like \boxed{1}.
+RESPONSE:
+Let's analyze the game state step by step to choose the best action.
+
+---
+
+### STEP 1: Game state overview
+- **Victory points:** Both players have 1/10.
+- **Resources:** Blue (us) currently has no resources.
+- **Buildable roads:** We have three options to build the first road from node 15.
+- **Settlement location:** Our settlement at node 15 produces 🧱10 (brick) and 🐑9 (sheep).
+- **Production analysis:**
+  - Brick (🧱10) produces at dice roll 10, which is moderate production potential.
+  - Sheep (🐑9) produces at dice roll 9, which is slightly better.
+- **Opponent:** Red's settlement at node 2 is in a strong position, collecting 🌲wood, ⛏️ore, and 🌾wheat with consistent production due to great dice numbers (8, 5, 4).
+
+---
+
+### STEP 2: Strategic considerations
+- **Next steps to win:** 
+  - We need 10 victory points, which requires building more settlements/cities and possibly acquiring Development Cards (for possible Largest Army and additional VP cards). 
+  - Expanding via roads to secure high-resource nodes or ports is crucial.
+- **Critical resources:** 
+  - We currently have access to 🧱brick and 🐑sheep but lack 🌲wood, ⛏️ore, and 🌾wheat.
+  - Priority: Gain access to 🌾wheat (for settlements/cities and Development Cards) and 🌲wood (for roads).
+- **Robber location:** The 🔍robber is on (1,0,-1), affecting nothing of immediate interest to us.
+
+---
+
+### STEP 3: Road options analysis
+Here are the road options with their implications:
+
+#### [0] Build road at edge (4, 15):
+This extends toward node 4, which connects us to 🌾3 and 🧱10. 
+- **Advantages:** 
+  - 🌾3 could give us access to 🌾wheat, which is a high-priority resource.
+  - Potential to expand toward the port nearby at node 0.
+- **Disadvantages:**
+  - Red might compete for this area, as they are currently expanding aggressively.
+
+#### [1] Build road at edge (15, 17):
+This extends toward node 17, which connects us to 🐑9 and 🌾8.
+- **Advantages:**
+  - Node 17 could give us 🌾8, a strong wheat hex with high dice roll frequency (8 = 5/36 probability). 
+- **Disadvantages:** 
+  - Limited options for future expansion in this direction, as node 17 is isolated.
+
+#### [2] Build road at edge (14, 15):
+This extends toward node 14, which connects us to 🧱10 and 🌲4.
+- **Advantages:**
+  - 🌲4 could give us 🌲wood, which is crucial for building more roads and settlements.
+- **Disadvantages:** 
+  - No wheat in this direction, and 🌲4 has moderate production potential (dice roll 4 = 3/36 probability).
+
+---
+
+### STEP 4: Decision—thinking about future turns
+#### Strategic priority:
+- **Accessing wheat (🌾):** This is critical for settlements and Development Cards. Roads toward 🌾8 or 🌾3 are high priority.
+- **Resource synergy:** 🌾8 at node 17 is adjacent to our existing production (🐑9), so we can easily expand here.
+- **Next steps:** Target a strong wheat hex, then expand to secure a port for better resource trading.
+
+#### Final decision:
+Building toward node 17 (🌾8) ensures we gain access to wheat quickly, enabling settlement building and Development Card opportunities. This sets us up for stronger expansion in the next few turns.
+
+---
+
+### STEP 5: Final action
+\boxed{1}
+========================================
+PROMPT:
+You are playing Settlers of Catan. Your task is to analyze the game state and choose the best action from the available options.
+
+Rules:
+1. Think through your decision step by step, analyzing the game state, resources, and available actions
+2. Your aim is to WIN. That means 10 victory points.
+3. Put your final chosen action inside a box like \boxed{5}
+4. Your final answer must be a single integer corresponding to the action number
+5. If you want to create or update your strategic plan, put it in <plan> tags like:
+   <plan>Build roads toward port, then build settlement at node 13, then focus on city upgrades</plan>
+6. Analyze the recent resource changes to understand what resources you're collecting effectively
+7. Think about the next 2-3 turns, not just the immediate action
+
+Board Understanding Guide:
+- The RESOURCE & NODE GRID shows hexagonal tiles with their coordinates, resources, and dice numbers
+- The nodes connected to each tile are listed below each tile
+- 🔍 marks the robber's location, blocking resource production on that hex
+- Settlements/cities and their production are listed in the BUILDINGS section
+- Understanding the connectivity between nodes is crucial for road building strategy
+- Ports allow trading resources at better rates (2:1 or 3:1)
+
+TURN 1 | Player: BLUE | Action: BUILD_INITIAL_SETTLEMENT
+
+📊 GAME STATUS:
+  Longest Road: None (0 segments)
+  Largest Army: None (0 knights)
+  Robber Location: (1, 0, -1)
+
+🗺️ CATAN RESOURCE & NODE GRID:
+
+  🌾8 (0, -1, 1)                 ⛏️5 (1, -1, 0)                
+  nodes: 2,3,9,10,11,12         nodes: 1,2,6,7,8,9            
+
+  🧱10 (-1, 0, 1)                🌲4 (0, 0, 0)                  🏜️- (1, 0, -1) 🔍              
+  nodes: 3,4,12,13,14,15        nodes: 0,1,2,3,4,5            nodes: 0,1,6,20,22,23         
+
+  🐑9 (-1, 1, 0)                 🌾3 (0, 1, -1)                 
+  nodes: 4,5,15,16,17,18        nodes: 0,5,16,19,20,21        
+
+
+BUILDINGS:
+- 🔴 RED: 🏠 at node 2 (produces: 🌲4[⭐], ⛏️5[⭐⭐], 🌾8[⭐⭐⭐])
+- 🔵 BLUE: 🏠 at node 15 (produces: 🧱10[⭐], 🐑9[⭐⭐])
+
+ROADS:
+- 🔴 RED: (2, 9), (9, 2)
+- 🔵 BLUE: (15, 17), (17, 15)
+
+PORTS:
+
+👥 PLAYERS:
+
+  RED Player:
+    Victory Points: 1/10
+    Resources: 0 cards (hidden)
+    Development Cards: None
+    Buildings:
+      🏠 Settlements: 1 
+      🏙️ Cities: 0 
+      🛣️ Roads: 1 built (Longest: 0)
+
+  👉 BLUE Player:
+    Victory Points: 1/10
+    Resources: None
+    Development Cards: None
+    Buildings:
+      🏠 Settlements: 1 
+      🏙️ Cities: 0 
+      🛣️ Roads: 1 built (Longest: 0)
+
+  🏦 Bank:
+    Development Cards: 25 remaining
+    Resources available for trade with bank or ports
+
+🎮 AVAILABLE ACTIONS:
+
+  Build Settlement Options:
+    [0] Build a settlement at node 0 (Cost: 1 🌲WOOD, 1 🧱BRICK, 1 🌾WHEAT, 1 🐑SHEEP)
+    [1] Build a settlement at node 5 (Cost: 1 🌲WOOD, 1 🧱BRICK, 1 🌾WHEAT, 1 🐑SHEEP)
+    [2] Build a settlement at node 6 (Cost: 1 🌲WOOD, 1 🧱BRICK, 1 🌾WHEAT, 1 🐑SHEEP)
+    [3] Build a settlement at node 7 (Cost: 1 🌲WOOD, 1 🧱BRICK, 1 🌾WHEAT, 1 🐑SHEEP)
+    [4] Build a settlement at node 8 (Cost: 1 🌲WOOD, 1 🧱BRICK, 1 🌾WHEAT, 1 🐑SHEEP)
+    [5] Build a settlement at node 10 (Cost: 1 🌲WOOD, 1 🧱BRICK, 1 🌾WHEAT, 1 🐑SHEEP)
+    [6] Build a settlement at node 11 (Cost: 1 🌲WOOD, 1 🧱BRICK, 1 🌾WHEAT, 1 🐑SHEEP)
+    [7] Build a settlement at node 12 (Cost: 1 🌲WOOD, 1 🧱BRICK, 1 🌾WHEAT, 1 🐑SHEEP)
+    [8] Build a settlement at node 13 (Cost: 1 🌲WOOD, 1 🧱BRICK, 1 🌾WHEAT, 1 🐑SHEEP)
+    [9] Build a settlement at node 16 (Cost: 1 🌲WOOD, 1 🧱BRICK, 1 🌾WHEAT, 1 🐑SHEEP)
+    [10] Build a settlement at node 18 (Cost: 1 🌲WOOD, 1 🧱BRICK, 1 🌾WHEAT, 1 🐑SHEEP)
+    [11] Build a settlement at node 19 (Cost: 1 🌲WOOD, 1 🧱BRICK, 1 🌾WHEAT, 1 🐑SHEEP)
+    [12] Build a settlement at node 20 (Cost: 1 🌲WOOD, 1 🧱BRICK, 1 🌾WHEAT, 1 🐑SHEEP)
+    [13] Build a settlement at node 21 (Cost: 1 🌲WOOD, 1 🧱BRICK, 1 🌾WHEAT, 1 🐑SHEEP)
+    [14] Build a settlement at node 22 (Cost: 1 🌲WOOD, 1 🧱BRICK, 1 🌾WHEAT, 1 🐑SHEEP)
+    [15] Build a settlement at node 23 (Cost: 1 🌲WOOD, 1 🧱BRICK, 1 🌾WHEAT, 1 🐑SHEEP)
+
+❓ Select action by number (0-15):
+
+
+Based on this information, which action number do you choose? Think step by step about your options, then put the final action number in a box like \boxed{1}.
+RESPONSE:
+### Step-by-Step Analysis
+
+#### Current Objectives
+1. **WIN** (reach 10 victory points). Therefore, every move should contribute to resource production, gaining points, or enabling future strategic moves.
+2. As the BLUE player currently has 1 victory point (a settlement), we need to expand and build efficiently to reach the 10 points target.
+
+#### Current Game State
+- My existing settlement is at **node 15**, producing 🧱 brick (10) and 🐑 sheep (9). 
+- Production breakdown:
+  - 🧱 Brick (10): ⭐ Once when dice = 10.
+  - 🐑 Sheep (9): ⭐⭐ Twice when dice = 9.
+- I currently do **not** collect 🌲 wood or 🌾 wheat, which are essential for settlement and road building.
+
+#### Key Considerations
+1. **Resource Diversity**: I need to prioritize nodes that help me collect **🌲 wood** and **🌾 wheat** to complement my existing brick and sheep production.
+2. **Dice Probability**: Target nodes with high-value dice numbers (6, 8, 5, 9).
+3. **Expand Toward Ports**: Ports allow efficient trading if resources are lacking. Ideally aim for resources near a port.
+4. **Block Opponent**: RED player currently has a strong production setup with 🌾 wheat (8) 🌲 wood (4), and ⛏ ore (5). Strategically expanding might block their access to critical resources.
+
+---
+
+#### Evaluating Settlement Options
+We analyze each node to find the best possible settlement location.
+
+##### Key Nodes:
+1. **Node 0** (🌾 Wheat (3), 🌲 Wood (4), 🐑 Sheep (9)):
+   - Pros: Diverse resources, includes 🌲 wood and 🌾 wheat, both of which I need.
+   - Cons: Moderate dice probabilities (4 and 9 are good; 3 is low).
+   
+2. **Node 5** (🌾 Wheat (3), 🐑 Sheep (9), 🧱 Brick (10)):
+   - Pros: Expands production of existing resources 🐑 and 🧱.
+   - Cons: No 🌲 wood, which is critical for roads and settlement expansion.
+   
+3. **Node 10** (🧱 Brick (10), 🌾 Wheat (3), 🌲 Wood (4)):
+   - Pros: Includes 🌲 wood and 🌾 wheat, and complements existing 🧱 brick production.
+   - Cons: Moderate dice probabilities, heavily reliant on 10.
+
+4. **Node 21** (🌾 Wheat (3), 🌾 Wheat (8), 🧱 Brick (9)):
+   - Pros: Excellent dice probabilities (with 8 being the most common roll). High wheat and brick production.
+   - Cons: No 🌲 wood or 🐑 sheep.
+
+5. **Node 13** (🧱 Brick (10), 🔍 Desert, 🌾 Wheat (3)):
+   - Pros: Relatively centered location for expanding roads.
+   - Cons: Weak resource production, blocked desert.
+
+---
+
+#### Strategic Analysis
+1. **Resources Needed**:
+   - I lack 🌲 wood and 🌾 wheat. These are critical for settlements and roads.
+   - Nodes offering 🌲 wood are essential for early-game expansion.
+2. **Dice Probability**:
+   - Nodes with high-value dice numbers (6, 8, 5, 9) are prioritized.
+3. **Long-Term Growth**:
+   - Aim to connect roads toward a port or highly productive resource clusters.
+4. **Blocking Opponent**:
+   - Ideally, choose settlement locations that limit RED player's expansion options.
+
+---
+
+#### Best Action: Build Settlement at Node 0
+- **Reasoning**:
+  - Diverse resource production: 🌾 Wheat, 🌲 Wood, 🐑 Sheep.
+  - Positioned near critical resources for future roads (toward 🌾 Wheat (8) or 🔍 Desert).
+  - Includes dice probabilities 4 (moderate), 9 (high), and 3 (low but acceptable).
+
+---
+
+<plan>Expand resource production at node 0 (🌾 Wheat + 🌲 Wood + 🐑 Sheep). Focus on road building toward a port or settlement at node 21 (🌾 Wheat + 🧱 Brick).</plan>
+
+---
+
+\boxed{0}
+========================================
+PROMPT:
+You are playing Settlers of Catan. Your task is to analyze the game state and choose the best action from the available options.
+
+Rules:
+1. Think through your decision step by step, analyzing the game state, resources, and available actions
+2. Your aim is to WIN. That means 10 victory points.
+3. Put your final chosen action inside a box like \boxed{5}
+4. Your final answer must be a single integer corresponding to the action number
+5. If you want to create or update your strategic plan, put it in <plan> tags like:
+   <plan>Build roads toward port, then build settlement at node 13, then focus on city upgrades</plan>
+6. Analyze the recent resource changes to understand what resources you're collecting effectively
+7. Think about the next 2-3 turns, not just the immediate action
+
+Board Understanding Guide:
+- The RESOURCE & NODE GRID shows hexagonal tiles with their coordinates, resources, and dice numbers
+- The nodes connected to each tile are listed below each tile
+- 🔍 marks the robber's location, blocking resource production on that hex
+- Settlements/cities and their production are listed in the BUILDINGS section
+- Understanding the connectivity between nodes is crucial for road building strategy
+- Ports allow trading resources at better rates (2:1 or 3:1)
+
+TURN 1 | Player: BLUE | Action: BUILD_INITIAL_ROAD
+
+🎯 YOUR CURRENT PLAN:
+  Expand resource production at node 0 (🌾 Wheat + 🌲 Wood + 🐑 Sheep). Focus on road building toward a port or settlement at node 21 (🌾 Wheat + 🧱 Brick).
+  To continue with this plan, select the appropriate action.
+  To adjust your plan, provide a NEW PLAN in your reasoning with <plan>your new plan</plan>
+
+📊 GAME STATUS:
+  Longest Road: None (0 segments)
+  Largest Army: None (0 knights)
+  Robber Location: (1, 0, -1)
+
+🗺️ CATAN RESOURCE & NODE GRID:
+
+  🌾8 (0, -1, 1)                 ⛏️5 (1, -1, 0)                
+  nodes: 2,3,9,10,11,12         nodes: 1,2,6,7,8,9            
+
+  🧱10 (-1, 0, 1)                🌲4 (0, 0, 0)                  🏜️- (1, 0, -1) 🔍              
+  nodes: 3,4,12,13,14,15        nodes: 0,1,2,3,4,5            nodes: 0,1,6,20,22,23         
+
+  🐑9 (-1, 1, 0)                 🌾3 (0, 1, -1)                 
+  nodes: 4,5,15,16,17,18        nodes: 0,5,16,19,20,21        
+
+
+BUILDINGS:
+- 🔴 RED: 🏠 at node 2 (produces: 🌲4[⭐], ⛏️5[⭐⭐], 🌾8[⭐⭐⭐])
+- 🔵 BLUE: 🏠 at node 15 (produces: 🧱10[⭐], 🐑9[⭐⭐])
+- 🔵 BLUE: 🏠 at node 0 (produces: 🌲4[⭐], 🌾3[⭐])
+
+ROADS:
+- 🔴 RED: (2, 9), (9, 2)
+- 🔵 BLUE: (15, 17), (17, 15)
+
+PORTS:
+
+👥 PLAYERS:
+
+  RED Player:
+    Victory Points: 1/10
+    Resources: 0 cards (hidden)
+    Development Cards: None
+    Buildings:
+      🏠 Settlements: 1 
+      🏙️ Cities: 0 
+      🛣️ Roads: 1 built (Longest: 0)
+
+  👉 BLUE Player:
+    Victory Points: 2/10
+    Resources: 1 🌲WOOD, 1 🌾WHEAT
+    Development Cards: None
+    Buildings:
+      🏠 Settlements: 2 
+      🏙️ Cities: 0 
+      🛣️ Roads: 1 built (Longest: 0)
+
+  🏦 Bank:
+    Development Cards: 25 remaining
+    Resources available for trade with bank or ports
+
+🎮 AVAILABLE ACTIONS:
+
+  Build Road Options:
+    [0] Build a road at edge (0, 1) (Cost: 1 🌲WOOD, 1 🧱BRICK)
+    [1] Build a road at edge (0, 20) (Cost: 1 🌲WOOD, 1 🧱BRICK)
+    [2] Build a road at edge (0, 5) (Cost: 1 🌲WOOD, 1 🧱BRICK)
+
+❓ Select action by number (0-2):
+
+
+Based on this information, which action number do you choose? Think step by step about your options, then put the final action number in a box like \boxed{1}.
+RESPONSE:
+### Step-by-Step Analysis
+
+#### Current Plan:
+Your plan is clear: **expand resource production at node 0 and build roads toward a port or a settlement at node 21**. This requires focusing on building roads strategically toward that goal.
+
+#### Resources:
+You currently have **1 🌲 Wood, 1 🌾 Wheat**, but no 🧱 Brick. To build a road, you need 🧱 Brick. This means that you're missing one essential resource to take action this turn unless you trade or have a suitable setup later for gathering Brick.
+
+#### Settlement and Resource Production:
+- **Node 15** produces 🧱10 and 🐑9, which gives you Brick and Sheep (but only when the dice are rolled accordingly).
+- **Node 0** produces 🌲4 and 🌾3, which gives you Wood and Wheat (important for roads and future settlements).
+
+#### Goal Location:
+- **Node 21** offers access to 🌾 Wheat and 🧱 Brick, which complements your current resource production.
+- Long-term, building toward a **port** is also viable since ports provide better trade options. However, no roads currently point to ports.
+
+#### Available Actions:
+You can build a road by selecting one of the following edges:
+1. **Option [0] Build Road (0, 1):** Expands your road toward the center of the board but does not directly advance your plan.
+2. **Option [1] Build Road (0, 20):** Moves toward connecting node 0 to node 21, aligning with your plan.
+3. **Option [2] Build Road (0, 5):** Moves toward another section of the board but distracts from your current plan.
+
+#### Strategic Road Analysis:
+- **Building toward (0, 20)** most directly supports your plan as it leads to node 21, and node 21 will significantly boost resource diversity (🌾 Wheat & 🧱 Brick). Over the next few turns, focusing on roads to node 21 and securing a settlement there will be critical to your progress.
+- The other road-building actions (edges 0, 1 and 0, 5) lack strategic synergy with your stated plan and provide minimal immediate benefits.
+
+#### Updated Strategic Plan:
+Since completing a road toward node 21 will progress your game significantly, we stick with your plan and aim to prioritize future Brick and Wheat resource gathering and settlement building at node 21.
+
+<plan>Build roads toward node 21 (using edge 0, 20), then save resources to build settlement at node 21 and utilize its production of Wheat and Brick. Focus on expanding resource diversity and considering ports next.</plan>
+
+---
+
+### Final Action:
+You lack 🧱 Brick to build a road now, but assuming trades were not explicitly mentioned in the prompt and this was about strategy selection for roads, **Action 1 (Build Road at edge 0, 20)** aligns best with your immediate and long-term goals. 
+
+\boxed{1}
+========================================
+PROMPT:
+You are playing Settlers of Catan. Your task is to analyze the game state and choose the best action from the available options.
+
+Rules:
+1. Think through your decision step by step, analyzing the game state, resources, and available actions
+2. Your aim is to WIN. That means 10 victory points.
+3. Put your final chosen action inside a box like \boxed{5}
+4. Your final answer must be a single integer corresponding to the action number
+5. If you want to create or update your strategic plan, put it in <plan> tags like:
+   <plan>Build roads toward port, then build settlement at node 13, then focus on city upgrades</plan>
+6. Analyze the recent resource changes to understand what resources you're collecting effectively
+7. Think about the next 2-3 turns, not just the immediate action
+
+Board Understanding Guide:
+- The RESOURCE & NODE GRID shows hexagonal tiles with their coordinates, resources, and dice numbers
+- The nodes connected to each tile are listed below each tile
+- 🔍 marks the robber's location, blocking resource production on that hex
+- Settlements/cities and their production are listed in the BUILDINGS section
+- Understanding the connectivity between nodes is crucial for road building strategy
+- Ports allow trading resources at better rates (2:1 or 3:1)
+
+TURN 3 | Player: BLUE | Action: PLAY_TURN
+
+🎯 YOUR CURRENT PLAN:
+  Build roads toward node 21 (using edge 0, 20), then save resources to build settlement at node 21 and utilize its production of Wheat and Brick. Focus on expanding resource diversity and considering ports next.
+  To continue with this plan, select the appropriate action.
+  To adjust your plan, provide a NEW PLAN in your reasoning with <plan>your new plan</plan>
+
+📊 GAME STATUS:
+  Longest Road: None (0 segments)
+  Largest Army: None (0 knights)
+  Robber Location: (1, 0, -1)
+
+🗺️ CATAN RESOURCE & NODE GRID:
+
+  🌾8 (0, -1, 1)                 ⛏️5 (1, -1, 0)                
+  nodes: 2,3,9,10,11,12         nodes: 1,2,6,7,8,9            
+
+  🧱10 (-1, 0, 1)                🌲4 (0, 0, 0)                  🏜️- (1, 0, -1) 🔍              
+  nodes: 3,4,12,13,14,15        nodes: 0,1,2,3,4,5            nodes: 0,1,6,20,22,23         
+
+  🐑9 (-1, 1, 0)                 🌾3 (0, 1, -1)                 
+  nodes: 4,5,15,16,17,18        nodes: 0,5,16,19,20,21        
+
+
+BUILDINGS:
+- 🔴 RED: 🏠 at node 2 (produces: 🌲4[⭐], ⛏️5[⭐⭐], 🌾8[⭐⭐⭐])
+- 🔴 RED: 🏠 at node 12 (produces: 🌾8[⭐⭐⭐], 🧱10[⭐])
+- 🔵 BLUE: 🏠 at node 15 (produces: 🧱10[⭐], 🐑9[⭐⭐])
+- 🔵 BLUE: 🏠 at node 0 (produces: 🌲4[⭐], 🌾3[⭐])
+
+ROADS:
+- 🔴 RED: (2, 9), (9, 2), (12, 13), (13, 12)
+- 🔵 BLUE: (15, 17), (17, 15), (0, 20), (20, 0)
+
+PORTS:
+
+👥 PLAYERS:
+
+  RED Player:
+    Victory Points: 2/10
+    Resources: 3 cards (hidden)
+    Development Cards: None
+    Buildings:
+      🏠 Settlements: 2 
+      🏙️ Cities: 0 
+      🛣️ Roads: 2 built (Longest: 0)
+
+  👉 BLUE Player:
+    Victory Points: 2/10
+    Resources: 1 🌲WOOD, 1 🧱BRICK, 1 🌾WHEAT
+    Development Cards: None
+    Buildings:
+      🏠 Settlements: 2 
+      🏙️ Cities: 0 
+      🛣️ Roads: 2 built (Longest: 0)
+
+  🏦 Bank:
+    Development Cards: 25 remaining
+    Resources available for trade with bank or ports
+
+🎮 AVAILABLE ACTIONS:
+
+  End Turn:
+    [0] End your turn
+
+  Build Road Options:
+    [1] Build a road at edge (0, 1) (Cost: 1 🌲WOOD, 1 🧱BRICK)
+    [2] Build a road at edge (19, 20) (Cost: 1 🌲WOOD, 1 🧱BRICK)
+    [3] Build a road at edge (4, 15) (Cost: 1 🌲WOOD, 1 🧱BRICK)
+    [4] Build a road at edge (0, 5) (Cost: 1 🌲WOOD, 1 🧱BRICK)
+    [5] Build a road at edge (20, 22) (Cost: 1 🌲WOOD, 1 🧱BRICK)
+    [6] Build a road at edge (17, 18) (Cost: 1 🌲WOOD, 1 🧱BRICK)
+    [7] Build a road at edge (14, 15) (Cost: 1 🌲WOOD, 1 🧱BRICK)
+
+❓ Select action by number (0-7):
+
+
+Based on this information, which action number do you choose? Think step by step about your options, then put the final action number in a box like \boxed{1}.
+RESPONSE:
+Let me analyze the current game state and determine the best action systematically.
+
+---
+
+### Step 1: Current Plan Review
+Your current plan is to **build roads toward node 21 (using edge 0, 20 → 20, 22)** and **build a settlement at node 21** to utilize its production of 🌾Wheat and 🧱Brick. This plan aims to:
+1. Expand your resource diversity and production by adding a settlement with valuable resources (Wheat and Brick).
+2. Position you near the port for better trade efficiency in the future.
+
+### Step 2: Available Resources
+- 🌲Wood (1), 🧱Brick (1), 🌾Wheat (1)
+
+To build a road, you'll need 1 🌲Wood and 1 🧱Brick. You have just enough resources to build one road this turn.
+
+### Step 3: Options for Road Building
+Now let’s examine each road-building option in light of your plan and game objectives:
+
+#### [1] Build a road at edge (0, 1)
+- This road doesn’t progress toward the planned settlement at node 21, nor does it contribute to any strategic objective.
+
+#### [2] Build a road at edge (19, 20)
+- This road connects node 19 to node 20. While node 19 has Wheat production (dice value 3), it's unnecessary at this point. Not aligned with your current plan.
+
+#### [3] Build a road at edge (4, 15)
+- This road expands toward no special goal and is irrelevant to your current plan.
+
+#### [4] Build a road at edge (0, 5)
+- This road doesn’t align with your plan to focus on node 21 and offers no immediate advantage.
+
+#### [5] Build a road at edge (20, 22)
+- **This road directly progresses your current plan** by moving you one step closer to node 21 for your settlement. Node 21 offers Wheat (dice value 3) and Brick (dice value 10), which diversify your resource base significantly. It also opens up potential access to the nearby port.
+
+#### [6] Build a road at edge (17, 18)
+- This road heads toward node 18, which adds only 🐑Sheep (dice value 9). While Sheep is somewhat useful, this doesn’t align with your stronger goal, which is expanding toward node 21.
+
+#### [7] Build a road at edge (14, 15)
+- Similar to [6], this road doesn’t align with your immediate plan or provide valuable resources.
+
+---
+
+### Step 4: Evaluate End Turn Option
+Choosing to end your turn without spending resources would delay progress toward your goals. Since you have resources to act now, ending the turn is suboptimal unless there’s a strategic reason (e.g., hoarding resources for a better action next turn).
+
+---
+
+### Step 5: Next 2–3 Turns
+Forward-looking considerations:
+1. Building a road at edge (20, 22) this turn allows you to build a settlement at node 21 as soon as you collect more resources (1 🌾Wheat, 1 🐑Sheep, 1 🌲Wood, 1 🧱Brick).
+2. Once the settlement at node 21 is built, your resource production will improve, and you can consider further expanding to nearby nodes or building cities for additional victory points.
+3. Node 21 also positions you well to consider the nearby port for improved trading capabilities.
+
+---
+
+### Step 6: Final Decision
+The best action is **[5] Build a road at edge (20, 22)** because it directly aligns with your current plan and sets up future turns toward achieving your objectives.
+
+\boxed{5}
+========================================
+PROMPT:
+You are playing Settlers of Catan. Your task is to analyze the game state and choose the best action from the available options.
+
+Rules:
+1. Think through your decision step by step, analyzing the game state, resources, and available actions
+2. Your aim is to WIN. That means 10 victory points.
+3. Put your final chosen action inside a box like \boxed{5}
+4. Your final answer must be a single integer corresponding to the action number
+5. If you want to create or update your strategic plan, put it in <plan> tags like:
+   <plan>Build roads toward port, then build settlement at node 13, then focus on city upgrades</plan>
+6. Analyze the recent resource changes to understand what resources you're collecting effectively
+7. Think about the next 2-3 turns, not just the immediate action
+
+Board Understanding Guide:
+- The RESOURCE & NODE GRID shows hexagonal tiles with their coordinates, resources, and dice numbers
+- The nodes connected to each tile are listed below each tile
+- 🔍 marks the robber's location, blocking resource production on that hex
+- Settlements/cities and their production are listed in the BUILDINGS section
+- Understanding the connectivity between nodes is crucial for road building strategy
+- Ports allow trading resources at better rates (2:1 or 3:1)
+
+TURN 11 | Player: BLUE | Action: MOVE_ROBBER
+
+🎯 YOUR CURRENT PLAN:
+  Build roads toward node 21 (using edge 0, 20), then save resources to build settlement at node 21 and utilize its production of Wheat and Brick. Focus on expanding resource diversity and considering ports next.
+  To continue with this plan, select the appropriate action.
+  To adjust your plan, provide a NEW PLAN in your reasoning with <plan>your new plan</plan>
+
+📊 GAME STATUS:
+  Longest Road: None (0 segments)
+  Largest Army: None (0 knights)
+  Robber Location: (1, 0, -1)
+
+🗺️ CATAN RESOURCE & NODE GRID:
+
+  🌾8 (0, -1, 1)                 ⛏️5 (1, -1, 0)                
+  nodes: 2,3,9,10,11,12         nodes: 1,2,6,7,8,9            
+
+  🧱10 (-1, 0, 1)                🌲4 (0, 0, 0)                  🏜️- (1, 0, -1) 🔍              
+  nodes: 3,4,12,13,14,15        nodes: 0,1,2,3,4,5            nodes: 0,1,6,20,22,23         
+
+  🐑9 (-1, 1, 0)                 🌾3 (0, 1, -1)                 
+  nodes: 4,5,15,16,17,18        nodes: 0,5,16,19,20,21        
+
+
+BUILDINGS:
+- 🔴 RED: 🏠 at node 2 (produces: 🌲4[⭐], ⛏️5[⭐⭐], 🌾8[⭐⭐⭐])
+- 🔴 RED: 🏠 at node 12 (produces: 🌾8[⭐⭐⭐], 🧱10[⭐])
+- 🔵 BLUE: 🏠 at node 15 (produces: 🧱10[⭐], 🐑9[⭐⭐])
+- 🔵 BLUE: 🏠 at node 0 (produces: 🌲4[⭐], 🌾3[⭐])
+
+ROADS:
+- 🔴 RED: (2, 9), (9, 2), (12, 13), (13, 12)
+- 🔵 BLUE: (15, 17), (17, 15), (0, 20), (20, 0), (20, 22), (22, 20)
+
+PORTS:
+
+👥 PLAYERS:
+
+  RED Player:
+    Victory Points: 2/10
+    Resources: 7 cards (hidden)
+    Development Cards: None
+    Buildings:
+      🏠 Settlements: 2 
+      🏙️ Cities: 0 
+      🛣️ Roads: 2 built (Longest: 1)
+
+  👉 BLUE Player:
+    Victory Points: 2/10
+    Resources: 2 🌾WHEAT
+    Development Cards: None
+    Buildings:
+      🏠 Settlements: 2 
+      🏙️ Cities: 0 
+      🛣️ Roads: 3 built (Longest: 2)
+
+  🏦 Bank:
+    Development Cards: 25 remaining
+    Resources available for trade with bank or ports
+
+🎮 AVAILABLE ACTIONS:
+
+  Move Robber Options:
+    [0] Move robber to (0, 0, 0) and steal from RED
+    [1] Move robber to (1, -1, 0) and steal from RED
+    [2] Move robber to (0, -1, 1) and steal from RED
+    [3] Move robber to (-1, 0, 1) and steal from RED
+    [4] Move robber to (-1, 1, 0)
+    [5] Move robber to (0, 1, -1)
+
+❓ Select action by number (0-5):
+
+
+Based on this information, which action number do you choose? Think step by step about your options, then put the final action number in a box like \boxed{1}.
+RESPONSE:
+To choose the best action, let’s analyze the game state and options step by step.
+
+---
+
+### Step 1: Understand the Current Plan and Resources
+#### Your Plan:
+<plan>Build roads toward node 21 (using edge 0, 20), then save resources to build settlement at node 21 and utilize its production of Wheat and Brick. Focus on expanding resource diversity and considering ports next.</plan>
+
+- **Goal:** Build towards node 21 for increased Wheat (🌾) and Brick (🧱) production, which are necessary for settlements, roads, and city upgrades.
+- **Current Resources:** 2 🌾WHEAT.
+
+To execute this, we need Brick (🧱) and Wood (🌲) to build a road, plus Brick (🧱), Wood (🌲), Wheat (🌾), and Sheep (🐑) for a settlement.
+
+#### Production Analysis:
+- Your settlements at nodes 15 and 0 produce:
+  - 🧱10 (1 Brick when 10 is rolled)
+  - 🐑9 (2 Sheep when 9 is rolled)
+  - 🌲4 (1 Wood when 4 is rolled)
+  - 🌾3 (1 Wheat when 3 is rolled)
+
+Current focus should be on acquiring Brick (🧱), Wood (🌲), and Sheep (🐑), the resources needed to build roads and settlements.
+
+---
+
+### Step 2: Analyze the Robber’s Impact
+The Robber blocks production on the hex it occupies, and moving it allows you to steal a resource from a player adjacent to that hex.
+
+- The **Robber is currently at (1, 0, -1)** (the Desert 🏜️), which doesn't block any resources.
+- Ideal placement would block our opponent's critical resources or steal a useful card from them.
+
+#### Red Player:
+- Settlements:
+  - Node 2: Produces 🌲4, ⛏️5, 🌾8.
+  - Node 12: Produces 🌾8, 🧱10.
+  
+- Resource Importance for Red:
+  - 🌾 Wheat: Red produces a lot of Wheat (5 🌾 total), making it likely they have Wheat in their hand.
+  - 🧱 Brick: Red produces some Brick.
+  - Both these resources could be valuable for Red’s development.
+
+#### Your Action Options:
+1. Move the robber strategically to block Red’s strong production hex (e.g., 🌾8 or ⛏️5).
+2. Steal from Red, focusing on resources you don’t currently have (e.g., Brick 🧱 or Wood 🌲).
+
+---
+
+### Step 3: Assess Available Actions
+Let’s evaluate the potential robber placements and their effects:
+
+#### [0] Move robber to (0, 0, 0) and steal from RED
+- Blocks 🌲4: Red produces Wood here.
+- Low production impact since Red’s Wood generation is not critical.
+
+#### [1] Move robber to (1, -1, 0) and steal from RED
+- Blocks ⛏️5: This targets Red’s Ore production (2 Ore total).
+- Would slow Red's ability to build cities or buy development cards.
+
+#### [2] Move robber to (0, -1, 1) and steal from RED
+- Blocks 🌾8: Red produces a lot of Wheat here (3 🌾 total).
+- High impact on Red’s Wheat production, limiting their ability to build settlements or cities.
+- Stealing from Red gives a chance to acquire Wheat, Brick, or Ore.
+
+#### [3] Move robber to (-1, 0, 1) and steal from RED
+- Blocks 🧱10: Red produces some Brick here (1 🧱 total).
+- Moderate impact on Red, but not as strong as blocking Wheat (🌾8).
+
+#### [4] Move robber to (-1, 1, 0)
+- Does not block any resource produced by Red or other players.
+- No impact and no stealing possible.
+
+#### [5] Move robber to (0, 1, -1)
+- Same as [4]: no impact and no stealing.
+
+---
+
+### Step 4: Make the Best Decision
+- The **best option** is [2]: Move the robber to block 🌾8 (0, -1, 1) and steal from Red.
+  - Blocking Wheat (🌾) significantly reduces Red’s ability to grow.
+  - Stealing has the chance to gain a useful resource like Brick (🧱) or Wood (🌲), which aligns with your plan to build roads and a settlement.
+
+---
+
+### Final Choice:
+\boxed{2}
+========================================
+PROMPT:
+You are playing Settlers of Catan. Your task is to analyze the game state and choose the best action from the available options.
+
+Rules:
+1. Think through your decision step by step, analyzing the game state, resources, and available actions
+2. Your aim is to WIN. That means 10 victory points.
+3. Put your final chosen action inside a box like \boxed{5}
+4. Your final answer must be a single integer corresponding to the action number
+5. If you want to create or update your strategic plan, put it in <plan> tags like:
+   <plan>Build roads toward port, then build settlement at node 13, then focus on city upgrades</plan>
+6. Analyze the recent resource changes to understand what resources you're collecting effectively
+7. Think about the next 2-3 turns, not just the immediate action
+
+Board Understanding Guide:
+- The RESOURCE & NODE GRID shows hexagonal tiles with their coordinates, resources, and dice numbers
+- The nodes connected to each tile are listed below each tile
+- 🔍 marks the robber's location, blocking resource production on that hex
+- Settlements/cities and their production are listed in the BUILDINGS section
+- Understanding the connectivity between nodes is crucial for road building strategy
+- Ports allow trading resources at better rates (2:1 or 3:1)
+
+TURN 19 | Player: BLUE | Action: PLAY_TURN
+
+🎯 YOUR CURRENT PLAN:
+  Build roads toward node 21 (using edge 0, 20), then save resources to build settlement at node 21 and utilize its production of Wheat and Brick. Focus on expanding resource diversity and considering ports next.
+  To continue with this plan, select the appropriate action.
+  To adjust your plan, provide a NEW PLAN in your reasoning with <plan>your new plan</plan>
+
+📊 GAME STATUS:
+  Longest Road: None (0 segments)
+  Largest Army: None (0 knights)
+  Robber Location: (-1, 1, 0)
+
+🗺️ CATAN RESOURCE & NODE GRID:
+
+  🌾8 (0, -1, 1)                 ⛏️5 (1, -1, 0)                
+  nodes: 2,3,9,10,11,12         nodes: 1,2,6,7,8,9            
+
+  🧱10 (-1, 0, 1)                🌲4 (0, 0, 0)                  🏜️- (1, 0, -1)                
+  nodes: 3,4,12,13,14,15        nodes: 0,1,2,3,4,5            nodes: 0,1,6,20,22,23         
+
+  🐑9 (-1, 1, 0) 🔍               🌾3 (0, 1, -1)                 
+  nodes: 4,5,15,16,17,18        nodes: 0,5,16,19,20,21        
+
+
+BUILDINGS:
+- 🔴 RED: 🏙️ at node 2 (produces: 🌲4[⭐], ⛏️5[⭐⭐], 🌾8[⭐⭐⭐])
+- 🔴 RED: 🏠 at node 12 (produces: 🌾8[⭐⭐⭐], 🧱10[⭐])
+- 🔵 BLUE: 🏠 at node 15 (produces: 🧱10[⭐], 🐑9[⭐⭐])
+- 🔵 BLUE: 🏠 at node 0 (produces: 🌲4[⭐], 🌾3[⭐])
+
+ROADS:
+- 🔴 RED: (2, 9), (9, 2), (12, 13), (13, 12)
+- 🔵 BLUE: (15, 17), (17, 15), (0, 20), (20, 0), (20, 22), (22, 20)
+
+PORTS:
+
+👥 PLAYERS:
+
+  RED Player:
+    Victory Points: 3/10
+    Resources: 6 cards (hidden)
+    Development Cards: None
+    Buildings:
+      🏠 Settlements: 1 
+      🏙️ Cities: 1 
+      🛣️ Roads: 2 built (Longest: 1)
+
+  👉 BLUE Player:
+    Victory Points: 2/10
+    Resources: 1 🌲WOOD, 1 🧱BRICK, 2 🌾WHEAT
+    Development Cards: None
+    Buildings:
+      🏠 Settlements: 2 
+      🏙️ Cities: 0 
+      🛣️ Roads: 3 built (Longest: 2)
+
+  🏦 Bank:
+    Development Cards: 25 remaining
+    Resources available for trade with bank or ports
+
+🎮 AVAILABLE ACTIONS:
+
+  End Turn:
+    [0] End your turn
+
+  Build Road Options:
+    [1] Build a road at edge (0, 1) (Cost: 1 🌲WOOD, 1 🧱BRICK)
+    [2] Build a road at edge (19, 20) (Cost: 1 🌲WOOD, 1 🧱BRICK)
+    [3] Build a road at edge (22, 23) (Cost: 1 🌲WOOD, 1 🧱BRICK)
+    [4] Build a road at edge (4, 15) (Cost: 1 🌲WOOD, 1 🧱BRICK)
+    [5] Build a road at edge (0, 5) (Cost: 1 🌲WOOD, 1 🧱BRICK)
+    [6] Build a road at edge (17, 18) (Cost: 1 🌲WOOD, 1 🧱BRICK)
+    [7] Build a road at edge (14, 15) (Cost: 1 🌲WOOD, 1 🧱BRICK)
+
+❓ Select action by number (0-7):
+
+
+Based on this information, which action number do you choose? Think step by step about your options, then put the final action number in a box like \boxed{1}.
+RESPONSE:
+### Step-by-Step Analysis:
+
+---
+
+#### 1. Current Game State:
+- As BLUE Player, you have **2 Victory Points**.
+- Resources: **1 🌲WOOD, 1 🧱BRICK, 2 🌾WHEAT**.
+- Settlements at **node 15 (🧱10 + 🐑9)** and **node 0 (🌲4 + 🌾3)**.
+- Roads built: **(15, 17), (0, 20), (20, 22)**.
+- Victory Conditions: Reach 10 victory points via settlements, cities, road control, and possibly development cards.
+
+---
+
+#### 2. Resource Evaluation:
+- Recent resource changes:
+  - **Node 0 yields 🌲WOOD and 🌾WHEAT**: These resources are infrequent because their dice numbers are **4** and **3**, respectively.
+  - **Node 15 yields 🧱BRICK and 🐑SHEEP**: These resources are slightly stronger because their dice numbers are **10** and **9**, respectively.
+  - **Robber placement on 🐑9 blocks production from node 15 for 🐑SHEEP**.
+- Key observation: I’m collecting **Wheat and Brick** effectively, while **Sheep** production is blocked. I only have **1 Wood**, limiting actions.
+
+---
+
+#### 3. Current Plan:
+<plan>Build roads toward node 21 (using edge 0, 20), then save resources to build settlement at node 21 and utilize its production of Wheat and Brick. Focus on expanding resource diversity and considering ports next.</plan>
+
+---
+
+#### 4. Strategic Options:
+The goal is to execute the current plan efficiently while weighing other opportunities to improve production and move toward victory points. The key steps in the plan require:
+
+1. **Building roads toward node 21** (nodes: **19, 20, 21**) to secure **Wheat 🌾 (dice: 3)** and **Brick 🧱 (dice: 10)**.  
+    - This continues my path expansion and focus on high-value resources.  
+    - I already have roads leading to **node 20**, so building a road at **edge (19, 20)** progresses the plan.
+
+2. **Saving Wheat and Brick** for the settlement at **node 21**.  
+    - Current resources: 2 🌾WHEAT and 1 🧱BRICK. I will need **1 Wood 🌲 and 1 Sheep 🐑** to complete the settlement.  
+
+---
+
+#### 5. Available Actions:
+Evaluate each action based on how it aligns with the plan or provides an alternative:
+
+1. **Build a road at edge (0, 1):**
+   - Adds a disconnected road. No direct benefit to my plan.
+
+2. **Build a road at edge (19, 20):**
+   - Continues my current strategic plan to expand toward node 21.
+   - Cost aligns with available resources (**1 Wood 🌲, 1 Brick 🧱**).
+
+3. **Build a road at edge (22, 23):**
+   - Extends my road network but doesn't align with the current plan.
+
+4. **Build a road at edge (4, 15):**
+   - Connects node 15 to node 4 but doesn't lead to higher-value resources or points.
+
+5. **Build a road at edge (0, 5):**
+   - Connects node 0 to node 5 but doesn’t move toward settlement at node 21.
+
+6. **Build a road at edge (17, 18):**
+   - Extends my road but doesn't lead toward node 21.
+
+7. **Build a road at edge (14, 15):**
+   - Connects node 15 toward node 14 but doesn’t align with the plan.
+
+---
+
+#### 6. Prioritization Based on Strategy:
+- The **best action** directly aligns with my strategic plan (<plan>Build roads toward port, then build settlement at node 21...</plan>) and utilizes resources efficiently.
+- Building at **edge (19, 20)** helps secure high-value future settlements.
+
+---
+
+### Final Decision:
+\boxed{2}
+========================================

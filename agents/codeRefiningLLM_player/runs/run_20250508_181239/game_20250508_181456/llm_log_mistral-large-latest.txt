@@ -1,0 +1,2492 @@
+PROMPT:
+# Catan Strategic Advisor
+
+I'll provide you with expert Catan strategy analysis to help you make the best decision. 
+Focus on these key strategic principles:
+
+## Probability-Based Resource Collection
+- Prioritize high-probability numbers (6, 8, 5, 9) when building settlements
+- Balance your resource production to avoid dependency on a single resource
+- Pay attention to what resources are scarce in the game
+
+## Resource Value Hierarchy
+- Early game: Prioritize brick and wood for initial expansion
+- Mid game: Focus on wheat and ore for city upgrades and development cards
+- Late game: Maintain balanced resource collection with emphasis on ore/wheat
+
+## Development Card Strategy
+- Buy development cards when you have excess sheep/wheat/ore
+- Hold knight cards until strategically beneficial (robber placement, largest army)
+- Remember that unplayed VP cards count towards your score
+
+## Building Strategy
+- Build settlements on resource-diverse intersections
+- Position roads to block opponents from prime settlement locations
+- Upgrade to cities on tiles with high-probability wheat and ore
+
+## Victory Point Paths
+- Cities Path: Ore and wheat focus, upgrade settlements quickly
+- Longest Road Path: Wood and brick focus, build a network of roads
+- Development Card Path: Sheep, wheat, and ore focus, buy development cards
+- Balanced Path: Mix strategies based on your initial settlement positions
+
+## Trading Strategy
+- Trade from strength (your abundant resources) to address weaknesses
+- Avoid trading resources that directly help opponents reach their next build
+- Use maritime trade (ports) when player trading is unfavorable
+- Consider the game state when deciding whether to trade
+
+Remember to adapt your strategy based on the current game state and opponents' positions.
+
+
+You are playing Settlers of Catan. Your task is to analyze the game state and choose the best action from the available options.
+
+Rules:
+1. Think through your decision step by step, analyzing the game state, resources, and available actions
+2. Your aim is to WIN. That means 10 victory points.
+3. Put your final chosen action inside a box like \boxed{5}
+4. Your final answer must be a single integer corresponding to the action number
+5. If you want to create or update your strategic plan, put it in <plan> tags like:
+   <plan>Build roads toward port, then build settlement at node 13, then focus on city upgrades</plan>
+6. Analyze the recent resource changes to understand what resources you're collecting effectively
+7. Think about the next 2-3 turns, not just the immediate action
+
+Board Understanding Guide:
+- The RESOURCE & NODE GRID shows hexagonal tiles with their coordinates, resources, and dice numbers
+- The nodes connected to each tile are listed below each tile
+- 🔍 marks the robber's location, blocking resource production on that hex
+- Settlements/cities and their production are listed in the BUILDINGS section
+- Understanding the connectivity between nodes is crucial for road building strategy
+- Ports allow trading resources at better rates (2:1 or 3:1)
+
+TURN 1 | Player: BLUE | Action: BUILD_INITIAL_SETTLEMENT
+
+📊 GAME STATUS:
+  Longest Road: None (0 segments)
+  Largest Army: None (0 knights)
+  Robber Location: (-1, 0, 1)
+
+🗺️ CATAN RESOURCE & NODE GRID:
+
+  🧱4 (0, -1, 1)                 🐑8 (1, -1, 0)                 
+  nodes: 2,3,9,10,11,12         nodes: 1,2,6,7,8,9            
+
+  🏜️- (-1, 0, 1) 🔍              🌾6 (0, 0, 0)                  ⛏️5 (1, 0, -1)                
+  nodes: 3,4,12,13,14,15        nodes: 0,1,2,3,4,5            nodes: 0,1,6,20,22,23         
+
+  🌾10 (-1, 1, 0)                🌲9 (0, 1, -1)                 
+  nodes: 4,5,15,16,17,18        nodes: 0,5,16,19,20,21        
+
+
+BUILDINGS:
+- 🔴 RED: 🏠 at node 1 (produces: 🌾6[⭐⭐⭐], 🐑8[⭐⭐⭐], ⛏️5[⭐⭐])
+
+ROADS:
+- 🔴 RED: (1, 2), (2, 1)
+
+PORTS:
+
+👥 PLAYERS:
+
+  RED Player:
+    Victory Points: 1/10
+    Resources: 0 cards (hidden)
+    Development Cards: None
+    Buildings:
+      🏠 Settlements: 1 
+      🏙️ Cities: 0 
+      🛣️ Roads: 1 built (Longest: 0)
+
+  👉 BLUE Player:
+    Victory Points: 0/10
+    Resources: None
+    Development Cards: None
+    Buildings:
+      🏠 Settlements: 0 
+      🏙️ Cities: 0 
+      🛣️ Roads: 0 built (Longest: 0)
+
+  🏦 Bank:
+    Development Cards: 25 remaining
+    Resources available for trade with bank or ports
+
+🎮 AVAILABLE ACTIONS:
+
+  Build Settlement Options:
+    [0] Build a settlement at node 3 (Cost: 1 🌲WOOD, 1 🧱BRICK, 1 🌾WHEAT, 1 🐑SHEEP)
+    [1] Build a settlement at node 4 (Cost: 1 🌲WOOD, 1 🧱BRICK, 1 🌾WHEAT, 1 🐑SHEEP)
+    [2] Build a settlement at node 5 (Cost: 1 🌲WOOD, 1 🧱BRICK, 1 🌾WHEAT, 1 🐑SHEEP)
+    [3] Build a settlement at node 7 (Cost: 1 🌲WOOD, 1 🧱BRICK, 1 🌾WHEAT, 1 🐑SHEEP)
+    [4] Build a settlement at node 8 (Cost: 1 🌲WOOD, 1 🧱BRICK, 1 🌾WHEAT, 1 🐑SHEEP)
+    [5] Build a settlement at node 9 (Cost: 1 🌲WOOD, 1 🧱BRICK, 1 🌾WHEAT, 1 🐑SHEEP)
+    [6] Build a settlement at node 10 (Cost: 1 🌲WOOD, 1 🧱BRICK, 1 🌾WHEAT, 1 🐑SHEEP)
+    [7] Build a settlement at node 11 (Cost: 1 🌲WOOD, 1 🧱BRICK, 1 🌾WHEAT, 1 🐑SHEEP)
+    [8] Build a settlement at node 12 (Cost: 1 🌲WOOD, 1 🧱BRICK, 1 🌾WHEAT, 1 🐑SHEEP)
+    [9] Build a settlement at node 13 (Cost: 1 🌲WOOD, 1 🧱BRICK, 1 🌾WHEAT, 1 🐑SHEEP)
+    [10] Build a settlement at node 14 (Cost: 1 🌲WOOD, 1 🧱BRICK, 1 🌾WHEAT, 1 🐑SHEEP)
+    [11] Build a settlement at node 15 (Cost: 1 🌲WOOD, 1 🧱BRICK, 1 🌾WHEAT, 1 🐑SHEEP)
+    [12] Build a settlement at node 16 (Cost: 1 🌲WOOD, 1 🧱BRICK, 1 🌾WHEAT, 1 🐑SHEEP)
+    [13] Build a settlement at node 17 (Cost: 1 🌲WOOD, 1 🧱BRICK, 1 🌾WHEAT, 1 🐑SHEEP)
+    [14] Build a settlement at node 18 (Cost: 1 🌲WOOD, 1 🧱BRICK, 1 🌾WHEAT, 1 🐑SHEEP)
+    [15] Build a settlement at node 19 (Cost: 1 🌲WOOD, 1 🧱BRICK, 1 🌾WHEAT, 1 🐑SHEEP)
+    [16] Build a settlement at node 20 (Cost: 1 🌲WOOD, 1 🧱BRICK, 1 🌾WHEAT, 1 🐑SHEEP)
+    [17] Build a settlement at node 21 (Cost: 1 🌲WOOD, 1 🧱BRICK, 1 🌾WHEAT, 1 🐑SHEEP)
+    [18] Build a settlement at node 22 (Cost: 1 🌲WOOD, 1 🧱BRICK, 1 🌾WHEAT, 1 🐑SHEEP)
+    [19] Build a settlement at node 23 (Cost: 1 🌲WOOD, 1 🧱BRICK, 1 🌾WHEAT, 1 🐑SHEEP)
+
+❓ Select action by number (0-19):
+
+
+Based on this information, which action number do you choose? Think step by step about your options, then put the final action number in a box like \boxed{1}.
+RESPONSE:
+To determine the best action for the BLUE player, let's analyze the game state and the available options step by step:
+
+### Game State Analysis:
+1. **Resource Distribution**:
+   - High-probability tiles are 🌾6, 🌾10, 🐑8, and ⛏️5.
+   - The red player has a settlement at node 1, which produces 🌾6, 🐑8, and ⛏️5.
+
+2. **Resource Availability**:
+   - BLUE has no resources at the moment.
+   - RED's resources are hidden, but their settlement produces 🌾, 🐑, and ⛏️.
+
+3. **Strategic Considerations**:
+   - High-probability numbers (6, 8, 5, 10) are crucial for resource collection.
+   - Early game focus should be on brick and wood for initial expansion.
+   - Diverse resource production is important to avoid dependency on a single resource.
+
+### Available Settlement Options:
+Let's evaluate the nodes based on the resources they provide and their proximity to high-probability tiles:
+
+- **Node 3**: Produces 🌾6 and 🏜️ (blocked by robber).
+- **Node 4**: Produces 🌾6 and 🌾10.
+- **Node 5**: Produces 🌾6 and 🌾10.
+- **Node 7**: Produces 🐑8 and ⛏️5.
+- **Node 8**: Produces 🐑8 and ⛏️5.
+- **Node 9**: Produces 🐑8 and 🌾6.
+- **Node 10**: Produces 🧱4 and 🌾6.
+- **Node 11**: Produces 🧱4 and 🌾6.
+- **Node 12**: Produces 🧱4 and 🏜️ (blocked by robber).
+- **Node 13**: Produces 🏜️ (blocked by robber) and 🌾10.
+- **Node 14**: Produces 🏜️ (blocked by robber) and 🌾10.
+- **Node 15**: Produces 🌾10 and 🌾6.
+- **Node 16**: Produces 🌾10 and 🌲9.
+- **Node 17**: Produces 🌾10 and 🌲9.
+- **Node 18**: Produces 🌾10 and 🌲9.
+- **Node 19**: Produces 🌲9 and ⛏️5.
+- **Node 20**: Produces 🌲9 and ⛏️5.
+- **Node 21**: Produces 🌲9 and ⛏️5.
+- **Node 22**: Produces ⛏️5 and 🌲9.
+- **Node 23**: Produces ⛏️5 and 🌲9.
+
+### Best Options:
+1. **Node 4**: Produces 🌾6 and 🌾10. This is a high-probability tile combination and provides diverse resources.
+2. **Node 5**: Produces 🌾6 and 🌾10. Similar to node 4, it provides high-probability resources.
+3. **Node 15**: Produces 🌾10 and 🌾6. Another good option for high-probability resources.
+
+### Final Decision:
+Given the need for diverse and high-probability resources, **Node 4** is the best option. It provides both 🌾6 and 🌾10, which are crucial for early game expansion and resource collection.
+
+<plan>Build a settlement at node 4 to ensure diverse and high-probability resource collection. Focus on expanding towards other high-probability tiles in the next turns.</plan>
+
+$\boxed{1}$
+========================================
+PROMPT:
+# Catan Strategic Advisor
+
+I'll provide you with expert Catan strategy analysis to help you make the best decision. 
+Focus on these key strategic principles:
+
+## Probability-Based Resource Collection
+- Prioritize high-probability numbers (6, 8, 5, 9) when building settlements
+- Balance your resource production to avoid dependency on a single resource
+- Pay attention to what resources are scarce in the game
+
+## Resource Value Hierarchy
+- Early game: Prioritize brick and wood for initial expansion
+- Mid game: Focus on wheat and ore for city upgrades and development cards
+- Late game: Maintain balanced resource collection with emphasis on ore/wheat
+
+## Development Card Strategy
+- Buy development cards when you have excess sheep/wheat/ore
+- Hold knight cards until strategically beneficial (robber placement, largest army)
+- Remember that unplayed VP cards count towards your score
+
+## Building Strategy
+- Build settlements on resource-diverse intersections
+- Position roads to block opponents from prime settlement locations
+- Upgrade to cities on tiles with high-probability wheat and ore
+
+## Victory Point Paths
+- Cities Path: Ore and wheat focus, upgrade settlements quickly
+- Longest Road Path: Wood and brick focus, build a network of roads
+- Development Card Path: Sheep, wheat, and ore focus, buy development cards
+- Balanced Path: Mix strategies based on your initial settlement positions
+
+## Trading Strategy
+- Trade from strength (your abundant resources) to address weaknesses
+- Avoid trading resources that directly help opponents reach their next build
+- Use maritime trade (ports) when player trading is unfavorable
+- Consider the game state when deciding whether to trade
+
+Remember to adapt your strategy based on the current game state and opponents' positions.
+
+
+You are playing Settlers of Catan. Your task is to analyze the game state and choose the best action from the available options.
+
+Rules:
+1. Think through your decision step by step, analyzing the game state, resources, and available actions
+2. Your aim is to WIN. That means 10 victory points.
+3. Put your final chosen action inside a box like \boxed{5}
+4. Your final answer must be a single integer corresponding to the action number
+5. If you want to create or update your strategic plan, put it in <plan> tags like:
+   <plan>Build roads toward port, then build settlement at node 13, then focus on city upgrades</plan>
+6. Analyze the recent resource changes to understand what resources you're collecting effectively
+7. Think about the next 2-3 turns, not just the immediate action
+
+Board Understanding Guide:
+- The RESOURCE & NODE GRID shows hexagonal tiles with their coordinates, resources, and dice numbers
+- The nodes connected to each tile are listed below each tile
+- 🔍 marks the robber's location, blocking resource production on that hex
+- Settlements/cities and their production are listed in the BUILDINGS section
+- Understanding the connectivity between nodes is crucial for road building strategy
+- Ports allow trading resources at better rates (2:1 or 3:1)
+
+TURN 1 | Player: BLUE | Action: BUILD_INITIAL_ROAD
+
+🎯 YOUR CURRENT PLAN:
+  Build a settlement at node 4 to ensure diverse and high-probability resource collection. Focus on expanding towards other high-probability tiles in the next turns.
+  To continue with this plan, select the appropriate action.
+  To adjust your plan, provide a NEW PLAN in your reasoning with <plan>your new plan</plan>
+
+📊 GAME STATUS:
+  Longest Road: None (0 segments)
+  Largest Army: None (0 knights)
+  Robber Location: (-1, 0, 1)
+
+🗺️ CATAN RESOURCE & NODE GRID:
+
+  🧱4 (0, -1, 1)                 🐑8 (1, -1, 0)                 
+  nodes: 2,3,9,10,11,12         nodes: 1,2,6,7,8,9            
+
+  🏜️- (-1, 0, 1) 🔍              🌾6 (0, 0, 0)                  ⛏️5 (1, 0, -1)                
+  nodes: 3,4,12,13,14,15        nodes: 0,1,2,3,4,5            nodes: 0,1,6,20,22,23         
+
+  🌾10 (-1, 1, 0)                🌲9 (0, 1, -1)                 
+  nodes: 4,5,15,16,17,18        nodes: 0,5,16,19,20,21        
+
+
+BUILDINGS:
+- 🔴 RED: 🏠 at node 1 (produces: 🌾6[⭐⭐⭐], 🐑8[⭐⭐⭐], ⛏️5[⭐⭐])
+- 🔵 BLUE: 🏠 at node 4 (produces: 🌾6[⭐⭐⭐], 🌾10[⭐])
+
+ROADS:
+- 🔴 RED: (1, 2), (2, 1)
+
+PORTS:
+
+👥 PLAYERS:
+
+  RED Player:
+    Victory Points: 1/10
+    Resources: 0 cards (hidden)
+    Development Cards: None
+    Buildings:
+      🏠 Settlements: 1 
+      🏙️ Cities: 0 
+      🛣️ Roads: 1 built (Longest: 0)
+
+  👉 BLUE Player:
+    Victory Points: 1/10
+    Resources: None
+    Development Cards: None
+    Buildings:
+      🏠 Settlements: 1 
+      🏙️ Cities: 0 
+      🛣️ Roads: 0 built (Longest: 0)
+
+  🏦 Bank:
+    Development Cards: 25 remaining
+    Resources available for trade with bank or ports
+
+🎮 AVAILABLE ACTIONS:
+
+  Build Road Options:
+    [0] Build a road at edge (4, 15) (Cost: 1 🌲WOOD, 1 🧱BRICK)
+    [1] Build a road at edge (4, 5) (Cost: 1 🌲WOOD, 1 🧱BRICK)
+    [2] Build a road at edge (3, 4) (Cost: 1 🌲WOOD, 1 🧱BRICK)
+
+❓ Select action by number (0-2):
+
+
+Based on this information, which action number do you choose? Think step by step about your options, then put the final action number in a box like \boxed{1}.
+RESPONSE:
+To determine the best action, let's analyze the game state and the available options step by step:
+
+1. **Current Plan**:
+   - Build a settlement at node 4 to ensure diverse and high-probability resource collection.
+   - Focus on expanding towards other high-probability tiles in the next turns.
+
+2. **Game Status**:
+   - Longest Road: None (0 segments)
+   - Largest Army: None (0 knights)
+   - Robber Location: (-1, 0, 1)
+
+3. **Resource & Node Grid Analysis**:
+   - Node 4 (where the BLUE settlement is) produces 🌾6 (high-probability) and 🌾10 (medium-probability).
+   - Possible expansions from node 4:
+     - Edge (4, 15) leads to node 15, which is connected to 🌾6 (high-probability).
+     - Edge (4, 5) leads to node 5, which is connected to 🌾10 (medium-probability) and 🌾6 (high-probability).
+     - Edge (3, 4) leads to node 3, which is connected to 🌾6 (high-probability) and 🧱4 (low-probability).
+
+4. **Resource Collection**:
+   - Node 15 (🌾6) has a high probability and is beneficial for early game expansion.
+   - Node 5 (🌾10, 🌾6) also has high and medium-probability resources, which is good for diverse resource collection.
+   - Node 3 (🌾6, 🧱4) has a high and low-probability resource, which is less optimal compared to nodes 15 and 5.
+
+5. **Strategic Considerations**:
+   - Building towards node 15 ensures continued high-probability wheat production, which is crucial for early expansion.
+   - Building towards node 5 provides a mix of high and medium-probability resources, which is also beneficial for balanced resource collection.
+   - Building towards node 3 provides a high-probability resource but also a low-probability resource, which is less ideal.
+
+Based on the above analysis, the best action is to build a road towards node 15, as it ensures continued high-probability wheat production, which is crucial for early expansion.
+
+<plan>Build a road at edge (4, 15) to ensure continued high-probability wheat production. Focus on expanding towards other high-probability tiles in the next turns.</plan>
+
+Therefore, the chosen action is:
+
+$$\boxed{0}$$
+========================================
+PROMPT:
+# Catan Strategic Advisor
+
+I'll provide you with expert Catan strategy analysis to help you make the best decision. 
+Focus on these key strategic principles:
+
+## Probability-Based Resource Collection
+- Prioritize high-probability numbers (6, 8, 5, 9) when building settlements
+- Balance your resource production to avoid dependency on a single resource
+- Pay attention to what resources are scarce in the game
+
+## Resource Value Hierarchy
+- Early game: Prioritize brick and wood for initial expansion
+- Mid game: Focus on wheat and ore for city upgrades and development cards
+- Late game: Maintain balanced resource collection with emphasis on ore/wheat
+
+## Development Card Strategy
+- Buy development cards when you have excess sheep/wheat/ore
+- Hold knight cards until strategically beneficial (robber placement, largest army)
+- Remember that unplayed VP cards count towards your score
+
+## Building Strategy
+- Build settlements on resource-diverse intersections
+- Position roads to block opponents from prime settlement locations
+- Upgrade to cities on tiles with high-probability wheat and ore
+
+## Victory Point Paths
+- Cities Path: Ore and wheat focus, upgrade settlements quickly
+- Longest Road Path: Wood and brick focus, build a network of roads
+- Development Card Path: Sheep, wheat, and ore focus, buy development cards
+- Balanced Path: Mix strategies based on your initial settlement positions
+
+## Trading Strategy
+- Trade from strength (your abundant resources) to address weaknesses
+- Avoid trading resources that directly help opponents reach their next build
+- Use maritime trade (ports) when player trading is unfavorable
+- Consider the game state when deciding whether to trade
+
+Remember to adapt your strategy based on the current game state and opponents' positions.
+
+
+You are playing Settlers of Catan. Your task is to analyze the game state and choose the best action from the available options.
+
+Rules:
+1. Think through your decision step by step, analyzing the game state, resources, and available actions
+2. Your aim is to WIN. That means 10 victory points.
+3. Put your final chosen action inside a box like \boxed{5}
+4. Your final answer must be a single integer corresponding to the action number
+5. If you want to create or update your strategic plan, put it in <plan> tags like:
+   <plan>Build roads toward port, then build settlement at node 13, then focus on city upgrades</plan>
+6. Analyze the recent resource changes to understand what resources you're collecting effectively
+7. Think about the next 2-3 turns, not just the immediate action
+
+Board Understanding Guide:
+- The RESOURCE & NODE GRID shows hexagonal tiles with their coordinates, resources, and dice numbers
+- The nodes connected to each tile are listed below each tile
+- 🔍 marks the robber's location, blocking resource production on that hex
+- Settlements/cities and their production are listed in the BUILDINGS section
+- Understanding the connectivity between nodes is crucial for road building strategy
+- Ports allow trading resources at better rates (2:1 or 3:1)
+
+TURN 1 | Player: BLUE | Action: BUILD_INITIAL_SETTLEMENT
+
+🎯 YOUR CURRENT PLAN:
+  Build a road at edge (4, 15) to ensure continued high-probability wheat production. Focus on expanding towards other high-probability tiles in the next turns.
+  To continue with this plan, select the appropriate action.
+  To adjust your plan, provide a NEW PLAN in your reasoning with <plan>your new plan</plan>
+
+📊 GAME STATUS:
+  Longest Road: None (0 segments)
+  Largest Army: None (0 knights)
+  Robber Location: (-1, 0, 1)
+
+🗺️ CATAN RESOURCE & NODE GRID:
+
+  🧱4 (0, -1, 1)                 🐑8 (1, -1, 0)                 
+  nodes: 2,3,9,10,11,12         nodes: 1,2,6,7,8,9            
+
+  🏜️- (-1, 0, 1) 🔍              🌾6 (0, 0, 0)                  ⛏️5 (1, 0, -1)                
+  nodes: 3,4,12,13,14,15        nodes: 0,1,2,3,4,5            nodes: 0,1,6,20,22,23         
+
+  🌾10 (-1, 1, 0)                🌲9 (0, 1, -1)                 
+  nodes: 4,5,15,16,17,18        nodes: 0,5,16,19,20,21        
+
+
+BUILDINGS:
+- 🔴 RED: 🏠 at node 1 (produces: 🌾6[⭐⭐⭐], 🐑8[⭐⭐⭐], ⛏️5[⭐⭐])
+- 🔵 BLUE: 🏠 at node 4 (produces: 🌾6[⭐⭐⭐], 🌾10[⭐])
+
+ROADS:
+- 🔴 RED: (1, 2), (2, 1)
+- 🔵 BLUE: (4, 15), (15, 4)
+
+PORTS:
+
+👥 PLAYERS:
+
+  RED Player:
+    Victory Points: 1/10
+    Resources: 0 cards (hidden)
+    Development Cards: None
+    Buildings:
+      🏠 Settlements: 1 
+      🏙️ Cities: 0 
+      🛣️ Roads: 1 built (Longest: 0)
+
+  👉 BLUE Player:
+    Victory Points: 1/10
+    Resources: None
+    Development Cards: None
+    Buildings:
+      🏠 Settlements: 1 
+      🏙️ Cities: 0 
+      🛣️ Roads: 1 built (Longest: 0)
+
+  🏦 Bank:
+    Development Cards: 25 remaining
+    Resources available for trade with bank or ports
+
+🎮 AVAILABLE ACTIONS:
+
+  Build Settlement Options:
+    [0] Build a settlement at node 7 (Cost: 1 🌲WOOD, 1 🧱BRICK, 1 🌾WHEAT, 1 🐑SHEEP)
+    [1] Build a settlement at node 8 (Cost: 1 🌲WOOD, 1 🧱BRICK, 1 🌾WHEAT, 1 🐑SHEEP)
+    [2] Build a settlement at node 9 (Cost: 1 🌲WOOD, 1 🧱BRICK, 1 🌾WHEAT, 1 🐑SHEEP)
+    [3] Build a settlement at node 10 (Cost: 1 🌲WOOD, 1 🧱BRICK, 1 🌾WHEAT, 1 🐑SHEEP)
+    [4] Build a settlement at node 11 (Cost: 1 🌲WOOD, 1 🧱BRICK, 1 🌾WHEAT, 1 🐑SHEEP)
+    [5] Build a settlement at node 12 (Cost: 1 🌲WOOD, 1 🧱BRICK, 1 🌾WHEAT, 1 🐑SHEEP)
+    [6] Build a settlement at node 13 (Cost: 1 🌲WOOD, 1 🧱BRICK, 1 🌾WHEAT, 1 🐑SHEEP)
+    [7] Build a settlement at node 14 (Cost: 1 🌲WOOD, 1 🧱BRICK, 1 🌾WHEAT, 1 🐑SHEEP)
+    [8] Build a settlement at node 16 (Cost: 1 🌲WOOD, 1 🧱BRICK, 1 🌾WHEAT, 1 🐑SHEEP)
+    [9] Build a settlement at node 17 (Cost: 1 🌲WOOD, 1 🧱BRICK, 1 🌾WHEAT, 1 🐑SHEEP)
+    [10] Build a settlement at node 18 (Cost: 1 🌲WOOD, 1 🧱BRICK, 1 🌾WHEAT, 1 🐑SHEEP)
+    [11] Build a settlement at node 19 (Cost: 1 🌲WOOD, 1 🧱BRICK, 1 🌾WHEAT, 1 🐑SHEEP)
+    [12] Build a settlement at node 20 (Cost: 1 🌲WOOD, 1 🧱BRICK, 1 🌾WHEAT, 1 🐑SHEEP)
+    [13] Build a settlement at node 21 (Cost: 1 🌲WOOD, 1 🧱BRICK, 1 🌾WHEAT, 1 🐑SHEEP)
+    [14] Build a settlement at node 22 (Cost: 1 🌲WOOD, 1 🧱BRICK, 1 🌾WHEAT, 1 🐑SHEEP)
+    [15] Build a settlement at node 23 (Cost: 1 🌲WOOD, 1 🧱BRICK, 1 🌾WHEAT, 1 🐑SHEEP)
+
+❓ Select action by number (0-15):
+
+
+Based on this information, which action number do you choose? Think step by step about your options, then put the final action number in a box like \boxed{1}.
+RESPONSE:
+To make the best decision, let's analyze the current game state and the available options step by step:
+
+1. **Current Plan**:
+   - The current plan is to build a road at edge (4, 15) to ensure continued high-probability wheat production and expand towards other high-probability tiles.
+
+2. **Current Resources**:
+   - BLUE has no resources currently.
+
+3. **Available Actions**:
+   - All available actions are to build a settlement at various nodes.
+
+4. **Resource Analysis**:
+   - BLUE currently has a settlement at node 4, which produces 🌾6 and 🌾10.
+   - RED has a settlement at node 1, which produces 🌾6, 🐑8, and ⛏️5.
+
+5. **Strategic Considerations**:
+   - Since BLUE has no resources, building a settlement is not immediately possible.
+   - The plan suggests focusing on high-probability tiles.
+   - Nodes connected to high-probability tiles are:
+     - Node 7: Connected to 🐑8 and 🧱4.
+     - Node 8: Connected to 🐑8 and 🌾6.
+     - Node 9: Connected to 🐑8 and 🌾6.
+     - Node 10: Connected to 🧱4 and 🌾10.
+     - Node 11: Connected to 🧱4.
+     - Node 12: Connected to 🧱4 and 🌾6.
+     - Node 13: Connected to 🌾6 and 🌾10.
+     - Node 14: Connected to 🌾10.
+     - Node 16: Connected to 🌾10.
+     - Node 17: Connected to 🌾10.
+     - Node 18: Connected to 🌾10.
+     - Node 19: Connected to 🌲9.
+     - Node 20: Connected to 🌲9 and ⛏️5.
+     - Node 21: Connected to 🌲9.
+     - Node 22: Connected to ⛏️5.
+     - Node 23: Connected to ⛏️5.
+
+6. **Optimal Node Selection**:
+   - Node 13 is connected to 🌾6 and 🌾10, both high-probability tiles.
+   - Building at node 13 ensures continued high-probability wheat production and aligns with the current plan.
+
+7. **Adjusting the Plan**:
+   - The plan should be adjusted to prioritize the settlement at node 13 and then focus on resource collection for future expansions.
+
+<plan>Build a settlement at node 13 to ensure continued high-probability wheat production. Focus on collecting resources for future expansions towards other high-probability tiles.</plan>
+
+Given the analysis, the best action is to build a settlement at node 13.
+
+$\boxed{6}$
+========================================
+PROMPT:
+# Catan Strategic Advisor
+
+I'll provide you with expert Catan strategy analysis to help you make the best decision. 
+Focus on these key strategic principles:
+
+## Probability-Based Resource Collection
+- Prioritize high-probability numbers (6, 8, 5, 9) when building settlements
+- Balance your resource production to avoid dependency on a single resource
+- Pay attention to what resources are scarce in the game
+
+## Resource Value Hierarchy
+- Early game: Prioritize brick and wood for initial expansion
+- Mid game: Focus on wheat and ore for city upgrades and development cards
+- Late game: Maintain balanced resource collection with emphasis on ore/wheat
+
+## Development Card Strategy
+- Buy development cards when you have excess sheep/wheat/ore
+- Hold knight cards until strategically beneficial (robber placement, largest army)
+- Remember that unplayed VP cards count towards your score
+
+## Building Strategy
+- Build settlements on resource-diverse intersections
+- Position roads to block opponents from prime settlement locations
+- Upgrade to cities on tiles with high-probability wheat and ore
+
+## Victory Point Paths
+- Cities Path: Ore and wheat focus, upgrade settlements quickly
+- Longest Road Path: Wood and brick focus, build a network of roads
+- Development Card Path: Sheep, wheat, and ore focus, buy development cards
+- Balanced Path: Mix strategies based on your initial settlement positions
+
+## Trading Strategy
+- Trade from strength (your abundant resources) to address weaknesses
+- Avoid trading resources that directly help opponents reach their next build
+- Use maritime trade (ports) when player trading is unfavorable
+- Consider the game state when deciding whether to trade
+
+Remember to adapt your strategy based on the current game state and opponents' positions.
+
+
+You are playing Settlers of Catan. Your task is to analyze the game state and choose the best action from the available options.
+
+Rules:
+1. Think through your decision step by step, analyzing the game state, resources, and available actions
+2. Your aim is to WIN. That means 10 victory points.
+3. Put your final chosen action inside a box like \boxed{5}
+4. Your final answer must be a single integer corresponding to the action number
+5. If you want to create or update your strategic plan, put it in <plan> tags like:
+   <plan>Build roads toward port, then build settlement at node 13, then focus on city upgrades</plan>
+6. Analyze the recent resource changes to understand what resources you're collecting effectively
+7. Think about the next 2-3 turns, not just the immediate action
+
+Board Understanding Guide:
+- The RESOURCE & NODE GRID shows hexagonal tiles with their coordinates, resources, and dice numbers
+- The nodes connected to each tile are listed below each tile
+- 🔍 marks the robber's location, blocking resource production on that hex
+- Settlements/cities and their production are listed in the BUILDINGS section
+- Understanding the connectivity between nodes is crucial for road building strategy
+- Ports allow trading resources at better rates (2:1 or 3:1)
+
+TURN 1 | Player: BLUE | Action: BUILD_INITIAL_ROAD
+
+🎯 YOUR CURRENT PLAN:
+  Build a settlement at node 13 to ensure continued high-probability wheat production. Focus on collecting resources for future expansions towards other high-probability tiles.
+  To continue with this plan, select the appropriate action.
+  To adjust your plan, provide a NEW PLAN in your reasoning with <plan>your new plan</plan>
+
+📊 GAME STATUS:
+  Longest Road: None (0 segments)
+  Largest Army: None (0 knights)
+  Robber Location: (-1, 0, 1)
+
+🗺️ CATAN RESOURCE & NODE GRID:
+
+  🧱4 (0, -1, 1)                 🐑8 (1, -1, 0)                 
+  nodes: 2,3,9,10,11,12         nodes: 1,2,6,7,8,9            
+
+  🏜️- (-1, 0, 1) 🔍              🌾6 (0, 0, 0)                  ⛏️5 (1, 0, -1)                
+  nodes: 3,4,12,13,14,15        nodes: 0,1,2,3,4,5            nodes: 0,1,6,20,22,23         
+
+  🌾10 (-1, 1, 0)                🌲9 (0, 1, -1)                 
+  nodes: 4,5,15,16,17,18        nodes: 0,5,16,19,20,21        
+
+
+BUILDINGS:
+- 🔴 RED: 🏠 at node 1 (produces: 🌾6[⭐⭐⭐], 🐑8[⭐⭐⭐], ⛏️5[⭐⭐])
+- 🔵 BLUE: 🏠 at node 4 (produces: 🌾6[⭐⭐⭐], 🌾10[⭐])
+- 🔵 BLUE: 🏠 at node 13 (produces: no resources)
+
+ROADS:
+- 🔴 RED: (1, 2), (2, 1)
+- 🔵 BLUE: (4, 15), (15, 4)
+
+PORTS:
+
+👥 PLAYERS:
+
+  RED Player:
+    Victory Points: 1/10
+    Resources: 0 cards (hidden)
+    Development Cards: None
+    Buildings:
+      🏠 Settlements: 1 
+      🏙️ Cities: 0 
+      🛣️ Roads: 1 built (Longest: 0)
+
+  👉 BLUE Player:
+    Victory Points: 2/10
+    Resources: None
+    Development Cards: None
+    Buildings:
+      🏠 Settlements: 2 
+      🏙️ Cities: 0 
+      🛣️ Roads: 1 built (Longest: 0)
+
+  🏦 Bank:
+    Development Cards: 25 remaining
+    Resources available for trade with bank or ports
+
+🎮 AVAILABLE ACTIONS:
+
+  Build Road Options:
+    [0] Build a road at edge (13, 14) (Cost: 1 🌲WOOD, 1 🧱BRICK)
+    [1] Build a road at edge (12, 13) (Cost: 1 🌲WOOD, 1 🧱BRICK)
+
+❓ Select action by number (0-1):
+
+
+Based on this information, which action number do you choose? Think step by step about your options, then put the final action number in a box like \boxed{1}.
+RESPONSE:
+To make the best decision, let's analyze the game state and the available options step by step:
+
+1. **Current Plan**: The current plan is to build a settlement at node 13 to ensure high-probability wheat production and focus on collecting resources for future expansions towards other high-probability tiles.
+
+2. **Game State Analysis**:
+   - **Your Settlements**:
+     - Node 4: Produces 🌾6[⭐⭐⭐], 🌾10[⭐]
+     - Node 13: Produces no resources (not yet activated)
+   - **Opponent's Settlements**:
+     - Node 1: Produces 🌾6[⭐⭐⭐], 🐑8[⭐⭐⭐], ⛏️5[⭐⭐]
+   - **Resource Collection**:
+     - You need to prioritize high-probability numbers (6, 8, 5, 9).
+     - Your current settlements are on tiles with 6 and 10, which are good but you need to diversify.
+
+3. **Available Actions**:
+   - [0] Build a road at edge (13, 14) (Cost: 1 🌲WOOD, 1 🧱BRICK)
+   - [1] Build a road at edge (12, 13) (Cost: 1 🌲WOOD, 1 🧱BRICK)
+
+4. **Strategic Considerations**:
+   - **Road Placement**:
+     - Building a road at edge (13, 14) would connect node 13 to node 14, which is adjacent to the 🏜️- (-1, 0, 1) tile (currently blocked by the robber).
+     - Building a road at edge (12, 13) would connect node 13 to node 12, which is adjacent to the 🌾6 (0, 0, 0) tile and the 🧱4 (0, -1, 1) tile.
+   - **Future Expansion**:
+     - Connecting to node 12 allows for future expansion towards the 🧱4 tile, which has a high-probability number (4) and provides bricks, which are valuable for building roads.
+     - Connecting to node 14 does not provide immediate benefits due to the robber's presence and the lack of high-probability resources in the vicinity.
+
+5. **Resource Availability**:
+   - You currently have no resources, but the goal is to plan for future resource collection.
+   - Building towards node 12 aligns with the strategy of diversifying resource collection and ensuring access to high-probability tiles.
+
+6. **Next Steps**:
+   - After building the road, the next step would be to build a settlement at node 12, which would provide access to the 🌾6 tile and the 🧱4 tile.
+   - This would diversify your resource collection and set you up for future expansions.
+
+Based on the analysis, the best action is to build a road at edge (12, 13) to connect to node 12. This aligns with the current plan and sets up future expansions towards high-probability tiles.
+
+<plan>Build a road at edge (12, 13), then build a settlement at node 12 to diversify resource collection. Focus on collecting resources for future expansions towards other high-probability tiles.</plan>
+
+$\boxed{1}$
+========================================
+PROMPT:
+# Catan Strategic Advisor
+
+I'll provide you with expert Catan strategy analysis to help you make the best decision. 
+Focus on these key strategic principles:
+
+## Probability-Based Resource Collection
+- Prioritize high-probability numbers (6, 8, 5, 9) when building settlements
+- Balance your resource production to avoid dependency on a single resource
+- Pay attention to what resources are scarce in the game
+
+## Resource Value Hierarchy
+- Early game: Prioritize brick and wood for initial expansion
+- Mid game: Focus on wheat and ore for city upgrades and development cards
+- Late game: Maintain balanced resource collection with emphasis on ore/wheat
+
+## Development Card Strategy
+- Buy development cards when you have excess sheep/wheat/ore
+- Hold knight cards until strategically beneficial (robber placement, largest army)
+- Remember that unplayed VP cards count towards your score
+
+## Building Strategy
+- Build settlements on resource-diverse intersections
+- Position roads to block opponents from prime settlement locations
+- Upgrade to cities on tiles with high-probability wheat and ore
+
+## Victory Point Paths
+- Cities Path: Ore and wheat focus, upgrade settlements quickly
+- Longest Road Path: Wood and brick focus, build a network of roads
+- Development Card Path: Sheep, wheat, and ore focus, buy development cards
+- Balanced Path: Mix strategies based on your initial settlement positions
+
+## Trading Strategy
+- Trade from strength (your abundant resources) to address weaknesses
+- Avoid trading resources that directly help opponents reach their next build
+- Use maritime trade (ports) when player trading is unfavorable
+- Consider the game state when deciding whether to trade
+
+Remember to adapt your strategy based on the current game state and opponents' positions.
+
+
+You are playing Settlers of Catan. Your task is to analyze the game state and choose the best action from the available options.
+
+Rules:
+1. Think through your decision step by step, analyzing the game state, resources, and available actions
+2. Your aim is to WIN. That means 10 victory points.
+3. Put your final chosen action inside a box like \boxed{5}
+4. Your final answer must be a single integer corresponding to the action number
+5. If you want to create or update your strategic plan, put it in <plan> tags like:
+   <plan>Build roads toward port, then build settlement at node 13, then focus on city upgrades</plan>
+6. Analyze the recent resource changes to understand what resources you're collecting effectively
+7. Think about the next 2-3 turns, not just the immediate action
+
+Board Understanding Guide:
+- The RESOURCE & NODE GRID shows hexagonal tiles with their coordinates, resources, and dice numbers
+- The nodes connected to each tile are listed below each tile
+- 🔍 marks the robber's location, blocking resource production on that hex
+- Settlements/cities and their production are listed in the BUILDINGS section
+- Understanding the connectivity between nodes is crucial for road building strategy
+- Ports allow trading resources at better rates (2:1 or 3:1)
+
+TURN 13 | Player: BLUE | Action: PLAY_TURN
+
+🎯 YOUR CURRENT PLAN:
+  Build a road at edge (12, 13), then build a settlement at node 12 to diversify resource collection. Focus on collecting resources for future expansions towards other high-probability tiles.
+  To continue with this plan, select the appropriate action.
+  To adjust your plan, provide a NEW PLAN in your reasoning with <plan>your new plan</plan>
+
+📊 GAME STATUS:
+  Longest Road: None (0 segments)
+  Largest Army: None (0 knights)
+  Robber Location: (-1, 0, 1)
+
+🗺️ CATAN RESOURCE & NODE GRID:
+
+  🧱4 (0, -1, 1)                 🐑8 (1, -1, 0)                 
+  nodes: 2,3,9,10,11,12         nodes: 1,2,6,7,8,9            
+
+  🏜️- (-1, 0, 1) 🔍              🌾6 (0, 0, 0)                  ⛏️5 (1, 0, -1)                
+  nodes: 3,4,12,13,14,15        nodes: 0,1,2,3,4,5            nodes: 0,1,6,20,22,23         
+
+  🌾10 (-1, 1, 0)                🌲9 (0, 1, -1)                 
+  nodes: 4,5,15,16,17,18        nodes: 0,5,16,19,20,21        
+
+
+BUILDINGS:
+- 🔴 RED: 🏙️ at node 1 (produces: 🌾6[⭐⭐⭐], 🐑8[⭐⭐⭐], ⛏️5[⭐⭐])
+- 🔴 RED: 🏠 at node 20 (produces: 🌲9[⭐⭐], ⛏️5[⭐⭐])
+- 🔵 BLUE: 🏠 at node 4 (produces: 🌾6[⭐⭐⭐], 🌾10[⭐])
+- 🔵 BLUE: 🏠 at node 13 (produces: no resources)
+
+ROADS:
+- 🔴 RED: (1, 2), (2, 1), (19, 20), (20, 19), (2, 9), (9, 2)
+- 🔵 BLUE: (4, 15), (15, 4), (12, 13), (13, 12)
+
+PORTS:
+
+👥 PLAYERS:
+
+  RED Player:
+    Victory Points: 3/10
+    Resources: 7 cards (hidden)
+    Development Cards: None
+    Buildings:
+      🏠 Settlements: 1 
+      🏙️ Cities: 1 
+      🛣️ Roads: 3 built (Longest: 2)
+
+  👉 BLUE Player:
+    Victory Points: 2/10
+    Resources: 4 🌾WHEAT
+    Development Cards: None
+    Buildings:
+      🏠 Settlements: 2 
+      🏙️ Cities: 0 
+      🛣️ Roads: 2 built (Longest: 1)
+
+  🏦 Bank:
+    Development Cards: 25 remaining
+    Resources available for trade with bank or ports
+
+🎮 AVAILABLE ACTIONS:
+
+  End Turn:
+    [0] End your turn
+
+  Maritime Trade Options:
+    [1] Trade port: Give 4 🌾WHEAT for 1 ⛏️ORE
+    [2] Trade port: Give 4 🌾WHEAT for 1 🌲WOOD
+    [3] Trade port: Give 4 🌾WHEAT for 1 🐑SHEEP
+    [4] Trade port: Give 4 🌾WHEAT for 1 🧱BRICK
+
+❓ Select action by number (0-4):
+
+
+Based on this information, which action number do you choose? Think step by step about your options, then put the final action number in a box like \boxed{1}.
+RESPONSE:
+To determine the best action, let's analyze the game state and the available options step by step:
+
+1. **Game State Analysis:**
+   - **Victory Points:** You (BLUE) have 2 VP, while RED has 3 VP.
+   - **Resources:** You have 4 WHEAT.
+   - **Buildings:** You have settlements at nodes 4 and 13. Node 4 produces WHEAT from tiles with numbers 6 and 10. Node 13 currently produces no resources.
+   - **Robber Location:** The robber is at (-1, 0, 1), blocking resource production on that tile.
+   - **Ports:** You have access to maritime trade options.
+
+2. **Current Plan:**
+   - Your plan is to build a road at edge (12, 13) and then build a settlement at node 12 to diversify resource collection.
+
+3. **Available Actions:**
+   - End Turn [0]
+   - Trade 4 WHEAT for 1 ORE [1]
+   - Trade 4 WHEAT for 1 WOOD [2]
+   - Trade 4 WHEAT for 1 SHEEP [3]
+   - Trade 4 WHEAT for 1 BRICK [4]
+
+4. **Resource Needs:**
+   - To continue with your plan, you need to build a road. Building a road requires 1 WOOD and 1 BRICK.
+   - You currently have 4 WHEAT, which is not useful for building roads directly.
+
+5. **Trade Options:**
+   - You can trade 4 WHEAT for 1 WOOD [2] or 1 BRICK [4].
+   - Since you need both WOOD and BRICK to build a road, you should prioritize acquiring one of these resources.
+
+6. **Strategic Consideration:**
+   - Trading 4 WHEAT for 1 WOOD [2] will allow you to get closer to building the road you need.
+   - You can then focus on acquiring BRICK in future turns to complete the road.
+
+Given the above analysis, the best action is to trade 4 WHEAT for 1 WOOD to move closer to your goal of building a road.
+
+\[ \boxed{2} \]
+========================================
+PROMPT:
+# Catan Strategic Advisor
+
+I'll provide you with expert Catan strategy analysis to help you make the best decision. 
+Focus on these key strategic principles:
+
+## Probability-Based Resource Collection
+- Prioritize high-probability numbers (6, 8, 5, 9) when building settlements
+- Balance your resource production to avoid dependency on a single resource
+- Pay attention to what resources are scarce in the game
+
+## Resource Value Hierarchy
+- Early game: Prioritize brick and wood for initial expansion
+- Mid game: Focus on wheat and ore for city upgrades and development cards
+- Late game: Maintain balanced resource collection with emphasis on ore/wheat
+
+## Development Card Strategy
+- Buy development cards when you have excess sheep/wheat/ore
+- Hold knight cards until strategically beneficial (robber placement, largest army)
+- Remember that unplayed VP cards count towards your score
+
+## Building Strategy
+- Build settlements on resource-diverse intersections
+- Position roads to block opponents from prime settlement locations
+- Upgrade to cities on tiles with high-probability wheat and ore
+
+## Victory Point Paths
+- Cities Path: Ore and wheat focus, upgrade settlements quickly
+- Longest Road Path: Wood and brick focus, build a network of roads
+- Development Card Path: Sheep, wheat, and ore focus, buy development cards
+- Balanced Path: Mix strategies based on your initial settlement positions
+
+## Trading Strategy
+- Trade from strength (your abundant resources) to address weaknesses
+- Avoid trading resources that directly help opponents reach their next build
+- Use maritime trade (ports) when player trading is unfavorable
+- Consider the game state when deciding whether to trade
+
+Remember to adapt your strategy based on the current game state and opponents' positions.
+
+
+You are playing Settlers of Catan. Your task is to analyze the game state and choose the best action from the available options.
+
+Rules:
+1. Think through your decision step by step, analyzing the game state, resources, and available actions
+2. Your aim is to WIN. That means 10 victory points.
+3. Put your final chosen action inside a box like \boxed{5}
+4. Your final answer must be a single integer corresponding to the action number
+5. If you want to create or update your strategic plan, put it in <plan> tags like:
+   <plan>Build roads toward port, then build settlement at node 13, then focus on city upgrades</plan>
+6. Analyze the recent resource changes to understand what resources you're collecting effectively
+7. Think about the next 2-3 turns, not just the immediate action
+
+Board Understanding Guide:
+- The RESOURCE & NODE GRID shows hexagonal tiles with their coordinates, resources, and dice numbers
+- The nodes connected to each tile are listed below each tile
+- 🔍 marks the robber's location, blocking resource production on that hex
+- Settlements/cities and their production are listed in the BUILDINGS section
+- Understanding the connectivity between nodes is crucial for road building strategy
+- Ports allow trading resources at better rates (2:1 or 3:1)
+
+TURN 15 | Player: BLUE | Action: MOVE_ROBBER
+
+🎯 YOUR CURRENT PLAN:
+  Build a road at edge (12, 13), then build a settlement at node 12 to diversify resource collection. Focus on collecting resources for future expansions towards other high-probability tiles.
+  To continue with this plan, select the appropriate action.
+  To adjust your plan, provide a NEW PLAN in your reasoning with <plan>your new plan</plan>
+
+📊 GAME STATUS:
+  Longest Road: None (0 segments)
+  Largest Army: None (0 knights)
+  Robber Location: (-1, 0, 1)
+
+🗺️ CATAN RESOURCE & NODE GRID:
+
+  🧱4 (0, -1, 1)                 🐑8 (1, -1, 0)                 
+  nodes: 2,3,9,10,11,12         nodes: 1,2,6,7,8,9            
+
+  🏜️- (-1, 0, 1) 🔍              🌾6 (0, 0, 0)                  ⛏️5 (1, 0, -1)                
+  nodes: 3,4,12,13,14,15        nodes: 0,1,2,3,4,5            nodes: 0,1,6,20,22,23         
+
+  🌾10 (-1, 1, 0)                🌲9 (0, 1, -1)                 
+  nodes: 4,5,15,16,17,18        nodes: 0,5,16,19,20,21        
+
+
+BUILDINGS:
+- 🔴 RED: 🏙️ at node 1 (produces: 🌾6[⭐⭐⭐], 🐑8[⭐⭐⭐], ⛏️5[⭐⭐])
+- 🔴 RED: 🏠 at node 20 (produces: 🌲9[⭐⭐], ⛏️5[⭐⭐])
+- 🔵 BLUE: 🏠 at node 4 (produces: 🌾6[⭐⭐⭐], 🌾10[⭐])
+- 🔵 BLUE: 🏠 at node 13 (produces: no resources)
+
+ROADS:
+- 🔴 RED: (1, 2), (2, 1), (19, 20), (20, 19), (2, 9), (9, 2)
+- 🔵 BLUE: (4, 15), (15, 4), (12, 13), (13, 12)
+
+PORTS:
+
+👥 PLAYERS:
+
+  RED Player:
+    Victory Points: 3/10
+    Resources: 4 cards (hidden)
+    Development Cards: None
+    Buildings:
+      🏠 Settlements: 1 
+      🏙️ Cities: 1 
+      🛣️ Roads: 3 built (Longest: 2)
+
+  👉 BLUE Player:
+    Victory Points: 2/10
+    Resources: 1 🌲WOOD
+    Development Cards: None
+    Buildings:
+      🏠 Settlements: 2 
+      🏙️ Cities: 0 
+      🛣️ Roads: 2 built (Longest: 1)
+
+  🏦 Bank:
+    Development Cards: 25 remaining
+    Resources available for trade with bank or ports
+
+🎮 AVAILABLE ACTIONS:
+
+  Move Robber Options:
+    [0] Move robber to (0, 0, 0) and steal from RED
+    [1] Move robber to (1, -1, 0) and steal from RED
+    [2] Move robber to (0, -1, 1)
+    [3] Move robber to (-1, 1, 0)
+    [4] Move robber to (0, 1, -1) and steal from RED
+    [5] Move robber to (1, 0, -1) and steal from RED
+
+❓ Select action by number (0-5):
+
+
+Based on this information, which action number do you choose? Think step by step about your options, then put the final action number in a box like \boxed{1}.
+RESPONSE:
+Let's analyze the game state and decide the best action step by step.
+
+### Current Game State Analysis:
+1. **Resource Production**:
+   - BLUE has settlements at nodes 4 and 13.
+   - Node 4 produces wheat from tiles with numbers 6 and 10.
+   - Node 13 currently produces no resources.
+
+2. **Robber Location**:
+   - The robber is currently at (-1, 0, 1), which is a desert tile and does not block any resource production.
+
+3. **Available Actions**:
+   - Move the robber to any of the following tiles:
+     - [0] (0, 0, 0) - Wheat tile with number 6 (affects RED and BLUE)
+     - [1] (1, -1, 0) - Sheep tile with number 8 (affects RED)
+     - [2] (0, -1, 1) - Brick tile with number 4
+     - [3] (-1, 1, 0) - Wheat tile with number 10 (affects BLUE)
+     - [4] (0, 1, -1) - Wood tile with number 9 (affects RED)
+     - [5] (1, 0, -1) - Ore tile with number 5 (affects RED)
+
+4. **Strategic Considerations**:
+   - BLUE needs to diversify resource collection.
+   - Moving the robber to a tile that affects RED's resource production can slow down their progress.
+   - BLUE should avoid moving the robber to tiles that affect their own resource production.
+
+### Action Analysis:
+- **[0] Move robber to (0, 0, 0)**:
+  - This tile produces wheat with number 6.
+  - Affects both RED and BLUE.
+  - Not ideal as it affects BLUE's resource production.
+
+- **[1] Move robber to (1, -1, 0)**:
+  - This tile produces sheep with number 8.
+  - Affects RED.
+  - Good option as it affects RED's resource production without affecting BLUE.
+
+- **[2] Move robber to (0, -1, 1)**:
+  - This tile produces brick with number 4.
+  - Does not affect any player's current resource production.
+  - Not a strategic move.
+
+- **[3] Move robber to (-1, 1, 0)**:
+  - This tile produces wheat with number 10.
+  - Affects BLUE.
+  - Not ideal as it affects BLUE's resource production.
+
+- **[4] Move robber to (0, 1, -1)**:
+  - This tile produces wood with number 9.
+  - Affects RED.
+  - Good option as it affects RED's resource production without affecting BLUE.
+
+- **[5] Move robber to (1, 0, -1)**:
+  - This tile produces ore with number 5.
+  - Affects RED.
+  - Good option as it affects RED's resource production without affecting BLUE.
+
+### Best Action:
+- Moving the robber to (1, -1, 0) affects RED's resource production without affecting BLUE.
+- This will slow down RED's progress and allow BLUE to continue with their plan.
+
+### Final Decision:
+\[ \boxed{1} \]
+========================================
+PROMPT:
+# Catan Strategic Advisor
+
+I'll provide you with expert Catan strategy analysis to help you make the best decision. 
+Focus on these key strategic principles:
+
+## Probability-Based Resource Collection
+- Prioritize high-probability numbers (6, 8, 5, 9) when building settlements
+- Balance your resource production to avoid dependency on a single resource
+- Pay attention to what resources are scarce in the game
+
+## Resource Value Hierarchy
+- Early game: Prioritize brick and wood for initial expansion
+- Mid game: Focus on wheat and ore for city upgrades and development cards
+- Late game: Maintain balanced resource collection with emphasis on ore/wheat
+
+## Development Card Strategy
+- Buy development cards when you have excess sheep/wheat/ore
+- Hold knight cards until strategically beneficial (robber placement, largest army)
+- Remember that unplayed VP cards count towards your score
+
+## Building Strategy
+- Build settlements on resource-diverse intersections
+- Position roads to block opponents from prime settlement locations
+- Upgrade to cities on tiles with high-probability wheat and ore
+
+## Victory Point Paths
+- Cities Path: Ore and wheat focus, upgrade settlements quickly
+- Longest Road Path: Wood and brick focus, build a network of roads
+- Development Card Path: Sheep, wheat, and ore focus, buy development cards
+- Balanced Path: Mix strategies based on your initial settlement positions
+
+## Trading Strategy
+- Trade from strength (your abundant resources) to address weaknesses
+- Avoid trading resources that directly help opponents reach their next build
+- Use maritime trade (ports) when player trading is unfavorable
+- Consider the game state when deciding whether to trade
+
+Remember to adapt your strategy based on the current game state and opponents' positions.
+
+
+You are playing Settlers of Catan. Your task is to analyze the game state and choose the best action from the available options.
+
+Rules:
+1. Think through your decision step by step, analyzing the game state, resources, and available actions
+2. Your aim is to WIN. That means 10 victory points.
+3. Put your final chosen action inside a box like \boxed{5}
+4. Your final answer must be a single integer corresponding to the action number
+5. If you want to create or update your strategic plan, put it in <plan> tags like:
+   <plan>Build roads toward port, then build settlement at node 13, then focus on city upgrades</plan>
+6. Analyze the recent resource changes to understand what resources you're collecting effectively
+7. Think about the next 2-3 turns, not just the immediate action
+
+Board Understanding Guide:
+- The RESOURCE & NODE GRID shows hexagonal tiles with their coordinates, resources, and dice numbers
+- The nodes connected to each tile are listed below each tile
+- 🔍 marks the robber's location, blocking resource production on that hex
+- Settlements/cities and their production are listed in the BUILDINGS section
+- Understanding the connectivity between nodes is crucial for road building strategy
+- Ports allow trading resources at better rates (2:1 or 3:1)
+
+TURN 21 | Player: BLUE | Action: MOVE_ROBBER
+
+🎯 YOUR CURRENT PLAN:
+  Build a road at edge (12, 13), then build a settlement at node 12 to diversify resource collection. Focus on collecting resources for future expansions towards other high-probability tiles.
+  To continue with this plan, select the appropriate action.
+  To adjust your plan, provide a NEW PLAN in your reasoning with <plan>your new plan</plan>
+
+📊 GAME STATUS:
+  Longest Road: None (0 segments)
+  Largest Army: None (0 knights)
+  Robber Location: (-1, 0, 1)
+
+🗺️ CATAN RESOURCE & NODE GRID:
+
+  🧱4 (0, -1, 1)                 🐑8 (1, -1, 0)                 
+  nodes: 2,3,9,10,11,12         nodes: 1,2,6,7,8,9            
+
+  🏜️- (-1, 0, 1) 🔍              🌾6 (0, 0, 0)                  ⛏️5 (1, 0, -1)                
+  nodes: 3,4,12,13,14,15        nodes: 0,1,2,3,4,5            nodes: 0,1,6,20,22,23         
+
+  🌾10 (-1, 1, 0)                🌲9 (0, 1, -1)                 
+  nodes: 4,5,15,16,17,18        nodes: 0,5,16,19,20,21        
+
+
+BUILDINGS:
+- 🔴 RED: 🏙️ at node 1 (produces: 🌾6[⭐⭐⭐], 🐑8[⭐⭐⭐], ⛏️5[⭐⭐])
+- 🔴 RED: 🏙️ at node 20 (produces: 🌲9[⭐⭐], ⛏️5[⭐⭐])
+- 🔵 BLUE: 🏠 at node 4 (produces: 🌾6[⭐⭐⭐], 🌾10[⭐])
+- 🔵 BLUE: 🏠 at node 13 (produces: no resources)
+
+ROADS:
+- 🔴 RED: (1, 2), (2, 1), (19, 20), (20, 19), (2, 9), (9, 2)
+- 🔵 BLUE: (4, 15), (15, 4), (12, 13), (13, 12)
+
+PORTS:
+
+👥 PLAYERS:
+
+  RED Player:
+    Victory Points: 4/10
+    Resources: 4 cards (hidden)
+    Development Cards: None
+    Buildings:
+      🏠 Settlements: 0 
+      🏙️ Cities: 2 
+      🛣️ Roads: 3 built (Longest: 2)
+
+  👉 BLUE Player:
+    Victory Points: 2/10
+    Resources: 1 🌲WOOD, 1 🌾WHEAT
+    Development Cards: None
+    Buildings:
+      🏠 Settlements: 2 
+      🏙️ Cities: 0 
+      🛣️ Roads: 2 built (Longest: 1)
+
+  🏦 Bank:
+    Development Cards: 25 remaining
+    Resources available for trade with bank or ports
+
+🎮 AVAILABLE ACTIONS:
+
+  Move Robber Options:
+    [0] Move robber to (0, 0, 0) and steal from RED
+    [1] Move robber to (1, -1, 0) and steal from RED
+    [2] Move robber to (0, -1, 1)
+    [3] Move robber to (-1, 1, 0)
+    [4] Move robber to (0, 1, -1) and steal from RED
+    [5] Move robber to (1, 0, -1) and steal from RED
+
+❓ Select action by number (0-5):
+
+
+Based on this information, which action number do you choose? Think step by step about your options, then put the final action number in a box like \boxed{1}.
+RESPONSE:
+To make the best decision, let's analyze the game state step by step:
+
+### Current Game State Analysis:
+1. **Resource Collection:**
+   - **BLUE**: You have settlements at nodes 4 and 13.
+     - Node 4 produces wheat from tiles 🌾6 and 🌾10.
+     - Node 13 currently does not produce any resources due to the robber.
+   - **RED**: Has cities at nodes 1 and 20.
+     - Node 1 produces wheat, sheep, and ore.
+     - Node 20 produces wood and ore.
+
+2. **Victory Points:**
+   - **BLUE**: 2 points (2 settlements).
+   - **RED**: 4 points (2 cities).
+
+3. **Resource Cards:**
+   - **BLUE**: 1 wood, 1 wheat.
+   - **RED**: 4 unknown cards.
+
+4. **Robber Location:**
+   - Currently at (-1, 0, 1), blocking node 13 from producing resources.
+
+### Strategic Considerations:
+1. **Probability-Based Resource Collection:**
+   - Moving the robber to a high-probability tile can significantly impact resource collection for both players.
+   - Tile 🌾6 (0, 0, 0) is a high-probability tile producing wheat, which is crucial for both players.
+
+2. **Resource Value Hierarchy:**
+   - Early game: Prioritize brick and wood for initial expansion.
+   - Mid game: Focus on wheat and ore for city upgrades and development cards.
+
+3. **Opponent Impact:**
+   - RED has cities that produce a lot of resources. Blocking RED's resource production can slow down their progress.
+
+4. **Current Plan:**
+   - Build a road at edge (12, 13), then build a settlement at node 12 to diversify resource collection.
+   - Moving the robber to a strategic location can help in executing this plan by gaining resources from RED.
+
+### Available Actions:
+- [0] Move robber to (0, 0, 0) and steal from RED
+- [1] Move robber to (1, -1, 0) and steal from RED
+- [2] Move robber to (0, -1, 1)
+- [3] Move robber to (-1, 1, 0)
+- [4] Move robber to (0, 1, -1) and steal from RED
+- [5] Move robber to (1, 0, -1) and steal from RED
+
+### Decision Making:
+1. **Move Robber to (0, 0, 0) and Steal from RED [0]:**
+   - Blocks a high-probability wheat tile.
+   - Steals a resource from RED, potentially slowing their progress.
+   - Wheat is crucial for city upgrades and development cards.
+
+2. **Move Robber to (1, -1, 0) and Steal from RED [1]:**
+   - Blocks a high-probability sheep tile.
+   - Sheep is less critical compared to wheat in the mid-game.
+
+3. **Move Robber to (0, -1, 1) [2]:**
+   - Blocks a low-probability brick tile.
+   - Less impactful as brick is not a high-priority resource currently.
+
+4. **Move Robber to (-1, 1, 0) [3]:**
+   - Blocks a high-probability wheat tile.
+   - No steal option, less beneficial compared to option [0].
+
+5. **Move Robber to (0, 1, -1) and Steal from RED [4]:**
+   - Blocks a high-probability wood tile.
+   - Wood is important for early expansion but less critical in the mid-game.
+
+6. **Move Robber to (1, 0, -1) and Steal from RED [5]:**
+   - Blocks a high-probability ore tile.
+   - Ore is crucial for city upgrades and development cards.
+   - Stealing ore from RED can significantly slow their progress.
+
+### Final Decision:
+Given the current game state and strategic considerations, the best action is to move the robber to (1, 0, -1) and steal from RED. This blocks a high-probability ore tile and allows you to steal a crucial resource from RED, potentially slowing their progress towards city upgrades and development cards.
+
+<plan>Continue with the plan to build a road at edge (12, 13), then build a settlement at node 12 to diversify resource collection. Focus on collecting resources for future expansions towards other high-probability tiles.</plan>
+
+$\boxed{5}$
+========================================
+PROMPT:
+# Catan Strategic Advisor
+
+I'll provide you with expert Catan strategy analysis to help you make the best decision. 
+Focus on these key strategic principles:
+
+## Probability-Based Resource Collection
+- Prioritize high-probability numbers (6, 8, 5, 9) when building settlements
+- Balance your resource production to avoid dependency on a single resource
+- Pay attention to what resources are scarce in the game
+
+## Resource Value Hierarchy
+- Early game: Prioritize brick and wood for initial expansion
+- Mid game: Focus on wheat and ore for city upgrades and development cards
+- Late game: Maintain balanced resource collection with emphasis on ore/wheat
+
+## Development Card Strategy
+- Buy development cards when you have excess sheep/wheat/ore
+- Hold knight cards until strategically beneficial (robber placement, largest army)
+- Remember that unplayed VP cards count towards your score
+
+## Building Strategy
+- Build settlements on resource-diverse intersections
+- Position roads to block opponents from prime settlement locations
+- Upgrade to cities on tiles with high-probability wheat and ore
+
+## Victory Point Paths
+- Cities Path: Ore and wheat focus, upgrade settlements quickly
+- Longest Road Path: Wood and brick focus, build a network of roads
+- Development Card Path: Sheep, wheat, and ore focus, buy development cards
+- Balanced Path: Mix strategies based on your initial settlement positions
+
+## Trading Strategy
+- Trade from strength (your abundant resources) to address weaknesses
+- Avoid trading resources that directly help opponents reach their next build
+- Use maritime trade (ports) when player trading is unfavorable
+- Consider the game state when deciding whether to trade
+
+Remember to adapt your strategy based on the current game state and opponents' positions.
+
+
+You are playing Settlers of Catan. Your task is to analyze the game state and choose the best action from the available options.
+
+Rules:
+1. Think through your decision step by step, analyzing the game state, resources, and available actions
+2. Your aim is to WIN. That means 10 victory points.
+3. Put your final chosen action inside a box like \boxed{5}
+4. Your final answer must be a single integer corresponding to the action number
+5. If you want to create or update your strategic plan, put it in <plan> tags like:
+   <plan>Build roads toward port, then build settlement at node 13, then focus on city upgrades</plan>
+6. Analyze the recent resource changes to understand what resources you're collecting effectively
+7. Think about the next 2-3 turns, not just the immediate action
+
+Board Understanding Guide:
+- The RESOURCE & NODE GRID shows hexagonal tiles with their coordinates, resources, and dice numbers
+- The nodes connected to each tile are listed below each tile
+- 🔍 marks the robber's location, blocking resource production on that hex
+- Settlements/cities and their production are listed in the BUILDINGS section
+- Understanding the connectivity between nodes is crucial for road building strategy
+- Ports allow trading resources at better rates (2:1 or 3:1)
+
+TURN 27 | Player: BLUE | Action: MOVE_ROBBER
+
+🎯 YOUR CURRENT PLAN:
+  Continue with the plan to build a road at edge (12, 13), then build a settlement at node 12 to diversify resource collection. Focus on collecting resources for future expansions towards other high-probability tiles.
+  To continue with this plan, select the appropriate action.
+  To adjust your plan, provide a NEW PLAN in your reasoning with <plan>your new plan</plan>
+
+📊 GAME STATUS:
+  Longest Road: None (0 segments)
+  Largest Army: None (0 knights)
+  Robber Location: (-1, 0, 1)
+
+🗺️ CATAN RESOURCE & NODE GRID:
+
+  🧱4 (0, -1, 1)                 🐑8 (1, -1, 0)                 
+  nodes: 2,3,9,10,11,12         nodes: 1,2,6,7,8,9            
+
+  🏜️- (-1, 0, 1) 🔍              🌾6 (0, 0, 0)                  ⛏️5 (1, 0, -1)                
+  nodes: 3,4,12,13,14,15        nodes: 0,1,2,3,4,5            nodes: 0,1,6,20,22,23         
+
+  🌾10 (-1, 1, 0)                🌲9 (0, 1, -1)                 
+  nodes: 4,5,15,16,17,18        nodes: 0,5,16,19,20,21        
+
+
+BUILDINGS:
+- 🔴 RED: 🏙️ at node 1 (produces: 🌾6[⭐⭐⭐], 🐑8[⭐⭐⭐], ⛏️5[⭐⭐])
+- 🔴 RED: 🏙️ at node 20 (produces: 🌲9[⭐⭐], ⛏️5[⭐⭐])
+- 🔵 BLUE: 🏠 at node 4 (produces: 🌾6[⭐⭐⭐], 🌾10[⭐])
+- 🔵 BLUE: 🏠 at node 13 (produces: no resources)
+
+ROADS:
+- 🔴 RED: (1, 2), (2, 1), (19, 20), (20, 19), (2, 9), (9, 2)
+- 🔵 BLUE: (4, 15), (15, 4), (12, 13), (13, 12)
+
+PORTS:
+
+👥 PLAYERS:
+
+  RED Player:
+    Victory Points: 4/10
+    Resources: 6 cards (hidden)
+    Development Cards: None
+    Buildings:
+      🏠 Settlements: 0 
+      🏙️ Cities: 2 
+      🛣️ Roads: 3 built (Longest: 2)
+
+  👉 BLUE Player:
+    Victory Points: 2/10
+    Resources: 1 🌲WOOD, 3 🌾WHEAT
+    Development Cards: None
+    Buildings:
+      🏠 Settlements: 2 
+      🏙️ Cities: 0 
+      🛣️ Roads: 2 built (Longest: 1)
+
+  🏦 Bank:
+    Development Cards: 25 remaining
+    Resources available for trade with bank or ports
+
+🎮 AVAILABLE ACTIONS:
+
+  Move Robber Options:
+    [0] Move robber to (0, 0, 0) and steal from RED
+    [1] Move robber to (1, -1, 0) and steal from RED
+    [2] Move robber to (0, -1, 1)
+    [3] Move robber to (-1, 1, 0)
+    [4] Move robber to (0, 1, -1) and steal from RED
+    [5] Move robber to (1, 0, -1) and steal from RED
+
+❓ Select action by number (0-5):
+
+
+Based on this information, which action number do you choose? Think step by step about your options, then put the final action number in a box like \boxed{1}.
+RESPONSE:
+Let's break down the situation and analyze the best action step by step:
+
+1. **Understand the Current Plan**:
+   - The current plan is to build a road at edge (12, 13), then build a settlement at node 12 to diversify resource collection.
+   - To continue with this plan, we need to ensure that our resource collection is not hindered by the robber.
+
+2. **Evaluate Resource Collection**:
+   - BLUE currently has settlements at nodes 4 and 13.
+   - Node 4 produces wheat from tiles 🌾6 and 🌾10.
+   - Node 13 currently produces no resources.
+
+3. **Analyze Robber Placement Options**:
+   - Option [0]: Move robber to (0, 0, 0) and steal from RED. This tile produces 🌾6.
+   - Option [1]: Move robber to (1, -1, 0) and steal from RED. This tile produces 🐑8.
+   - Option [2]: Move robber to (0, -1, 1). This tile produces 🧱4.
+   - Option [3]: Move robber to (-1, 1, 0). This tile produces 🌾10.
+   - Option [4]: Move robber to (0, 1, -1) and steal from RED. This tile produces 🌲9.
+   - Option [5]: Move robber to (1, 0, -1) and steal from RED. This tile produces ⛏️5.
+
+4. **Strategic Considerations**:
+   - Moving the robber to (0, 0, 0) will block the 🌾6 tile, which is crucial for BLUE's wheat production.
+   - Moving the robber to (1, -1, 0) will block the 🐑8 tile, which is less critical for BLUE but will affect RED.
+   - Moving the robber to (0, -1, 1) will block the 🧱4 tile, which does not affect BLUE directly.
+   - Moving the robber to (-1, 1, 0) will block the 🌾10 tile, which is important for BLUE's wheat production.
+   - Moving the robber to (0, 1, -1) will block the 🌲9 tile, which does not affect BLUE directly.
+   - Moving the robber to (1, 0, -1) will block the ⛏️5 tile, which does not affect BLUE directly but will affect RED.
+
+5. **Best Action**:
+   - To ensure BLUE's resource collection is not hindered, we should avoid placing the robber on tiles that produce wheat (🌾6 and 🌾10).
+   - Placing the robber on (0, 1, -1) will block the 🌲9 tile, which does not affect BLUE's current resource collection and will not affect RED's resource collection significantly.
+
+Therefore, the best action is:
+
+\[ \boxed{4} \]
+========================================
+PROMPT:
+# Catan Strategic Advisor
+
+I'll provide you with expert Catan strategy analysis to help you make the best decision. 
+Focus on these key strategic principles:
+
+## Probability-Based Resource Collection
+- Prioritize high-probability numbers (6, 8, 5, 9) when building settlements
+- Balance your resource production to avoid dependency on a single resource
+- Pay attention to what resources are scarce in the game
+
+## Resource Value Hierarchy
+- Early game: Prioritize brick and wood for initial expansion
+- Mid game: Focus on wheat and ore for city upgrades and development cards
+- Late game: Maintain balanced resource collection with emphasis on ore/wheat
+
+## Development Card Strategy
+- Buy development cards when you have excess sheep/wheat/ore
+- Hold knight cards until strategically beneficial (robber placement, largest army)
+- Remember that unplayed VP cards count towards your score
+
+## Building Strategy
+- Build settlements on resource-diverse intersections
+- Position roads to block opponents from prime settlement locations
+- Upgrade to cities on tiles with high-probability wheat and ore
+
+## Victory Point Paths
+- Cities Path: Ore and wheat focus, upgrade settlements quickly
+- Longest Road Path: Wood and brick focus, build a network of roads
+- Development Card Path: Sheep, wheat, and ore focus, buy development cards
+- Balanced Path: Mix strategies based on your initial settlement positions
+
+## Trading Strategy
+- Trade from strength (your abundant resources) to address weaknesses
+- Avoid trading resources that directly help opponents reach their next build
+- Use maritime trade (ports) when player trading is unfavorable
+- Consider the game state when deciding whether to trade
+
+Remember to adapt your strategy based on the current game state and opponents' positions.
+
+
+You are playing Settlers of Catan. Your task is to analyze the game state and choose the best action from the available options.
+
+Rules:
+1. Think through your decision step by step, analyzing the game state, resources, and available actions
+2. Your aim is to WIN. That means 10 victory points.
+3. Put your final chosen action inside a box like \boxed{5}
+4. Your final answer must be a single integer corresponding to the action number
+5. If you want to create or update your strategic plan, put it in <plan> tags like:
+   <plan>Build roads toward port, then build settlement at node 13, then focus on city upgrades</plan>
+6. Analyze the recent resource changes to understand what resources you're collecting effectively
+7. Think about the next 2-3 turns, not just the immediate action
+
+Board Understanding Guide:
+- The RESOURCE & NODE GRID shows hexagonal tiles with their coordinates, resources, and dice numbers
+- The nodes connected to each tile are listed below each tile
+- 🔍 marks the robber's location, blocking resource production on that hex
+- Settlements/cities and their production are listed in the BUILDINGS section
+- Understanding the connectivity between nodes is crucial for road building strategy
+- Ports allow trading resources at better rates (2:1 or 3:1)
+
+TURN 29 | Player: BLUE | Action: PLAY_TURN
+
+🎯 YOUR CURRENT PLAN:
+  Continue with the plan to build a road at edge (12, 13), then build a settlement at node 12 to diversify resource collection. Focus on collecting resources for future expansions towards other high-probability tiles.
+  To continue with this plan, select the appropriate action.
+  To adjust your plan, provide a NEW PLAN in your reasoning with <plan>your new plan</plan>
+
+📊 GAME STATUS:
+  Longest Road: None (0 segments)
+  Largest Army: None (0 knights)
+  Robber Location: (0, 1, -1)
+
+🗺️ CATAN RESOURCE & NODE GRID:
+
+  🧱4 (0, -1, 1)                 🐑8 (1, -1, 0)                 
+  nodes: 2,3,9,10,11,12         nodes: 1,2,6,7,8,9            
+
+  🏜️- (-1, 0, 1)                🌾6 (0, 0, 0)                  ⛏️5 (1, 0, -1)                
+  nodes: 3,4,12,13,14,15        nodes: 0,1,2,3,4,5            nodes: 0,1,6,20,22,23         
+
+  🌾10 (-1, 1, 0)                🌲9 (0, 1, -1) 🔍               
+  nodes: 4,5,15,16,17,18        nodes: 0,5,16,19,20,21        
+
+
+BUILDINGS:
+- 🔴 RED: 🏙️ at node 1 (produces: 🌾6[⭐⭐⭐], 🐑8[⭐⭐⭐], ⛏️5[⭐⭐])
+- 🔴 RED: 🏙️ at node 20 (produces: 🌲9[⭐⭐], ⛏️5[⭐⭐])
+- 🔵 BLUE: 🏠 at node 4 (produces: 🌾6[⭐⭐⭐], 🌾10[⭐])
+- 🔵 BLUE: 🏠 at node 13 (produces: no resources)
+
+ROADS:
+- 🔴 RED: (1, 2), (2, 1), (19, 20), (20, 19), (2, 9), (9, 2)
+- 🔵 BLUE: (4, 15), (15, 4), (12, 13), (13, 12)
+
+PORTS:
+
+👥 PLAYERS:
+
+  RED Player:
+    Victory Points: 4/10
+    Resources: 7 cards (hidden)
+    Development Cards: None
+    Buildings:
+      🏠 Settlements: 0 
+      🏙️ Cities: 2 
+      🛣️ Roads: 3 built (Longest: 2)
+
+  👉 BLUE Player:
+    Victory Points: 2/10
+    Resources: 2 🌲WOOD, 4 🌾WHEAT
+    Development Cards: None
+    Buildings:
+      🏠 Settlements: 2 
+      🏙️ Cities: 0 
+      🛣️ Roads: 2 built (Longest: 1)
+
+  🏦 Bank:
+    Development Cards: 25 remaining
+    Resources available for trade with bank or ports
+
+🎮 AVAILABLE ACTIONS:
+
+  End Turn:
+    [0] End your turn
+
+  Maritime Trade Options:
+    [1] Trade port: Give 4 🌾WHEAT for 1 ⛏️ORE
+    [2] Trade port: Give 4 🌾WHEAT for 1 🌲WOOD
+    [3] Trade port: Give 4 🌾WHEAT for 1 🐑SHEEP
+    [4] Trade port: Give 4 🌾WHEAT for 1 🧱BRICK
+
+❓ Select action by number (0-4):
+
+
+Based on this information, which action number do you choose? Think step by step about your options, then put the final action number in a box like \boxed{1}.
+RESPONSE:
+To determine the best action for the BLUE player, let's analyze the current game state and the available actions step by step:
+
+### Current Game State Analysis:
+1. **Victory Points**:
+   - BLUE has 2 VP.
+   - RED has 4 VP.
+
+2. **Resources**:
+   - BLUE has 2 🌲WOOD and 4 🌾WHEAT.
+   - RED has 7 unknown resources.
+
+3. **Buildings and Roads**:
+   - BLUE: 2 settlements (nodes 4 and 13), 2 roads (edges (4, 15) and (12, 13)).
+   - RED: 2 cities (nodes 1 and 20), 3 roads (edges (1, 2), (2, 1), (19, 20), (20, 19), (2, 9), (9, 2)).
+
+4. **Resource Collection**:
+   - BLUE's settlements produce 🌾6 and 🌾10.
+   - RED's cities produce 🌾6, 🐑8, ⛏️5, and 🌲9.
+
+5. **Robber Location**:
+   - The robber is at (0, 1, -1), blocking the 🌲9 tile.
+
+6. **Strategic Plan**:
+   - The current plan is to build a road at edge (12, 13) and a settlement at node 12 to diversify resource collection.
+
+### Available Actions:
+1. **End Turn**:
+   - [0] End your turn.
+
+2. **Maritime Trade Options**:
+   - [1] Trade port: Give 4 🌾WHEAT for 1 ⛏️ORE.
+   - [2] Trade port: Give 4 🌾WHEAT for 1 🌲WOOD.
+   - [3] Trade port: Give 4 🌾WHEAT for 1 🐑SHEEP.
+   - [4] Trade port: Give 4 🌾WHEAT for 1 🧱BRICK.
+
+### Analysis of Options:
+1. **End Turn**:
+   - Ending the turn without making a move could be detrimental as it doesn't advance the strategic plan.
+
+2. **Maritime Trade Options**:
+   - BLUE has 4 🌾WHEAT, which can be traded for any other resource.
+   - Considering the current resources (2 🌲WOOD and 4 🌾WHEAT), trading 4 🌾WHEAT for 1 ⛏️ORE or 1 🧱BRICK could be beneficial.
+   - ⛏️ORE is crucial for city upgrades and development cards, which are important in the mid-game.
+   - 🧱BRICK is important for building roads and settlements, which are crucial for expansion.
+
+### Decision:
+- Given the current plan to diversify resource collection and expand towards high-probability tiles, acquiring 🧱BRICK would be more beneficial for building roads and settlements.
+- Trading 4 🌾WHEAT for 1 🧱BRICK will allow BLUE to build a road at edge (12, 13) and then a settlement at node 12, aligning with the strategic plan.
+
+Therefore, the best action is:
+
+\[ \boxed{4} \]
+========================================
+PROMPT:
+# Catan Strategic Advisor
+
+I'll provide you with expert Catan strategy analysis to help you make the best decision. 
+Focus on these key strategic principles:
+
+## Probability-Based Resource Collection
+- Prioritize high-probability numbers (6, 8, 5, 9) when building settlements
+- Balance your resource production to avoid dependency on a single resource
+- Pay attention to what resources are scarce in the game
+
+## Resource Value Hierarchy
+- Early game: Prioritize brick and wood for initial expansion
+- Mid game: Focus on wheat and ore for city upgrades and development cards
+- Late game: Maintain balanced resource collection with emphasis on ore/wheat
+
+## Development Card Strategy
+- Buy development cards when you have excess sheep/wheat/ore
+- Hold knight cards until strategically beneficial (robber placement, largest army)
+- Remember that unplayed VP cards count towards your score
+
+## Building Strategy
+- Build settlements on resource-diverse intersections
+- Position roads to block opponents from prime settlement locations
+- Upgrade to cities on tiles with high-probability wheat and ore
+
+## Victory Point Paths
+- Cities Path: Ore and wheat focus, upgrade settlements quickly
+- Longest Road Path: Wood and brick focus, build a network of roads
+- Development Card Path: Sheep, wheat, and ore focus, buy development cards
+- Balanced Path: Mix strategies based on your initial settlement positions
+
+## Trading Strategy
+- Trade from strength (your abundant resources) to address weaknesses
+- Avoid trading resources that directly help opponents reach their next build
+- Use maritime trade (ports) when player trading is unfavorable
+- Consider the game state when deciding whether to trade
+
+Remember to adapt your strategy based on the current game state and opponents' positions.
+
+
+You are playing Settlers of Catan. Your task is to analyze the game state and choose the best action from the available options.
+
+Rules:
+1. Think through your decision step by step, analyzing the game state, resources, and available actions
+2. Your aim is to WIN. That means 10 victory points.
+3. Put your final chosen action inside a box like \boxed{5}
+4. Your final answer must be a single integer corresponding to the action number
+5. If you want to create or update your strategic plan, put it in <plan> tags like:
+   <plan>Build roads toward port, then build settlement at node 13, then focus on city upgrades</plan>
+6. Analyze the recent resource changes to understand what resources you're collecting effectively
+7. Think about the next 2-3 turns, not just the immediate action
+
+Board Understanding Guide:
+- The RESOURCE & NODE GRID shows hexagonal tiles with their coordinates, resources, and dice numbers
+- The nodes connected to each tile are listed below each tile
+- 🔍 marks the robber's location, blocking resource production on that hex
+- Settlements/cities and their production are listed in the BUILDINGS section
+- Understanding the connectivity between nodes is crucial for road building strategy
+- Ports allow trading resources at better rates (2:1 or 3:1)
+
+TURN 29 | Player: BLUE | Action: PLAY_TURN
+
+🎯 YOUR CURRENT PLAN:
+  Continue with the plan to build a road at edge (12, 13), then build a settlement at node 12 to diversify resource collection. Focus on collecting resources for future expansions towards other high-probability tiles.
+  To continue with this plan, select the appropriate action.
+  To adjust your plan, provide a NEW PLAN in your reasoning with <plan>your new plan</plan>
+
+📊 GAME STATUS:
+  Longest Road: None (0 segments)
+  Largest Army: None (0 knights)
+  Robber Location: (0, 1, -1)
+
+🗺️ CATAN RESOURCE & NODE GRID:
+
+  🧱4 (0, -1, 1)                 🐑8 (1, -1, 0)                 
+  nodes: 2,3,9,10,11,12         nodes: 1,2,6,7,8,9            
+
+  🏜️- (-1, 0, 1)                🌾6 (0, 0, 0)                  ⛏️5 (1, 0, -1)                
+  nodes: 3,4,12,13,14,15        nodes: 0,1,2,3,4,5            nodes: 0,1,6,20,22,23         
+
+  🌾10 (-1, 1, 0)                🌲9 (0, 1, -1) 🔍               
+  nodes: 4,5,15,16,17,18        nodes: 0,5,16,19,20,21        
+
+
+BUILDINGS:
+- 🔴 RED: 🏙️ at node 1 (produces: 🌾6[⭐⭐⭐], 🐑8[⭐⭐⭐], ⛏️5[⭐⭐])
+- 🔴 RED: 🏙️ at node 20 (produces: 🌲9[⭐⭐], ⛏️5[⭐⭐])
+- 🔵 BLUE: 🏠 at node 4 (produces: 🌾6[⭐⭐⭐], 🌾10[⭐])
+- 🔵 BLUE: 🏠 at node 13 (produces: no resources)
+
+ROADS:
+- 🔴 RED: (1, 2), (2, 1), (19, 20), (20, 19), (2, 9), (9, 2)
+- 🔵 BLUE: (4, 15), (15, 4), (12, 13), (13, 12)
+
+PORTS:
+
+👥 PLAYERS:
+
+  RED Player:
+    Victory Points: 4/10
+    Resources: 7 cards (hidden)
+    Development Cards: None
+    Buildings:
+      🏠 Settlements: 0 
+      🏙️ Cities: 2 
+      🛣️ Roads: 3 built (Longest: 2)
+
+  👉 BLUE Player:
+    Victory Points: 2/10
+    Resources: 2 🌲WOOD, 1 🧱BRICK
+    Development Cards: None
+    Buildings:
+      🏠 Settlements: 2 
+      🏙️ Cities: 0 
+      🛣️ Roads: 2 built (Longest: 1)
+
+  🏦 Bank:
+    Development Cards: 25 remaining
+    Resources available for trade with bank or ports
+
+🎮 AVAILABLE ACTIONS:
+
+  End Turn:
+    [0] End your turn
+
+  Build Road Options:
+    [1] Build a road at edge (13, 14) (Cost: 1 🌲WOOD, 1 🧱BRICK)
+    [2] Build a road at edge (3, 4) (Cost: 1 🌲WOOD, 1 🧱BRICK)
+    [3] Build a road at edge (15, 17) (Cost: 1 🌲WOOD, 1 🧱BRICK)
+    [4] Build a road at edge (11, 12) (Cost: 1 🌲WOOD, 1 🧱BRICK)
+    [5] Build a road at edge (4, 5) (Cost: 1 🌲WOOD, 1 🧱BRICK)
+    [6] Build a road at edge (3, 12) (Cost: 1 🌲WOOD, 1 🧱BRICK)
+    [7] Build a road at edge (14, 15) (Cost: 1 🌲WOOD, 1 🧱BRICK)
+
+❓ Select action by number (0-7):
+
+
+Based on this information, which action number do you choose? Think step by step about your options, then put the final action number in a box like \boxed{1}.
+RESPONSE:
+To determine the best action, let's analyze the current game state and available options step-by-step:
+
+### Current Game State Analysis
+
+1. **Resource Collection**:
+   - Your current settlements produce 🌾6 and 🌾10.
+   - The robber is on 🌲9, blocking wood production for RED.
+   - Your current resources are 2 🌲WOOD and 1 🧱BRICK.
+
+2. **Current Plan**:
+   - Build a road at edge (12, 13), then build a settlement at node 12 to diversify resource collection.
+
+3. **Player Status**:
+   - You have 2 settlements and need to expand to diversify your resource collection.
+   - RED has 2 cities and 3 roads, with a stronger resource production.
+
+4. **Available Actions**:
+   - You can build roads at several edges.
+
+### Strategic Considerations
+
+1. **Resource Diversification**:
+   - You need to diversify your resource collection to include more types of resources.
+   - Building towards nodes that produce different resources is crucial.
+
+2. **Probability-Based Resource Collection**:
+   - Prioritize high-probability numbers (6, 8, 5, 9) when building settlements.
+   - Balance your resource production to avoid dependency on a single resource.
+
+3. **Blocking Opponents**:
+   - Position roads to block opponents from prime settlement locations.
+
+### Available Road Building Options
+
+1. **Edge (13, 14)**:
+   - Connects node 13 (currently your settlement) to node 14.
+   - Node 14 is adjacent to 🌾10, which you already produce.
+
+2. **Edge (3, 4)**:
+   - Connects node 3 to node 4.
+   - Node 3 is adjacent to 🌾6 (which you produce) and 🏜️-.
+   - Node 4 is adjacent to 🌾6 (which you produce) and 🌾10 (which you produce).
+
+3. **Edge (15, 17)**:
+   - Connects node 15 to node 17.
+   - Node 15 is adjacent to 🏜️- and 🌾10.
+   - Node 17 is adjacent to 🌾10 and 🐑8.
+
+4. **Edge (11, 12)**:
+   - Connects node 11 to node 12.
+   - Node 11 is adjacent to 🧱4 and 🌾6.
+   - Node 12 is adjacent to 🧱4, 🌾6, and 🐑8.
+
+5. **Edge (4, 5)**:
+   - Connects node 4 to node 5.
+   - Node 4 is adjacent to 🌾6 and 🌾10.
+   - Node 5 is adjacent to 🌾6, 🌾10, and 🌲9.
+
+6. **Edge (3, 12)**:
+   - Connects node 3 to node 12.
+   - Node 3 is adjacent to 🌾6 and 🏜️-.
+   - Node 12 is adjacent to 🧱4, 🌾6, and 🐑8.
+
+7. **Edge (14, 15)**:
+   - Connects node 14 to node 15.
+   - Node 14 is adjacent to 🌾10 and 🐑8.
+   - Node 15 is adjacent to 🏜️- and 🌾10.
+
+### Best Action
+
+Given the current plan to diversify resource collection and the available options, the best action is to build a road at edge (11, 12). This will allow you to build a settlement at node 12, which is adjacent to 🧱4, 🌾6, and 🐑8, diversifying your resource collection significantly.
+
+- **Action**: Build a road at edge (11, 12).
+
+### Updated Plan
+
+<plan>Build a road at edge (11, 12), then build a settlement at node 12 to diversify resource collection. Focus on collecting resources for future expansions towards other high-probability tiles.</plan>
+
+### Final Action
+
+\[ \boxed{4} \]
+========================================
+PROMPT:
+# Catan Strategic Advisor
+
+I'll provide you with expert Catan strategy analysis to help you make the best decision. 
+Focus on these key strategic principles:
+
+## Probability-Based Resource Collection
+- Prioritize high-probability numbers (6, 8, 5, 9) when building settlements
+- Balance your resource production to avoid dependency on a single resource
+- Pay attention to what resources are scarce in the game
+
+## Resource Value Hierarchy
+- Early game: Prioritize brick and wood for initial expansion
+- Mid game: Focus on wheat and ore for city upgrades and development cards
+- Late game: Maintain balanced resource collection with emphasis on ore/wheat
+
+## Development Card Strategy
+- Buy development cards when you have excess sheep/wheat/ore
+- Hold knight cards until strategically beneficial (robber placement, largest army)
+- Remember that unplayed VP cards count towards your score
+
+## Building Strategy
+- Build settlements on resource-diverse intersections
+- Position roads to block opponents from prime settlement locations
+- Upgrade to cities on tiles with high-probability wheat and ore
+
+## Victory Point Paths
+- Cities Path: Ore and wheat focus, upgrade settlements quickly
+- Longest Road Path: Wood and brick focus, build a network of roads
+- Development Card Path: Sheep, wheat, and ore focus, buy development cards
+- Balanced Path: Mix strategies based on your initial settlement positions
+
+## Trading Strategy
+- Trade from strength (your abundant resources) to address weaknesses
+- Avoid trading resources that directly help opponents reach their next build
+- Use maritime trade (ports) when player trading is unfavorable
+- Consider the game state when deciding whether to trade
+
+Remember to adapt your strategy based on the current game state and opponents' positions.
+
+
+You are playing Settlers of Catan. Your task is to analyze the game state and choose the best action from the available options.
+
+Rules:
+1. Think through your decision step by step, analyzing the game state, resources, and available actions
+2. Your aim is to WIN. That means 10 victory points.
+3. Put your final chosen action inside a box like \boxed{5}
+4. Your final answer must be a single integer corresponding to the action number
+5. If you want to create or update your strategic plan, put it in <plan> tags like:
+   <plan>Build roads toward port, then build settlement at node 13, then focus on city upgrades</plan>
+6. Analyze the recent resource changes to understand what resources you're collecting effectively
+7. Think about the next 2-3 turns, not just the immediate action
+
+Board Understanding Guide:
+- The RESOURCE & NODE GRID shows hexagonal tiles with their coordinates, resources, and dice numbers
+- The nodes connected to each tile are listed below each tile
+- 🔍 marks the robber's location, blocking resource production on that hex
+- Settlements/cities and their production are listed in the BUILDINGS section
+- Understanding the connectivity between nodes is crucial for road building strategy
+- Ports allow trading resources at better rates (2:1 or 3:1)
+
+TURN 31 | Player: BLUE | Action: MOVE_ROBBER
+
+🎯 YOUR CURRENT PLAN:
+  Build a road at edge (11, 12), then build a settlement at node 12 to diversify resource collection. Focus on collecting resources for future expansions towards other high-probability tiles.
+  To continue with this plan, select the appropriate action.
+  To adjust your plan, provide a NEW PLAN in your reasoning with <plan>your new plan</plan>
+
+📊 GAME STATUS:
+  Longest Road: None (0 segments)
+  Largest Army: None (0 knights)
+  Robber Location: (0, 1, -1)
+
+🗺️ CATAN RESOURCE & NODE GRID:
+
+  🧱4 (0, -1, 1)                 🐑8 (1, -1, 0)                 
+  nodes: 2,3,9,10,11,12         nodes: 1,2,6,7,8,9            
+
+  🏜️- (-1, 0, 1)                🌾6 (0, 0, 0)                  ⛏️5 (1, 0, -1)                
+  nodes: 3,4,12,13,14,15        nodes: 0,1,2,3,4,5            nodes: 0,1,6,20,22,23         
+
+  🌾10 (-1, 1, 0)                🌲9 (0, 1, -1) 🔍               
+  nodes: 4,5,15,16,17,18        nodes: 0,5,16,19,20,21        
+
+
+BUILDINGS:
+- 🔴 RED: 🏙️ at node 1 (produces: 🌾6[⭐⭐⭐], 🐑8[⭐⭐⭐], ⛏️5[⭐⭐])
+- 🔴 RED: 🏙️ at node 20 (produces: 🌲9[⭐⭐], ⛏️5[⭐⭐])
+- 🔵 BLUE: 🏠 at node 4 (produces: 🌾6[⭐⭐⭐], 🌾10[⭐])
+- 🔵 BLUE: 🏠 at node 13 (produces: no resources)
+
+ROADS:
+- 🔴 RED: (1, 2), (2, 1), (19, 20), (20, 19), (2, 9), (9, 2), (19, 21), (21, 19)
+- 🔵 BLUE: (4, 15), (15, 4), (12, 13), (13, 12), (11, 12), (12, 11)
+
+PORTS:
+
+👥 PLAYERS:
+
+  RED Player:
+    Victory Points: 4/10
+    Resources: 4 cards (hidden)
+    Development Cards: None
+    Buildings:
+      🏠 Settlements: 0 
+      🏙️ Cities: 2 
+      🛣️ Roads: 4 built (Longest: 2)
+
+  👉 BLUE Player:
+    Victory Points: 2/10
+    Resources: 1 🌲WOOD, 1 🌾WHEAT
+    Development Cards: None
+    Buildings:
+      🏠 Settlements: 2 
+      🏙️ Cities: 0 
+      🛣️ Roads: 3 built (Longest: 2)
+
+  🏦 Bank:
+    Development Cards: 25 remaining
+    Resources available for trade with bank or ports
+
+🎮 AVAILABLE ACTIONS:
+
+  Move Robber Options:
+    [0] Move robber to (0, 0, 0) and steal from RED
+    [1] Move robber to (1, -1, 0) and steal from RED
+    [2] Move robber to (0, -1, 1)
+    [3] Move robber to (-1, 0, 1)
+    [4] Move robber to (-1, 1, 0)
+    [5] Move robber to (1, 0, -1) and steal from RED
+
+❓ Select action by number (0-5):
+
+
+Based on this information, which action number do you choose? Think step by step about your options, then put the final action number in a box like \boxed{1}.
+RESPONSE:
+To determine the best action, let's analyze the game state and the available options step by step:
+
+1. **Current Plan**:
+   - The plan is to build a road at edge (11, 12), then build a settlement at node 12 to diversify resource collection.
+   - To continue with this plan, we need to move the robber strategically.
+
+2. **Game State**:
+   - **RED Player**:
+     - Has 4 victory points.
+     - Has 4 hidden resources.
+     - Has 2 cities and 4 roads.
+   - **BLUE Player** (you):
+     - Has 2 victory points.
+     - Has 1 🌲WOOD and 1 🌾WHEAT.
+     - Has 2 settlements and 3 roads.
+   - **Robber Location**: (0, 1, -1)
+   - **Available Actions**:
+     - [0] Move robber to (0, 0, 0) and steal from RED
+     - [1] Move robber to (1, -1, 0) and steal from RED
+     - [2] Move robber to (0, -1, 1)
+     - [3] Move robber to (-1, 0, 1)
+     - [4] Move robber to (-1, 1, 0)
+     - [5] Move robber to (1, 0, -1) and steal from RED
+
+3. **Strategic Considerations**:
+   - **Resource Collection**:
+     - RED has valuable cities on high-probability tiles (🌾6, 🐑8, ⛏️5).
+     - Moving the robber to a tile that RED heavily relies on could hinder their resource collection.
+   - **Stealing Resources**:
+     - Stealing a resource from RED could slow their progress.
+   - **Future Plans**:
+     - Moving the robber to a tile that does not affect your future settlement at node 12 is crucial.
+
+4. **Analysis of Options**:
+   - **[0] Move robber to (0, 0, 0) and steal from RED**:
+     - This tile produces 🌾6, which is valuable for both players.
+     - Stealing from RED and blocking this tile could be beneficial.
+   - **[1] Move robber to (1, -1, 0) and steal from RED**:
+     - This tile produces 🐑8, which is also valuable.
+     - Stealing from RED and blocking this tile could be beneficial.
+   - **[2] Move robber to (0, -1, 1)**:
+     - This tile produces 🧱4, which is less valuable.
+     - No stealing opportunity.
+   - **[3] Move robber to (-1, 0, 1)**:
+     - This tile produces no resources (desert tile).
+     - No strategic benefit.
+   - **[4] Move robber to (-1, 1, 0)**:
+     - This tile produces 🌾10, which is valuable.
+     - No stealing opportunity.
+   - **[5] Move robber to (1, 0, -1) and steal from RED**:
+     - This tile produces ⛏️5, which is valuable for city upgrades.
+     - Stealing from RED and blocking this tile could be beneficial.
+
+5. **Best Action**:
+   - Moving the robber to (1, 0, -1) and stealing from RED is the best option. This tile produces ⛏️5, which is crucial for RED's city upgrades. Blocking this tile will hinder RED's progress significantly, and stealing a resource will further slow them down.
+
+Therefore, the best action is:
+
+$$\boxed{5}$$
+========================================
+PROMPT:
+# Catan Strategic Advisor
+
+I'll provide you with expert Catan strategy analysis to help you make the best decision. 
+Focus on these key strategic principles:
+
+## Probability-Based Resource Collection
+- Prioritize high-probability numbers (6, 8, 5, 9) when building settlements
+- Balance your resource production to avoid dependency on a single resource
+- Pay attention to what resources are scarce in the game
+
+## Resource Value Hierarchy
+- Early game: Prioritize brick and wood for initial expansion
+- Mid game: Focus on wheat and ore for city upgrades and development cards
+- Late game: Maintain balanced resource collection with emphasis on ore/wheat
+
+## Development Card Strategy
+- Buy development cards when you have excess sheep/wheat/ore
+- Hold knight cards until strategically beneficial (robber placement, largest army)
+- Remember that unplayed VP cards count towards your score
+
+## Building Strategy
+- Build settlements on resource-diverse intersections
+- Position roads to block opponents from prime settlement locations
+- Upgrade to cities on tiles with high-probability wheat and ore
+
+## Victory Point Paths
+- Cities Path: Ore and wheat focus, upgrade settlements quickly
+- Longest Road Path: Wood and brick focus, build a network of roads
+- Development Card Path: Sheep, wheat, and ore focus, buy development cards
+- Balanced Path: Mix strategies based on your initial settlement positions
+
+## Trading Strategy
+- Trade from strength (your abundant resources) to address weaknesses
+- Avoid trading resources that directly help opponents reach their next build
+- Use maritime trade (ports) when player trading is unfavorable
+- Consider the game state when deciding whether to trade
+
+Remember to adapt your strategy based on the current game state and opponents' positions.
+
+
+You are playing Settlers of Catan. Your task is to analyze the game state and choose the best action from the available options.
+
+Rules:
+1. Think through your decision step by step, analyzing the game state, resources, and available actions
+2. Your aim is to WIN. That means 10 victory points.
+3. Put your final chosen action inside a box like \boxed{5}
+4. Your final answer must be a single integer corresponding to the action number
+5. If you want to create or update your strategic plan, put it in <plan> tags like:
+   <plan>Build roads toward port, then build settlement at node 13, then focus on city upgrades</plan>
+6. Analyze the recent resource changes to understand what resources you're collecting effectively
+7. Think about the next 2-3 turns, not just the immediate action
+
+Board Understanding Guide:
+- The RESOURCE & NODE GRID shows hexagonal tiles with their coordinates, resources, and dice numbers
+- The nodes connected to each tile are listed below each tile
+- 🔍 marks the robber's location, blocking resource production on that hex
+- Settlements/cities and their production are listed in the BUILDINGS section
+- Understanding the connectivity between nodes is crucial for road building strategy
+- Ports allow trading resources at better rates (2:1 or 3:1)
+
+TURN 33 | Player: BLUE | Action: MOVE_ROBBER
+
+🎯 YOUR CURRENT PLAN:
+  Build a road at edge (11, 12), then build a settlement at node 12 to diversify resource collection. Focus on collecting resources for future expansions towards other high-probability tiles.
+  To continue with this plan, select the appropriate action.
+  To adjust your plan, provide a NEW PLAN in your reasoning with <plan>your new plan</plan>
+
+📊 GAME STATUS:
+  Longest Road: None (0 segments)
+  Largest Army: None (0 knights)
+  Robber Location: (1, 0, -1)
+
+🗺️ CATAN RESOURCE & NODE GRID:
+
+  🧱4 (0, -1, 1)                 🐑8 (1, -1, 0)                 
+  nodes: 2,3,9,10,11,12         nodes: 1,2,6,7,8,9            
+
+  🏜️- (-1, 0, 1)                🌾6 (0, 0, 0)                  ⛏️5 (1, 0, -1) 🔍              
+  nodes: 3,4,12,13,14,15        nodes: 0,1,2,3,4,5            nodes: 0,1,6,20,22,23         
+
+  🌾10 (-1, 1, 0)                🌲9 (0, 1, -1)                 
+  nodes: 4,5,15,16,17,18        nodes: 0,5,16,19,20,21        
+
+
+BUILDINGS:
+- 🔴 RED: 🏙️ at node 1 (produces: 🌾6[⭐⭐⭐], 🐑8[⭐⭐⭐], ⛏️5[⭐⭐])
+- 🔴 RED: 🏙️ at node 20 (produces: 🌲9[⭐⭐], ⛏️5[⭐⭐])
+- 🔵 BLUE: 🏠 at node 4 (produces: 🌾6[⭐⭐⭐], 🌾10[⭐])
+- 🔵 BLUE: 🏠 at node 13 (produces: no resources)
+
+ROADS:
+- 🔴 RED: 10 roads (too many to list)
+- 🔵 BLUE: (4, 15), (15, 4), (12, 13), (13, 12), (11, 12), (12, 11)
+
+PORTS:
+
+👥 PLAYERS:
+
+  RED Player:
+    Victory Points: 4/10
+    Resources: 0 cards (hidden)
+    Development Cards: None
+    Buildings:
+      🏠 Settlements: 0 
+      🏙️ Cities: 2 
+      🛣️ Roads: 5 built (Longest: 3)
+
+  👉 BLUE Player:
+    Victory Points: 2/10
+    Resources: 1 🌲WOOD, 1 🐑SHEEP, 1 🌾WHEAT
+    Development Cards: None
+    Buildings:
+      🏠 Settlements: 2 
+      🏙️ Cities: 0 
+      🛣️ Roads: 3 built (Longest: 2)
+
+  🏦 Bank:
+    Development Cards: 25 remaining
+    Resources available for trade with bank or ports
+
+🎮 AVAILABLE ACTIONS:
+
+  Move Robber Options:
+    [0] Move robber to (0, 0, 0)
+    [1] Move robber to (1, -1, 0)
+    [2] Move robber to (0, -1, 1)
+    [3] Move robber to (-1, 0, 1)
+    [4] Move robber to (-1, 1, 0)
+    [5] Move robber to (0, 1, -1)
+
+❓ Select action by number (0-5):
+
+
+Based on this information, which action number do you choose? Think step by step about your options, then put the final action number in a box like \boxed{1}.
+RESPONSE:
+To determine the best action, let's analyze the game state and the available options step by step:
+
+### Current Plan Analysis:
+- **Current Plan**: Build a road at edge (11, 12), then build a settlement at node 12 to diversify resource collection. Focus on collecting resources for future expansions towards other high-probability tiles.
+- **Current Resources**: 1 🌲WOOD, 1 🐑SHEEP, 1 🌾WHEAT.
+
+### Resource and Node Grid Analysis:
+- **High-Probability Tiles**:
+  - 🌾6 (0, 0, 0)
+  - 🌾10 (-1, 1, 0)
+  - 🐑8 (1, -1, 0)
+  - 🌲9 (0, 1, -1)
+- **Robber Location**: (1, 0, -1) - blocking ⛏️5 ore tile.
+
+### Player Status:
+- **RED**:
+  - Victory Points: 4/10
+  - Resources: 0 cards (hidden)
+  - Development Cards: None
+  - Buildings: 2 cities
+  - Roads: 10 roads
+- **BLUE**:
+  - Victory Points: 2/10
+  - Resources: 1 🌲WOOD, 1 🐑SHEEP, 1 🌾WHEAT
+  - Development Cards: None
+  - Buildings: 2 settlements
+  - Roads: 3 built
+
+### Available Actions:
+- [0] Move robber to (0, 0, 0)
+- [1] Move robber to (1, -1, 0)
+- [2] Move robber to (0, -1, 1)
+- [3] Move robber to (-1, 0, 1)
+- [4] Move robber to (-1, 1, 0)
+- [5] Move robber to (0, 1, -1)
+
+### Strategy Considerations:
+1. **Robber Placement**:
+   - The robber is currently on the ⛏️5 ore tile, which is not producing for BLUE.
+   - Moving the robber to a high-probability tile will hinder RED's resource collection and potentially benefit BLUE.
+
+2. **High-Probability Tiles**:
+   - 🌾6 (0, 0, 0): This tile is crucial for both players, especially RED who has a city on it.
+   - 🌾10 (-1, 1, 0): Also important for RED.
+   - 🐑8 (1, -1, 0): Useful for BLUE's future expansion.
+   - 🌲9 (0, 1, -1): Another high-probability tile.
+
+3. **Future Expansion**:
+   - BLUE's current plan involves expanding towards node 12, which is connected to the 🌾10 and 🌲9 tiles.
+   - Moving the robber to a tile that does not affect BLUE's current resource collection but hinders RED's collection is strategic.
+
+### Best Action:
+- **Option [0]**: Move robber to (0, 0, 0) - This will block the 🌾6 tile, which is crucial for RED and less critical for BLUE's immediate plan.
+- **Option [1]**: Move robber to (1, -1, 0) - This will block the 🐑8 tile, which is useful for BLUE's future expansion.
+- **Option [2]**: Move robber to (0, -1, 1) - This will block the 🧱4 tile, which is not a high-probability tile.
+- **Option [3]**: Move robber to (-1, 0, 1) - This will block the 🏜️- tile, which is not producing any resources.
+- **Option [4]**: Move robber to (-1, 1, 0) - This will block the 🌾10 tile, which is important for RED and BLUE.
+- **Option [5]**: Move robber to (0, 1, -1) - This will block the 🌲9 tile, which is important for RED and BLUE.
+
+Given the current plan and the need to hinder RED's resource collection without affecting BLUE's immediate expansion, the best option is to move the robber to the 🌾6 tile.
+
+### Final Decision:
+\[ \boxed{0} \]
+
+<plan>Continue with the current plan: Build a road at edge (11, 12), then build a settlement at node 12 to diversify resource collection. Focus on collecting resources for future expansions towards other high-probability tiles.</plan>
+========================================
+PROMPT:
+# Catan Strategic Advisor
+
+I'll provide you with expert Catan strategy analysis to help you make the best decision. 
+Focus on these key strategic principles:
+
+## Probability-Based Resource Collection
+- Prioritize high-probability numbers (6, 8, 5, 9) when building settlements
+- Balance your resource production to avoid dependency on a single resource
+- Pay attention to what resources are scarce in the game
+
+## Resource Value Hierarchy
+- Early game: Prioritize brick and wood for initial expansion
+- Mid game: Focus on wheat and ore for city upgrades and development cards
+- Late game: Maintain balanced resource collection with emphasis on ore/wheat
+
+## Development Card Strategy
+- Buy development cards when you have excess sheep/wheat/ore
+- Hold knight cards until strategically beneficial (robber placement, largest army)
+- Remember that unplayed VP cards count towards your score
+
+## Building Strategy
+- Build settlements on resource-diverse intersections
+- Position roads to block opponents from prime settlement locations
+- Upgrade to cities on tiles with high-probability wheat and ore
+
+## Victory Point Paths
+- Cities Path: Ore and wheat focus, upgrade settlements quickly
+- Longest Road Path: Wood and brick focus, build a network of roads
+- Development Card Path: Sheep, wheat, and ore focus, buy development cards
+- Balanced Path: Mix strategies based on your initial settlement positions
+
+## Trading Strategy
+- Trade from strength (your abundant resources) to address weaknesses
+- Avoid trading resources that directly help opponents reach their next build
+- Use maritime trade (ports) when player trading is unfavorable
+- Consider the game state when deciding whether to trade
+
+Remember to adapt your strategy based on the current game state and opponents' positions.
+
+
+You are playing Settlers of Catan. Your task is to analyze the game state and choose the best action from the available options.
+
+Rules:
+1. Think through your decision step by step, analyzing the game state, resources, and available actions
+2. Your aim is to WIN. That means 10 victory points.
+3. Put your final chosen action inside a box like \boxed{5}
+4. Your final answer must be a single integer corresponding to the action number
+5. If you want to create or update your strategic plan, put it in <plan> tags like:
+   <plan>Build roads toward port, then build settlement at node 13, then focus on city upgrades</plan>
+6. Analyze the recent resource changes to understand what resources you're collecting effectively
+7. Think about the next 2-3 turns, not just the immediate action
+
+Board Understanding Guide:
+- The RESOURCE & NODE GRID shows hexagonal tiles with their coordinates, resources, and dice numbers
+- The nodes connected to each tile are listed below each tile
+- 🔍 marks the robber's location, blocking resource production on that hex
+- Settlements/cities and their production are listed in the BUILDINGS section
+- Understanding the connectivity between nodes is crucial for road building strategy
+- Ports allow trading resources at better rates (2:1 or 3:1)
+
+TURN 39 | Player: BLUE | Action: MOVE_ROBBER
+
+🎯 YOUR CURRENT PLAN:
+  Continue with the current plan: Build a road at edge (11, 12), then build a settlement at node 12 to diversify resource collection. Focus on collecting resources for future expansions towards other high-probability tiles.
+  To continue with this plan, select the appropriate action.
+  To adjust your plan, provide a NEW PLAN in your reasoning with <plan>your new plan</plan>
+
+📊 GAME STATUS:
+  Longest Road: None (0 segments)
+  Largest Army: None (0 knights)
+  Robber Location: (0, 0, 0)
+
+🗺️ CATAN RESOURCE & NODE GRID:
+
+  🧱4 (0, -1, 1)                 🐑8 (1, -1, 0)                 
+  nodes: 2,3,9,10,11,12         nodes: 1,2,6,7,8,9            
+
+  🏜️- (-1, 0, 1)                🌾6 (0, 0, 0) 🔍                ⛏️5 (1, 0, -1)                
+  nodes: 3,4,12,13,14,15        nodes: 0,1,2,3,4,5            nodes: 0,1,6,20,22,23         
+
+  🌾10 (-1, 1, 0)                🌲9 (0, 1, -1)                 
+  nodes: 4,5,15,16,17,18        nodes: 0,5,16,19,20,21        
+
+
+BUILDINGS:
+- 🔴 RED: 🏙️ at node 1 (produces: 🌾6[⭐⭐⭐], 🐑8[⭐⭐⭐], ⛏️5[⭐⭐])
+- 🔴 RED: 🏙️ at node 20 (produces: 🌲9[⭐⭐], ⛏️5[⭐⭐])
+- 🔵 BLUE: 🏠 at node 4 (produces: 🌾6[⭐⭐⭐], 🌾10[⭐])
+- 🔵 BLUE: 🏠 at node 13 (produces: no resources)
+
+ROADS:
+- 🔴 RED: 10 roads (too many to list)
+- 🔵 BLUE: (4, 15), (15, 4), (12, 13), (13, 12), (11, 12), (12, 11)
+
+PORTS:
+
+👥 PLAYERS:
+
+  RED Player:
+    Victory Points: 4/10
+    Resources: 4 cards (hidden)
+    Development Cards: None
+    Buildings:
+      🏠 Settlements: 0 
+      🏙️ Cities: 2 
+      🛣️ Roads: 5 built (Longest: 3)
+
+  👉 BLUE Player:
+    Victory Points: 2/10
+    Resources: 1 🌲WOOD, 1 🐑SHEEP, 2 🌾WHEAT
+    Development Cards: None
+    Buildings:
+      🏠 Settlements: 2 
+      🏙️ Cities: 0 
+      🛣️ Roads: 3 built (Longest: 2)
+
+  🏦 Bank:
+    Development Cards: 25 remaining
+    Resources available for trade with bank or ports
+
+🎮 AVAILABLE ACTIONS:
+
+  Move Robber Options:
+    [0] Move robber to (1, -1, 0) and steal from RED
+    [1] Move robber to (0, -1, 1)
+    [2] Move robber to (-1, 0, 1)
+    [3] Move robber to (-1, 1, 0)
+    [4] Move robber to (0, 1, -1) and steal from RED
+    [5] Move robber to (1, 0, -1) and steal from RED
+
+❓ Select action by number (0-5):
+
+
+Based on this information, which action number do you choose? Think step by step about your options, then put the final action number in a box like \boxed{1}.
+RESPONSE:
+To make the best decision, let's analyze the game state, resources, and available actions step by step:
+
+### Game State Analysis
+1. **Current Plan**: Build a road at edge (11, 12), then build a settlement at node 12 to diversify resource collection.
+2. **Resources**: 1 🌲WOOD, 1 🐑SHEEP, 2 🌾WHEAT.
+3. **Buildings**:
+   - Settlements at nodes 4 and 13.
+   - Node 4 produces 🌾6[⭐⭐⭐], 🌾10[⭐].
+   - Node 13 produces no resources.
+4. **Robber Location**: Currently at (0, 0, 0) blocking the 🌾6 tile.
+5. **Opponent (RED)**:
+   - Cities at nodes 1 and 20.
+   - Node 1 produces 🌾6[⭐⭐⭐], 🐑8[⭐⭐⭐], ⛏️5[⭐⭐].
+   - Node 20 produces 🌲9[⭐⭐], ⛏️5[⭐⭐].
+
+### Strategic Considerations
+1. **Resource Collection**:
+   - Node 4 is affected by the robber, blocking the 🌾6 production.
+   - Need to diversify resource collection to avoid dependency on a single resource.
+2. **Opponent's Resources**:
+   - RED has cities on high-probability tiles (6, 8, 5).
+   - Blocking RED's resource production can hinder their progress.
+
+### Available Actions
+- [0] Move robber to (1, -1, 0) and steal from RED.
+- [1] Move robber to (0, -1, 1).
+- [2] Move robber to (-1, 0, 1).
+- [3] Move robber to (-1, 1, 0).
+- [4] Move robber to (0, 1, -1) and steal from RED.
+- [5] Move robber to (1, 0, -1) and steal from RED.
+
+### Analysis of Actions
+1. **[0] Move robber to (1, -1, 0) and steal from RED**:
+   - Blocks the 🐑8 tile.
+   - RED will lose production from this tile.
+   - Steal a resource from RED.
+2. **[1] Move robber to (0, -1, 1)**:
+   - Blocks the 🧱4 tile.
+   - Not strategically beneficial as it doesn't affect RED significantly.
+3. **[2] Move robber to (-1, 0, 1)**:
+   - Blocks the 🏜️- tile.
+   - Not strategically beneficial as it doesn't affect RED significantly.
+4. **[3] Move robber to (-1, 1, 0)**:
+   - Blocks the 🌾10 tile.
+   - Not strategically beneficial as it doesn't affect RED significantly.
+5. **[4] Move robber to (0, 1, -1) and steal from RED**:
+   - Blocks the 🌲9 tile.
+   - RED will lose production from this tile.
+   - Steal a resource from RED.
+6. **[5] Move robber to (1, 0, -1) and steal from RED**:
+   - Blocks the ⛏️5 tile.
+   - RED will lose production from this tile.
+   - Steal a resource from RED.
+
+### Best Action
+- **[0] Move robber to (1, -1, 0) and steal from RED**:
+  - This action blocks RED's 🐑8 tile, which is a high-probability tile.
+  - Stealing a resource from RED will hinder their progress.
+  - This action aligns with the strategy of blocking RED's resource production and diversifying your own resource collection.
+
+### Final Decision
+\[ \boxed{0} \]
+
+<plan>Continue with the current plan: Build a road at edge (11, 12), then build a settlement at node 12 to diversify resource collection. Focus on collecting resources for future expansions towards other high-probability tiles.</plan>
+========================================
