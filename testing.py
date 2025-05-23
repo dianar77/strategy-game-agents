@@ -19,13 +19,12 @@ AGENTS = {
     "F": "ValueFunctionPlayer",
     "AB": "AlphaBetaPlayer",
     "SAB": "SameTurnAlphaBetaPlayer",
+    # New Players
     "BA": "BaseAgentPlayer",
     "SA": "StructuredAgentPlayer",
-    "BL": "BasicLangPlayer",
-    "TC": "ToolCallLLMPlayer",
-    "FOO_S": "FooPlayer",
-    "PR_LLM": "PromptRefiningLLMPlayer",
-    "CR_LLM": "CodeRefiningLLMPlayer",
+    "PE": "PromptEvolverPlayer",
+    "AE": "AgentEvolverFooPlayer",
+    "LAE": "LLMAgentEvolverFooPlayer",
 }
 
 # List opponents from strongest to weakest

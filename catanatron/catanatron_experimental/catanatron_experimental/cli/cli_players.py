@@ -28,8 +28,10 @@ from catanatron_experimental.machine_learning.players.playouts import (
 
 from agents.structuredAgent.llm_player import StructuredAgentPlayer
 from agents.baseAgent.baseAgentPlayer import BaseAgentPlayer
+from agents.promptEvolver.promptEvolverPlayer import PromptEvolverPlayer
 from agents.agentEvolver.foo_player import FooPlayer as AgentEvolverFooPlayer
 from agents.llmAgentEvolver.foo_player import FooPlayer as LLMAgentEvolverFooPlayer
+
 # from agents.fromScratchLLM_player_v2.runs.creator_20250508_112135_hitl.foo_player import FooPlayer as FooLLMPlayerV2_1
 # from catanatron_experimental.machine_learning.players.online_mcts_dqn import (
 #     OnlineMCTSDQNPlayer,
@@ -100,10 +102,11 @@ CLI_PLAYERS = [
         "AlphaBeta but searches only within turn",
         SameTurnAlphaBetaPlayer,
     ),
+    # NEW PLAYERS BELOW
     CliPlayer(
         "BA",
         "BaseAgentPlayer",
-        "Initial Base Player with no additions",
+        "Initial Base Player utilizing LLM with no special prompt",
         BaseAgentPlayer,
     ),
     CliPlayer(
@@ -113,15 +116,21 @@ CLI_PLAYERS = [
         StructuredAgentPlayer,
     ),
     CliPlayer(
+        "PE",
+        "PromptEvolverPlayer",
+        "Multi-agent system with prompt evolvers that improve the prompt of the Player PE",
+        PromptEvolverPlayer,
+    ),
+    CliPlayer(
         "AE",
         "AgentEvolverFooPlayer",
-        "AgentEvolver Foo Player",
+        "Multi-agent system with agent evolvers that improve the player code of the Player AE",
         AgentEvolverFooPlayer,
     ),
     CliPlayer(
         "LAE",
         "LLMAgentEvolverFooPlayer",
-        "LLMAgentEvolver Foo Player",
+        "Multi-agent system with agent evolvers that improve the LLM player code of the Player LAE",
         LLMAgentEvolverFooPlayer,
     ),
 ]

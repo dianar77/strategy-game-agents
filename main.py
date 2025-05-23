@@ -9,18 +9,23 @@ sys.path.append(minimax_dir)
 from agents.base_llm import OpenAILLM, MistralLLM, AzureOpenAILLM, AnthropicLLM
 from catanatron import Game, RandomPlayer, Color
 
-from agents.fromScratchLLM_player_v2.creator_agent import CreatorAgent as ScratchCreatorLLMAgentV2
-
+from agents.promptEvolver.creator_agent import CreatorAgent as promptEvolver
+from agents.agentEvolver.creator_agent import CreatorAgent as agentEvolver
+from agents.llmAgentEvolver.creator_agent import CreatorAgent as llmAgentEvolver
 
 from minimax import AlphaBetaPlayer
 from catanatron_server.utils import open_link
 
 def main():
 
+    #Choose Your Desired Evolver (Comment out the others)
 
+    #evolver = promptEvolver()
+    #evolver = agentEvolver()
+    evolver = llmAgentEvolver()
 
-    cA = ScratchCreatorLLMAgentV2()
-    cA.run_react_graph()
+    # Run The Evolver
+    evolver.run_react_graph()
 
 
 

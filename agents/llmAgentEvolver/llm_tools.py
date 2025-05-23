@@ -10,7 +10,7 @@ import httpx  # Ensure httpx is imported to catch HTTPStatusError
 from langchain_aws import ChatBedrockConverse
 
 
-
+# CUSTOM LLM CLASS IN ORDER TO LOG THE PROMPT AND RESPONSE (UNCOMMENT PLAYER LLM YOU WANT TO USE)
 class LLM:
     def __init__(self):
         # Initialize the LLM with the desired model and parameters
@@ -18,11 +18,11 @@ class LLM:
 
         self.llm = AzureChatOpenAI(
             model="gpt-4o-mini",
-            azure_endpoint="https://gpt-amayuelas.openai.azure.com/",
+            azure_endpoint="# YOUR AZURE ENDPOINT",
             api_version = "2024-12-01-preview"
         )
         self.model_name = "gpt-4o-mini"
-        self.save_dir = f"agents/fromScratchLLMStructured_player_v5_M/runs/game_run_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+        self.save_dir = f"agents/llmAgentEvolver/runs/game_run_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
         # Set the environment variable to disable tracing
         os.environ["LANGCHAIN_TRACING_V2"] = "false"
 
@@ -64,7 +64,7 @@ class LLM:
 #             #rate_limiter=rate_limiter,
 #         )
 #         self.model_name = "mistral-large-latest"
-#         self.save_dir = f"agents/fromScratchLLMStructured_player_v2/runs/game_run_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+#         self.save_dir = f"agents/llmAgentEvolver/runs/game_run_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
 
 #         # Set the environment variable to disable tracing
 #         os.environ["LANGCHAIN_TRACING_V2"] = "false"
@@ -120,9 +120,9 @@ class LLM:
 #             aws_secret_access_key = os.environ["AWS_SECRET_KEY"],
 #             region_name = "us-east-2",
 #             provider = "anthropic",
-#             model_id="arn:aws:bedrock:us-east-2:288380904485:inference-profile/us.anthropic.claude-3-7-sonnet-20250219-v1:0"
+#             model_id="# TODO: YOUR MODEL ID"
 #         )
-#         self.save_dir = f"agents/fromScratchLLMStructured_player_v2/runs/game_run_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+#         self.save_dir = f"agents/llmAgentEvolver/runs/game_run_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
 
 #         # Set the environment variable to disable tracing
 #         os.environ["LANGCHAIN_TRACING_V2"] = "false"
@@ -161,35 +161,3 @@ class LLM:
 #                     return f"LLM query error: {e.response.status_code} - {e.response.text}"
 #             except Exception as e:
 #                 return f"LLM query error: {e}"
-
-# class LLM:
-#     run_dir = None
-
-#     def __init__(self):
-#         self.llm = AzureChatOpenAI(
-#             model="gpt-4o",
-#             azure_endpoint="https://gpt-amayuelas.openai.azure.com/",
-#             api_version="2024-12-01-preview"
-#         )
-#         self.model_name = "gpt-4o"
-#         if LLM.run_dir is None:
-#             # Initialize the base runs directory
-#             base_dir = os.path.dirname(os.path.abspath(__file__))
-#             runs_dir = os.path.join(base_dir, "runs")
-#             os.makedirs(runs_dir, exist_ok=True)
-#             LLM.run_dir = os.path.join(runs_dir, datetime.now().strftime("run_%Y%m%d_%H%M%S"))
-#             os.makedirs(LLM.run_dir, exist_ok=True)
-
-#     def query_llm(self, prompt: str) -> str:
-#         """Query the LLM and return its response."""
-#         try:
-#             msg = HumanMessage(content=prompt)
-#             messages = self.llm.invoke([msg])
-#             response = "\n".join(m.content for m in messages['messages'])
-#             log_path = os.path.join(LLM.run_dir, f"llm_log_{self.model_name}.txt")
-#             with open(log_path, "a") as log_file:
-#                 log_file.write(f"Prompt:\n{prompt}\n\nResponse:\n{response}\n{'='*40}\n")
-#             return response.strip()
-#         except Exception as e:
-#             print(f"LLM query error: {e}")
-#             return ""

@@ -57,30 +57,13 @@ class CreatorAgent():
 
     def __init__(self):
         # Get API key from environment variable
-        # self.llm_name = "o1"
-        # self.llm = AzureChatOpenAI(
-        #     model="o1",
-        #     azure_endpoint="https://gpt-amayuelas.openai.azure.com/",
-        #     api_version = "2024-12-01-preview"
-        # )
-
-        # config = Config(read_timeout=1000)
-        # bedrock_client = client(service_name='bedrock-runtime', region_name='us-east-2', config=config)
         # self.llm_name = "gpt-4o"
         # self.llm = AzureChatOpenAI(
         #     model="gpt-4o",
-        #     azure_endpoint="https://gpt-amayuelas.openai.azure.com/",
+        #     azure_endpoint="# TODO: ADD THE AZURE ENDPOINT HERE",
         #     api_version = "2024-12-01-preview"
         # )
-        from botocore.config import Config
-        config = Config(read_timeout=36000, retries={"max_attempts": 10})
-        # bedrock_client = client(service_name='bedrock-runtime', region_name='us-east-2', config=config)
-        thinking_params= {
-        "thinking": {
-            "type": "disabled",
-            #"budget_tokens": 2000
-            }
-        }
+
 
         #bedrock_client = client(service_name='bedrock-runtime', region_name='us-east-2', config=config)
         self.llm_name = "claude-3.7"
@@ -89,20 +72,10 @@ class CreatorAgent():
             aws_secret_access_key = os.environ["AWS_SECRET_KEY"],
             region_name = "us-east-2",
             provider = "anthropic",
-            model_id="arn:aws:bedrock:us-east-2:288380904485:inference-profile/us.anthropic.claude-3-7-sonnet-20250219-v1:0",
-            additional_model_request_fields=thinking_params,
-            config=config
+            model_id="# TODO: Add the model ID here",
+
 
         )
-        # self.llm_name = "claude-3.7"
-        # self.llm = ChatBedrockConverse(
-        #     aws_access_key_id = os.environ["AWS_ACESS_KEY"],
-        #     aws_secret_access_key = os.environ["AWS_SECRET_KEY"],
-        #     region_name = "us-east-2",
-        #     provider = "anthropic",
-        #     model_id="arn:aws:bedrock:us-east-2:288380904485:inference-profile/us.anthropic.claude-3-7-sonnet-20250219-v1:0"
-        # )
-        # os.environ["LANGCHAIN_TRACING_V2"] = "false"
 
 
         # self.llm_name = "mistral-large-latest"

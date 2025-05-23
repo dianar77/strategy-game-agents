@@ -56,10 +56,11 @@ class CreatorAgent():
 
     def __init__(self):
         # Get API key from environment variable
-        self.llm_name = "o1"
+        self.llm_name = "gpt-4o"
+        self.llm = # TODO: Create LANG CHAIN INSTANCE
         self.llm = AzureChatOpenAI(
-            model="o1",
-            azure_endpoint="https://gpt-amayuelas.openai.azure.com/",
+            model="gpt-4o",
+            azure_endpoint="# TODO: SET AZURE ENDPOINT",
             api_version = "2024-12-01-preview"
         )
 
@@ -71,7 +72,7 @@ class CreatorAgent():
         #     aws_secret_access_key = os.environ["AWS_SECRET_KEY"],
         #     region_name = "us-east-2",
         #     provider = "anthropic",
-        #     model_id="arn:aws:bedrock:us-east-2:288380904485:inference-profile/us.anthropic.claude-3-7-sonnet-20250219-v1:0"
+        #     model_id="# TODO: ADD MODEL ID"
         # )
         # os.environ["LANGCHAIN_TRACING_V2"] = "false"
 
