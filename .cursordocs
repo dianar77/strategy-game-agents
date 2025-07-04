@@ -1,0 +1,28 @@
+{
+  "include": [
+    {
+      "type": "video",
+      "path": "https://www.youtube.com/watch?v=1WNzPFtPEQs",
+      "title": "Strategy Game Agents Tutorial",
+      "description": "
+•The video discusses a paper called 'Agents of Change: self-evolving LLM agents for strategic planning,' which explores autonomous, self-improving AI agents that learn to play the game Settlers of Catan.
+•These AI agents are based on large language models (LLMs) with 'scaffolding' – additional architecture and tools that allow them to perform tasks like playing games, writing code, and taking notes. This approach is similar to Alpha Evolve, the Darwin Goal machine, Minecraft Voyager, and AI game GPT4.
+•A key challenge for current LLM-based AI agents is maintaining coherent long-term strategies. The paper aims to address this by having LLM agents self-improve in environments that specifically test their strategic planning abilities.
+•The Settlers of Catan game is played using the open-source Katanatron framework, which is a Python-based system for simulating and playing the game.
+•The project introduces a multi-agent structure comprising an Analyzer, Researcher, Coder, and Player. These agents work together to analyze gameplay, research new strategies, and modify the agent's logic or prompts.
+◦The Evolver agent acts as the central coordinator, reading reports from the Analyzer agent (which evaluates gameplay and identifies weaknesses) and the Research agent (which handles queries about Katanatron and broader Catan strategy, utilizing local file access and web search).
+◦The Strategizer suggests high-level gameplay strategies, and the Coder agent translates proposed changes into concrete code modifications.
+◦The Player agent is the actual AI player that plays the game and gets improved over time.
+•The approach is designed for self-improvement, meaning the agent evolver starts with a blank template and develops abilities over time. This is similar to Nvidia's Minecraft Voyager and the Darwin Goal machine, which also demonstrated continuous improvement without plateauing.
+•Settlers of Catan is highlighted as a complex multi-agent strategy game involving resource management, expansion, and negotiations over many turns. Unlike perfect information games like Chess and Go, Catan involves dice rolls (probability) and partial observability (hidden information), making it more challenging for traditional game AI methods like reinforcement learning.
+•The study compared different agent architectures: a base agent (maps game state to action), a structured agent (receives game state, actions, and basic strategy in natural language, often with state reminders to prevent 'losing the plot'), a prompt evolver (refines and tests prompts), and an agent evolver (autonomously rewrites gameplay code).
+•The models used for the experiments included GPT-4o, Claude 3.7, and Mistral Large.
+•The results showed successful improvement in agent performance by autonomously iterating on strategic prompts, although the degree of success depended heavily on the underlying model.
+◦Claude 3.7 exhibited the most significant strategic advancements, leading to up to a 95% increase in performance for the prompt evolver and a 40% improvement for the agent evolver compared to the base agent. It systematically developed detailed strategic prompts covering settlement placement, resource prioritization, development card usage, and response strategies.
+◦GPT-4o showed a 36% improvement for the agent evolver and a 22% increase for the prompt evolver, while Mistral Large was the least effective.
+•A key limitation identified is that the better the underlying LLM, the better the overall outcome. The improvements observed (e.g., 95% increase) suggest even better performance could be achieved with future, more advanced models.
+•The experiments were conducted over 60 hours on MacBook Pro (2019) and MacBook M1 Max (2021), indicating that such research is fairly accessible in terms of hardware. The researchers note that the cost could increase with more advanced models or extended evolutionary steps.
+•The video concludes by emphasizing that this project is another example of AI agents recursively self-improving, demonstrating a 'recipe' for building such systems."
+    }
+  ]
+} 
