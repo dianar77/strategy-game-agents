@@ -6,7 +6,7 @@ import re
 from datetime import datetime
 
 LLM = "claude-3.7"  # The LLM used for the v5_M agent
-EVAL_PLAYER = "FOO_LLM_S5_M"  # The player you want to evaluate - fromScratchLLMStructured_player_v5_M
+EVAL_PLAYER = "FOO_LLM_S7"  # The player you want to evaluate - fromScratchLLMStructured_player_v7
 NUM_GAMES = 3  # Reduced for faster testing
 
 print("="*80)
@@ -39,6 +39,8 @@ AGENTS = {
     "FOO_LLM_S3": "FooPlayer_LLM_Structured_V3",
     "FOO_LLM_S4": "FooPlayer_LLM_Structured_V4",
     "FOO_LLM_S5_M": "FooPlayer_LLM_Structured_V5_M",
+    "FOO_LLM_S6": "FooPlayer_LLM_Structured_V6",
+    "FOO_LLM_S7": "FooPlayer_LLM_Structured_V7",
     "PR_LLM": "PromptRefiningLLMPlayer",
     "CR_LLM": "CodeRefiningLLMPlayer",
 }

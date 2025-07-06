@@ -22,7 +22,7 @@ from typing import Dict, Any, List, Tuple, Optional
 LOCAL_CATANATRON_BASE_DIR = (Path(__file__).parent.parent.parent / "catanatron").resolve()
 FOO_TARGET_FILENAME = "foo_player.py"
 FOO_MAX_BYTES = 64_000
-FOO_RUN_COMMAND = "catanatron-play --players=AB,FOO_LLM_S7  --num=3  --config-vps-to-win=10"
+FOO_RUN_COMMAND = "catanatron-play --players=R,FOO_LLM_S7  --num=3  --config-vps-to-win=10"
 
 # Global run directory - will be set by first agent that initializes
 RUN_DIR = None
