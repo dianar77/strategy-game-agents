@@ -5,6 +5,17 @@ Coder Agent - Implements code changes and technical solutions
 from google.adk.agents import LlmAgent
 from google.adk.tools import BaseTool
 from typing import Dict, Any
+import sys
+from pathlib import Path
+
+# Add parent directory to path to import shared_tools
+sys.path.append(str(Path(__file__).parent.parent.parent))
+from shared_tools import (
+    read_foo,
+    write_foo,
+    read_local_file,
+    run_testfoo
+)
 
 
 class CoderAgent:
@@ -49,102 +60,172 @@ class CoderAgent:
     
     def _create_code_analysis_tool(self):
         """Create Catanatron-specific code analysis tool"""
-        def analyze_catanatron_code(code: str) -> Dict[str, Any]:
+        def analyze_catanatron_code(code: str = None) -> Dict[str, Any]:
             """Analyze Catanatron player code quality and structure"""
-            return {
-                "code_analysis": {
-                    "overall_quality": 0.78,
-                    "complexity_score": 0.82,
-                    "maintainability_index": 85,
-                    "catanatron_compliance": 0.92
-                },
-                "catanatron_specific_issues": [
-                    {
-                        "type": "api_usage",
-                        "issue": "Using deprecated game.state.get_buildings() method",
-                        "line": 45,
-                        "suggestion": "Use game.state.board.buildings instead",
-                        "severity": "medium"
-                    },
-                    {
-                        "type": "action_creation",
-                        "issue": "Missing validation for BuildSettlementAction parameters",
-                        "line": 78,
-                        "suggestion": "Add node availability check before creating action",
-                        "severity": "high"
-                    },
-                    {
-                        "type": "resource_management",
-                        "issue": "Hard-coded resource costs instead of using constants",
-                        "line": 92,
-                        "suggestion": "Use BUILDING_COSTS from catanatron.models.enums",
-                        "severity": "low"
+            
+            # Read current code if not provided
+            if code is None:
+                code = read_foo()
+            
+            if "Error" in code:
+                return {
+                    "error": code,
+                    "code_analysis": {
+                        "overall_quality": 0.0,
+                        "complexity_score": 0.0,
+                        "maintainability_index": 0,
+                        "catanatron_compliance": 0.0
                     }
-                ],
-                "performance_issues": [
-                    {
-                        "issue": "Inefficient board traversal in _find_best_settlement()",
-                        "impact": "O(n²) complexity for settlement selection",
-                        "suggestion": "Cache board analysis results between turns",
-                        "line_range": "120-145"
-                    },
-                    {
-                        "issue": "Repeated calculations in trade evaluation",
-                        "impact": "unnecessary computational overhead",
-                        "suggestion": "Memoize trade value calculations",
-                        "line_range": "200-230"
-                    }
-                ],
-                "strategy_implementation": {
-                    "strengths": [
-                        "well-structured decision tree in decide() method",
-                        "good separation of concerns between strategy and actions",
-                        "clear resource management logic",
-                        "comprehensive action filtering"
-                    ],
-                    "weaknesses": [
-                        "lacks endgame strategy adaptation",
-                        "no opponent behavior tracking",
-                        "simple robber placement logic",
-                        "missing development card optimization"
-                    ]
-                },
-                "code_structure": {
-                    "methods_analysis": {
-                        "decide()": "main decision method - well implemented",
-                        "_evaluate_settlement()": "good logic but needs optimization",
-                        "_should_trade()": "basic implementation, needs enhancement",
-                        "_place_robber()": "too simplistic, needs strategic improvement"
-                    },
-                    "missing_methods": [
-                        "_evaluate_endgame_strategy()",
-                        "_track_opponent_behavior()",
-                        "_optimize_development_cards()",
-                        "_calculate_victory_probability()"
-                    ]
-                },
-                "recommended_improvements": [
-                    {
-                        "priority": "high",
-                        "category": "bug_fix",
-                        "description": "Fix IndexError in settlement evaluation",
-                        "implementation": "Add bounds checking for node access"
-                    },
-                    {
-                        "priority": "high",
-                        "category": "performance",
-                        "description": "Optimize board analysis caching",
-                        "implementation": "Implement turn-based caching system"
-                    },
-                    {
-                        "priority": "medium",
-                        "category": "strategy",
-                        "description": "Add sophisticated endgame logic",
-                        "implementation": "Implement victory condition probability calculation"
-                    }
-                ]
-            }
+                }
+            
+            # Analyze the actual code
+            analysis = self._perform_real_code_analysis(code)
+            return analysis
         return analyze_catanatron_code
+    
+    def _perform_real_code_analysis(self, code: str) -> Dict[str, Any]:
+        """Perform actual analysis of the code"""
+        lines = code.split('\n')
+        total_lines = len(lines)
+        
+        # Count different types of code elements
+        class_count = len([line for line in lines if line.strip().startswith('class ')])
+        method_count = len([line for line in lines if line.strip().startswith('def ')])
+        comment_lines = len([line for line in lines if line.strip().startswith('#')])
+        docstring_lines = len([line for line in lines if '"""' in line or "'''" in line])
+        
+        # Check for common Catanatron imports and patterns
+        has_catanatron_imports = any('catanatron' in line for line in lines)
+        has_action_imports = any('Action' in line for line in lines)
+        has_player_base = any('Player' in line for line in lines)
+        
+        # Identify potential issues
+        issues = []
+        performance_issues = []
+        
+        # Check for basic implementation issues
+        if not has_catanatron_imports:
+            issues.append({
+                "type": "imports",
+                "issue": "Missing Catanatron imports",
+                "line": 1,
+                "suggestion": "Add required Catanatron imports",
+                "severity": "high"
+            })
+        
+        if method_count == 0:
+            issues.append({
+                "type": "implementation",
+                "issue": "No methods defined",
+                "line": 1,
+                "suggestion": "Implement required player methods",
+                "severity": "high"
+            })
+        
+        # Check for specific method implementations
+        code_lower = code.lower()
+        required_methods = ['decide', 'action', 'play']
+        missing_methods = []
+        
+        for method in required_methods:
+            if f'def {method}' not in code_lower:
+                missing_methods.append(method)
+        
+        if missing_methods:
+            issues.append({
+                "type": "required_methods",
+                "issue": f"Missing required methods: {', '.join(missing_methods)}",
+                "line": 1,
+                "suggestion": "Implement missing required methods",
+                "severity": "high"
+            })
+        
+        # Check for performance issues
+        if total_lines > 500:
+            performance_issues.append({
+                "issue": "Large file size may impact performance",
+                "impact": "potential slow loading",
+                "suggestion": "Consider breaking into smaller modules",
+                "line_range": f"1-{total_lines}"
+            })
+        
+        # Calculate quality metrics
+        code_complexity = min(1.0, method_count / 10.0)  # Assume 10 methods is reasonably complex
+        documentation_ratio = (comment_lines + docstring_lines) / max(total_lines, 1)
+        compliance_score = 0.7 if has_catanatron_imports and has_player_base else 0.3
+        
+        overall_quality = (code_complexity + documentation_ratio + compliance_score) / 3
+        
+        # Identify strengths and weaknesses
+        strengths = []
+        weaknesses = []
+        
+        if has_catanatron_imports:
+            strengths.append("proper Catanatron imports")
+        if documentation_ratio > 0.1:
+            strengths.append("includes documentation")
+        if class_count > 0:
+            strengths.append("object-oriented structure")
+        
+        if not has_action_imports:
+            weaknesses.append("missing action type imports")
+        if method_count < 3:
+            weaknesses.append("insufficient method implementation")
+        if documentation_ratio < 0.05:
+            weaknesses.append("lacks adequate documentation")
+        
+        # Generate recommendations
+        recommendations = []
+        
+        if issues:
+            recommendations.append({
+                "priority": "high",
+                "category": "bug_fix",
+                "description": "Fix critical implementation issues",
+                "implementation": "Address missing imports and methods"
+            })
+        
+        if performance_issues:
+            recommendations.append({
+                "priority": "medium",
+                "category": "performance",
+                "description": "Optimize code structure",
+                "implementation": "Refactor for better performance"
+            })
+        
+        if documentation_ratio < 0.1:
+            recommendations.append({
+                "priority": "low",
+                "category": "documentation",
+                "description": "Add comprehensive documentation",
+                "implementation": "Add docstrings and comments"
+            })
+        
+        return {
+            "code_analysis": {
+                "overall_quality": round(overall_quality, 2),
+                "complexity_score": round(code_complexity, 2),
+                "maintainability_index": int(overall_quality * 100),
+                "catanatron_compliance": round(compliance_score, 2),
+                "total_lines": total_lines,
+                "methods_count": method_count,
+                "classes_count": class_count,
+                "documentation_ratio": round(documentation_ratio, 2)
+            },
+            "catanatron_specific_issues": issues,
+            "performance_issues": performance_issues,
+            "strategy_implementation": {
+                "strengths": strengths,
+                "weaknesses": weaknesses
+            },
+            "code_structure": {
+                "has_required_imports": has_catanatron_imports,
+                "has_player_class": has_player_base,
+                "has_action_handling": has_action_imports,
+                "missing_methods": missing_methods
+            },
+            "recommended_improvements": recommendations
+        }
     
     def _create_implementation_tool(self):
         """Create implementation tool for Catanatron code generation"""
@@ -167,64 +248,66 @@ class CoderAgent:
     
     def _generate_strategy_code(self, spec: Dict[str, Any]) -> Dict[str, Any]:
         """Generate strategy improvement code"""
-        return {
-            "code_type": "strategy_improvement",
-            "implementation": {
-                "endgame_optimization": '''
+        strategy_name = spec.get("strategy", "general")
+        
+        code_templates = {
+            "endgame_optimization": '''
 def _evaluate_endgame_strategy(self, game_state):
     """Evaluate and choose optimal endgame strategy"""
-    my_vp = game_state.current_player.victory_points
-    turns_left = self._estimate_turns_remaining(game_state)
+    my_vp = self._get_victory_points(game_state)
     
-    # Calculate probability of winning with different strategies
-    strategies = {
-        "city_rush": self._calculate_city_rush_probability(game_state),
-        "development_cards": self._calculate_dev_card_probability(game_state),
-        "longest_road": self._calculate_longest_road_probability(game_state)
-    }
-    
-    # Choose strategy with highest win probability
-    best_strategy = max(strategies, key=strategies.get)
-    return best_strategy, strategies[best_strategy]
-                ''',
-                "opponent_tracking": '''
-def _track_opponent_behavior(self, game_state, action_history):
-    """Track and analyze opponent behavior patterns"""
-    if not hasattr(self, 'opponent_profiles'):
-        self.opponent_profiles = {}
-    
-    for player in game_state.players:
-        if player.color != self.color:
-            if player.color not in self.opponent_profiles:
-                self.opponent_profiles[player.color] = {
-                    "trading_frequency": 0,
-                    "aggressive_robber": 0,
-                    "preferred_strategy": "unknown"
-                }
+    # Simple endgame logic based on current position
+    if my_vp >= 8:
+        return "rush_to_victory"
+    elif my_vp >= 6:
+        return "balanced_approach"
+    else:
+        return "catch_up_strategy"
+            ''',
             
-            # Update behavior metrics based on recent actions
-            self._update_opponent_profile(player, action_history)
-                ''',
-                "adaptive_trading": '''
-def _evaluate_trade_with_prediction(self, trade_action, game_state):
-    """Evaluate trade considering future game state"""
-    # Calculate immediate value
-    immediate_value = self._calculate_resource_value(trade_action.give, trade_action.receive)
+            "resource_management": '''
+def _optimize_resource_usage(self, game_state):
+    """Optimize resource allocation and usage"""
+    my_resources = self._get_my_resources(game_state)
     
-    # Predict opponent responses
-    opponent_responses = self._predict_opponent_reactions(trade_action, game_state)
+    # Prioritize based on current needs
+    priorities = []
+    if my_resources.get("wood", 0) >= 4 and my_resources.get("brick", 0) >= 4:
+        priorities.append("build_roads")
+    if my_resources.get("wheat", 0) >= 2 and my_resources.get("ore", 0) >= 3:
+        priorities.append("build_city")
     
-    # Calculate long-term strategic value
-    strategic_value = self._calculate_strategic_trade_value(trade_action, game_state)
+    return priorities
+            ''',
+            
+            "trading_strategy": '''
+def _evaluate_trade_opportunity(self, game_state, trade_offer):
+    """Evaluate whether a trade opportunity is beneficial"""
+    my_resources = self._get_my_resources(game_state)
     
-    return immediate_value + strategic_value - opponent_responses
-                '''
-            },
-            "integration_points": [
-                "Add endgame evaluation to main decide() method",
-                "Initialize opponent tracking in __init__",
-                "Integrate adaptive trading in trade selection logic"
-            ]
+    # Simple trade evaluation
+    giving = trade_offer.get("giving", {})
+    receiving = trade_offer.get("receiving", {})
+    
+    # Check if we can afford the trade
+    can_afford = all(my_resources.get(resource, 0) >= amount 
+                    for resource, amount in giving.items())
+    
+    return can_afford and len(receiving) > 0
+            '''
+        }
+        
+        if strategy_name in code_templates:
+            implementation = code_templates[strategy_name]
+        else:
+            implementation = code_templates["resource_management"]  # Default
+        
+        return {
+            "code_type": "strategy_improvement",
+            "strategy_name": strategy_name,
+            "implementation": implementation,
+            "integration_notes": "Add this method to your player class and call from decide() method",
+            "test_suggestion": "Test with run_testfoo() after integration"
         }
     
     def _generate_bug_fix_code(self, spec: Dict[str, Any]) -> Dict[str, Any]:

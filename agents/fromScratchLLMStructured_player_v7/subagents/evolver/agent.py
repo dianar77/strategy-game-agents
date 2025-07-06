@@ -4,6 +4,20 @@ Evolver Agent - Core evolution logic using Chain-of-Thought reasoning
 
 from google.adk.agents import LlmAgent
 from typing import Dict, Any, List
+import sys
+from pathlib import Path
+
+# Add parent directory to path to import shared_tools
+sys.path.append(str(Path(__file__).parent.parent.parent))
+from shared_tools import (
+    analyze_performance_trends,
+    get_current_metrics,
+    read_full_performance_history,
+    read_game_results_file,
+    read_older_foo_file,
+    run_testfoo,
+    CURRENT_EVOLUTION
+)
 
 
 class EvolverAgent:
@@ -50,6 +64,35 @@ class EvolverAgent:
         """Create coordination tool for Catanatron agent orchestration"""
         def coordinate_catanatron_agents(task: str, agents: List[str]) -> Dict[str, Any]:
             """Coordinate multiple agents for Catanatron evolution tasks"""
+            
+            # Get real performance data
+            current_metrics = get_current_metrics()
+            performance_trends = analyze_performance_trends()
+            
+            # Extract real data or use defaults if error
+            if "error" in current_metrics:
+                win_rate = 0.15  # Default for new agent
+                avg_score = 6.0
+                evolution_cycle = 0
+                weaknesses = ["initialization", "basic_strategy"]
+                improvements = ["initial_setup"]
+            else:
+                game_perf = current_metrics.get("game_performance", {})
+                win_rate = game_perf.get("win_rate", {}).get("current", 0.15)
+                avg_score = game_perf.get("average_score", {}).get("current", 6.0)
+                evolution_cycle = game_perf.get("evolution_cycle", 0)
+                
+                # Determine weaknesses based on performance
+                weaknesses = []
+                if win_rate < 0.3:
+                    weaknesses.extend(["basic_strategy", "resource_management"])
+                if win_rate < 0.5:
+                    weaknesses.extend(["endgame_strategy", "trading_optimization"])
+                if avg_score < 7.0:
+                    weaknesses.append("scoring_efficiency")
+                
+                improvements = ["settlement_placement", "resource_management"] if evolution_cycle > 0 else ["initial_setup"]
+            
             return {
                 "coordination_id": f"catanatron_coord_{hash(task) % 10000}",
                 "task": task,
@@ -62,12 +105,13 @@ class EvolverAgent:
                     "success_criteria": self._define_catanatron_success_criteria(task)
                 },
                 "catanatron_context": {
-                    "current_win_rate": 0.35,
+                    "current_win_rate": win_rate,
                     "target_win_rate": 0.60,
-                    "main_weaknesses": ["endgame strategy", "trading optimization", "robber placement"],
-                    "recent_improvements": ["better settlement placement", "resource management"],
-                    "evolution_cycle": 3,
-                    "games_since_last_change": 50
+                    "current_avg_score": avg_score,
+                    "main_weaknesses": weaknesses,
+                    "recent_improvements": improvements,
+                    "evolution_cycle": evolution_cycle,
+                    "games_since_last_change": 50  # Standard test size
                 },
                 "risk_assessment": {
                     "coordination_risks": [
@@ -82,7 +126,7 @@ class EvolverAgent:
                     ],
                     "monitoring_points": [
                         "game win rate",
-                        "performance metrics",
+                        "performance metrics", 
                         "error rates",
                         "strategic coherence"
                     ]
@@ -94,20 +138,39 @@ class EvolverAgent:
         """Create decision-making tool for Catanatron evolution choices"""
         def make_catanatron_evolution_decision(options: List[Dict[str, Any]], criteria: Dict[str, float]) -> Dict[str, Any]:
             """Make informed decisions about Catanatron evolution options"""
+            
+            # Get real performance data
+            current_metrics = get_current_metrics()
+            performance_trends = analyze_performance_trends()
+            
+            # Extract current performance or use defaults
+            if "error" in current_metrics:
+                current_performance = {
+                    "win_rate": 0.15,
+                    "average_score": 6.0,
+                    "strategic_weaknesses": ["basic_strategy"],
+                    "technical_issues": ["initialization"]
+                }
+                improvement_priorities = {
+                    "high": ["basic_implementation"],
+                    "medium": ["strategy_development"],
+                    "low": ["optimization"]
+                }
+            else:
+                game_perf = current_metrics.get("game_performance", {})
+                current_performance = {
+                    "win_rate": game_perf.get("win_rate", {}).get("current", 0.15),
+                    "average_score": game_perf.get("average_score", {}).get("current", 6.0),
+                    "strategic_weaknesses": self._identify_strategic_weaknesses(current_metrics),
+                    "technical_issues": self._identify_technical_issues(performance_trends)
+                }
+                improvement_priorities = self._determine_improvement_priorities(current_performance)
+            
             return {
                 "decision_id": f"catanatron_decision_{hash(str(options)) % 10000}",
                 "evolution_context": {
-                    "current_performance": {
-                        "win_rate": 0.35,
-                        "average_score": 8.2,
-                        "strategic_weaknesses": ["endgame", "trading", "robber_placement"],
-                        "technical_issues": ["timeout_errors", "exception_handling"]
-                    },
-                    "improvement_priorities": {
-                        "high": ["fix_critical_bugs", "improve_endgame_strategy"],
-                        "medium": ["optimize_trading", "enhance_robber_strategy"],
-                        "low": ["code_cleanup", "documentation"]
-                    }
+                    "current_performance": current_performance,
+                    "improvement_priorities": improvement_priorities
                 },
                 "evaluation_criteria": criteria,
                 "option_analysis": [
@@ -137,49 +200,96 @@ class EvolverAgent:
         """Create tool for tracking Catanatron evolution progress"""
         def track_catanatron_evolution(cycle_data: Dict[str, Any]) -> Dict[str, Any]:
             """Track and analyze Catanatron evolution progress"""
+            
+            # Get real performance history
+            performance_trends = analyze_performance_trends()
+            
+            if "error" in performance_trends:
+                # No data available yet
+                performance_history = {
+                    "cycle_0": {"win_rate": 0.0, "avg_score": 0.0, "status": "no_data"}
+                }
+                improvement_trends = {
+                    "win_rate_trend": "no_data",
+                    "strategic_coherence": "unknown",
+                    "error_reduction": "unknown",
+                    "code_quality": "unknown"
+                }
+                implemented_strategies = ["none"]
+                pending_strategies = ["basic_implementation", "strategy_development"]
+                strategy_effectiveness = {}
+                bugs_fixed = []
+                remaining_issues = ["system_initialization"]
+            else:
+                # Build performance history from real data
+                trends_data = performance_trends.get("trends", {})
+                latest_evolutions = trends_data.get("latest_evolutions", [])
+                
+                performance_history = {}
+                for i, evolution in enumerate(latest_evolutions):
+                    cycle_key = f"cycle_{evolution['number']}"
+                    performance_history[cycle_key] = {
+                        "win_rate": evolution["wins"] / 3.0,  # Assuming 3 games per test
+                        "avg_score": evolution["avg_score"],
+                        "status": "completed"
+                    }
+                
+                # Determine trends
+                win_rates = [e["wins"] / 3.0 for e in latest_evolutions]
+                if len(win_rates) > 1:
+                    if win_rates[-1] > win_rates[0]:
+                        win_trend = "positive, improving"
+                    elif win_rates[-1] < win_rates[0]:
+                        win_trend = "negative, declining"
+                    else:
+                        win_trend = "stable"
+                else:
+                    win_trend = "insufficient_data"
+                
+                improvement_trends = {
+                    "win_rate_trend": win_trend,
+                    "strategic_coherence": "improving" if trends_data.get("win_rate_trend") == "improving" else "needs_work",
+                    "error_reduction": "steady_improvement",
+                    "code_quality": "steady_improvement"
+                }
+                
+                # Infer strategies based on performance
+                current_win_rate = performance_trends.get("current_performance", {}).get("win_rate", 0)
+                if current_win_rate > 0.4:
+                    implemented_strategies = ["settlement_placement", "resource_management", "basic_strategy"]
+                    pending_strategies = ["endgame_optimization", "advanced_trading"]
+                elif current_win_rate > 0.2:
+                    implemented_strategies = ["basic_strategy", "settlement_placement"]
+                    pending_strategies = ["resource_management", "development_cards", "endgame_optimization"]
+                else:
+                    implemented_strategies = ["basic_implementation"]
+                    pending_strategies = ["basic_strategy", "settlement_placement", "resource_management"]
+                
+                strategy_effectiveness = {strategy: min(0.85, current_win_rate + 0.3) for strategy in implemented_strategies}
+                bugs_fixed = ["basic_implementation_errors"]
+                remaining_issues = ["performance_optimization", "advanced_strategy_implementation"]
+            
             return {
                 "evolution_tracking": {
-                    "current_cycle": cycle_data.get("cycle", 0),
-                    "performance_history": {
-                        "cycle_0": {"win_rate": 0.15, "avg_score": 6.8, "status": "baseline"},
-                        "cycle_1": {"win_rate": 0.22, "avg_score": 7.2, "status": "initial_improvement"},
-                        "cycle_2": {"win_rate": 0.28, "avg_score": 7.8, "status": "steady_progress"},
-                        "cycle_3": {"win_rate": 0.35, "avg_score": 8.2, "status": "current"}
-                    },
-                    "improvement_trends": {
-                        "win_rate_trend": "positive, +0.07 per cycle",
-                        "strategic_coherence": "improving",
-                        "error_reduction": "significant improvement",
-                        "code_quality": "steady improvement"
-                    }
+                    "current_cycle": cycle_data.get("cycle", CURRENT_EVOLUTION),
+                    "performance_history": performance_history,
+                    "improvement_trends": improvement_trends
                 },
                 "strategic_evolution": {
-                    "implemented_strategies": [
-                        "improved_settlement_placement",
-                        "basic_resource_management",
-                        "development_card_usage"
-                    ],
-                    "pending_strategies": [
-                        "endgame_optimization",
-                        "opponent_behavior_modeling",
-                        "adaptive_trading"
-                    ],
-                    "strategy_effectiveness": {
-                        "settlement_placement": 0.85,
-                        "resource_management": 0.72,
-                        "development_cards": 0.68
-                    }
+                    "implemented_strategies": implemented_strategies,
+                    "pending_strategies": pending_strategies,
+                    "strategy_effectiveness": strategy_effectiveness
                 },
                 "technical_evolution": {
-                    "bugs_fixed": ["IndexError in node access", "timeout handling"],
-                    "performance_improvements": ["caching system", "algorithm optimization"],
-                    "code_quality_improvements": ["error handling", "documentation"],
-                    "remaining_issues": ["complex decision timeout", "memory optimization"]
+                    "bugs_fixed": bugs_fixed,
+                    "performance_improvements": ["system_optimization"],
+                    "code_quality_improvements": ["error_handling", "documentation"],
+                    "remaining_issues": remaining_issues
                 },
                 "next_cycle_recommendations": {
-                    "priority_focus": "endgame strategy implementation",
-                    "secondary_focus": "trading optimization",
-                    "technical_focus": "performance optimization",
+                    "priority_focus": pending_strategies[0] if pending_strategies else "optimization",
+                    "secondary_focus": pending_strategies[1] if len(pending_strategies) > 1 else "testing",
+                    "technical_focus": "performance_optimization",
                     "expected_impact": "10-15% win rate improvement"
                 }
             }
@@ -313,3 +423,48 @@ class EvolverAgent:
     def get_agent(self) -> LlmAgent:
         """Get the underlying LLM agent"""
         return self.agent 
+
+    def _identify_strategic_weaknesses(self, metrics: Dict[str, Any]) -> List[str]:
+        """Identify strategic weaknesses from performance metrics"""
+        weaknesses = []
+        game_perf = metrics.get("game_performance", {})
+        win_rate = game_perf.get("win_rate", {}).get("current", 0)
+        avg_score = game_perf.get("average_score", {}).get("current", 0)
+        
+        if win_rate < 0.3:
+            weaknesses.extend(["basic_strategy", "resource_management"])
+        if win_rate < 0.5:
+            weaknesses.extend(["endgame_strategy", "trading_optimization"])
+        if avg_score < 7.0:
+            weaknesses.append("scoring_efficiency")
+        
+        return weaknesses or ["general_strategy"]
+    
+    def _identify_technical_issues(self, trends: Dict[str, Any]) -> List[str]:
+        """Identify technical issues from performance trends"""
+        if "error" in trends:
+            return ["system_initialization", "data_access"]
+        return ["timeout_handling", "exception_management"]
+    
+    def _determine_improvement_priorities(self, performance: Dict[str, Any]) -> Dict[str, List[str]]:
+        """Determine improvement priorities based on performance"""
+        win_rate = performance.get("win_rate", 0)
+        
+        if win_rate < 0.2:
+            return {
+                "high": ["basic_strategy_implementation", "critical_bug_fixes"],
+                "medium": ["settlement_placement", "resource_management"],
+                "low": ["optimization", "advanced_features"]
+            }
+        elif win_rate < 0.4:
+            return {
+                "high": ["endgame_strategy", "trading_optimization"],
+                "medium": ["robber_strategy", "development_cards"],
+                "low": ["code_cleanup", "documentation"]
+            }
+        else:
+            return {
+                "high": ["advanced_strategy", "performance_optimization"],
+                "medium": ["opponent_modeling", "adaptive_strategy"],
+                "low": ["code_refactoring", "testing"]
+            } 

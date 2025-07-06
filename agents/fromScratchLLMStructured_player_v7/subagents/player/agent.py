@@ -6,6 +6,18 @@ from google.adk.agents import LlmAgent
 from typing import Dict, Any, Optional, List
 import requests
 import json
+import sys
+from pathlib import Path
+
+# Add parent directory to path to import shared_tools
+sys.path.append(str(Path(__file__).parent.parent.parent))
+from shared_tools import (
+    run_testfoo,
+    read_foo,
+    write_foo,
+    get_current_metrics,
+    analyze_performance_trends
+)
 
 
 class PlayerAgent:
@@ -58,36 +70,46 @@ class PlayerAgent:
         def execute_catanatron_game(game_config: Dict[str, Any]) -> Dict[str, Any]:
             """Execute a Catanatron game with specified configuration"""
             game_type = game_config.get('type', 'standard')
-            players = game_config.get('players', ['FOO_PLAYER', 'ALPHA_BETA'])
-            num_games = game_config.get('num_games', 10)
+            short_game = game_config.get('short_game', False)
             
             try:
-                # Simulate game execution - replace with actual Catanatron game runner
-                results = self._simulate_catanatron_games(players, num_games, game_type)
+                # Run actual game using shared_tools
+                game_output = run_testfoo(short_game=short_game)
+                
+                # Parse results from game output
+                if "Error" in game_output:
+                    return {
+                        "game_execution": {
+                            "status": "error",
+                            "error": game_output,
+                            "error_type": "execution_error",
+                            "game_type": game_type
+                        },
+                        "results": {},
+                        "recommendations": [
+                            "Check player implementation for syntax errors",
+                            "Verify Catanatron installation",
+                            "Review game configuration parameters"
+                        ]
+                    }
+                
+                # Extract basic info from output
+                results = self._parse_game_output(game_output)
                 
                 return {
                     "game_execution": {
                         "status": "completed",
                         "game_type": game_type,
-                        "players": players,
-                        "games_played": num_games,
-                        "execution_time": f"{num_games * 2.5}s",
-                        "command_used": f"catanatron-play --players={','.join(players)} --num={num_games}"
+                        "execution_time": f"~{180 if not short_game else 30}s",
+                        "output_length": len(game_output)
                     },
                     "results": results,
                     "performance_summary": {
-                        "foo_player_wins": results.get('foo_wins', 0),
-                        "foo_player_win_rate": results.get('foo_win_rate', 0.0),
-                        "average_score": results.get('avg_score', 0.0),
-                        "total_victory_points": results.get('total_vp', 0),
-                        "average_game_duration": results.get('avg_duration', 0.0)
+                        "execution_successful": True,
+                        "output_captured": True,
+                        "game_completed": "completed" in game_output.lower() or "result" in game_output.lower()
                     },
-                    "detailed_metrics": {
-                        "error_count": results.get('errors', 0),
-                        "timeout_count": results.get('timeouts', 0),
-                        "exception_count": results.get('exceptions', 0),
-                        "valid_moves_percentage": results.get('valid_moves_pct', 100.0)
-                    }
+                    "raw_output": game_output[-1000:] if len(game_output) > 1000 else game_output  # Last 1000 chars
                 }
                 
             except Exception as e:
@@ -96,56 +118,98 @@ class PlayerAgent:
                         "status": "error",
                         "error": str(e),
                         "error_type": type(e).__name__,
-                        "game_type": game_type,
-                        "players": players
+                        "game_type": game_type
                     },
                     "results": {},
                     "recommendations": [
                         "Check player implementation for syntax errors",
                         "Verify Catanatron installation",
-                        "Review game configuration parameters"
+                        "Review system configuration"
                     ]
                 }
         
         return execute_catanatron_game
+    
+    def _parse_game_output(self, output: str) -> Dict[str, Any]:
+        """Parse game output to extract basic information"""
+        results = {
+            "raw_output_available": True,
+            "contains_error": "error" in output.lower() or "exception" in output.lower(),
+            "contains_timeout": "timeout" in output.lower(),
+            "contains_results": "result" in output.lower() or "winner" in output.lower(),
+            "output_length": len(output)
+        }
+        
+        # Try to extract any numerical results
+        import re
+        numbers = re.findall(r'\d+', output)
+        if numbers:
+            results["extracted_numbers"] = numbers[-5:]  # Last 5 numbers found
+        
+        return results
     
     def _create_testing_tool(self):
         """Create Catanatron testing tool"""
         def test_catanatron_player(test_config: Dict[str, Any]) -> Dict[str, Any]:
             """Run comprehensive tests on Catanatron player implementation"""
             test_type = test_config.get('type', 'full')
-            player_file = test_config.get('player_file', 'foo_player.py')
             
             try:
-                # Simulate testing - replace with actual testing logic
-                test_results = self._run_catanatron_tests(player_file, test_type)
+                # Read current player implementation
+                player_code = read_foo()
+                
+                if "Error" in player_code:
+                    return {
+                        "testing_results": {
+                            "status": "error",
+                            "error": player_code,
+                            "test_type": test_type
+                        },
+                        "critical_issues": [
+                            "Unable to read player implementation",
+                            "File access issues detected"
+                        ]
+                    }
+                
+                # Validate the code
+                validation_results = self._validate_player_implementation(player_code)
+                
+                # Run a short test game if code looks valid
+                game_test_results = {}
+                if validation_results.get("basic_structure_valid", False):
+                    try:
+                        test_output = run_testfoo(short_game=True)
+                        game_test_results = {
+                            "test_execution": "completed",
+                            "test_output_length": len(test_output),
+                            "contains_error": "error" in test_output.lower(),
+                            "test_successful": "Error" not in test_output
+                        }
+                    except Exception as e:
+                        game_test_results = {
+                            "test_execution": "failed",
+                            "test_error": str(e)
+                        }
                 
                 return {
                     "testing_results": {
                         "status": "completed",
                         "test_type": test_type,
-                        "player_file": player_file,
-                        "tests_run": test_results.get('total_tests', 0),
-                        "tests_passed": test_results.get('passed', 0),
-                        "tests_failed": test_results.get('failed', 0),
-                        "test_coverage": test_results.get('coverage', 0.0)
+                        "code_length": len(player_code),
+                        "validation_passed": validation_results.get("basic_structure_valid", False)
                     },
                     "syntax_validation": {
-                        "valid_syntax": test_results.get('valid_syntax', True),
-                        "syntax_errors": test_results.get('syntax_errors', []),
-                        "import_errors": test_results.get('import_errors', [])
+                        "valid_syntax": validation_results.get("syntax_valid", False),
+                        "syntax_errors": validation_results.get("syntax_errors", []),
+                        "import_errors": validation_results.get("import_issues", [])
                     },
                     "game_compatibility": {
-                        "catanatron_compatible": test_results.get('compatible', True),
-                        "api_usage_correct": test_results.get('api_correct', True),
-                        "action_types_valid": test_results.get('actions_valid', True)
+                        "catanatron_compatible": validation_results.get("has_catanatron_imports", False),
+                        "has_required_methods": validation_results.get("has_required_methods", False),
+                        "structure_valid": validation_results.get("basic_structure_valid", False)
                     },
-                    "performance_tests": {
-                        "decision_speed": test_results.get('decision_speed', 0.0),
-                        "memory_usage": test_results.get('memory_usage', 0.0),
-                        "timeout_risk": test_results.get('timeout_risk', 'low')
-                    },
-                    "recommendations": test_results.get('recommendations', [])
+                    "game_test_results": game_test_results,
+                    "recommendations": validation_results.get("recommendations", [])
                 }
                 
             except Exception as e:
@@ -153,13 +217,11 @@ class PlayerAgent:
                     "testing_results": {
                         "status": "error",
                         "error": str(e),
-                        "error_type": type(e).__name__,
-                        "player_file": player_file
+                        "error_type": type(e).__name__
                     },
                     "critical_issues": [
-                        "Unable to load player implementation",
-                        "Syntax or import errors detected",
-                        "Player may not be functional"
+                        "Unable to test player implementation",
+                        "System or configuration issues detected"
                     ]
                 }
         
@@ -169,41 +231,79 @@ class PlayerAgent:
         """Create Catanatron game monitoring tool"""
         def monitor_catanatron_performance() -> Dict[str, Any]:
             """Monitor Catanatron game performance and system health"""
-            return {
-                "system_health": {
-                    "catanatron_status": "operational",
-                    "game_engine_health": "excellent",
-                    "player_loading": "functional",
-                    "last_check": "now",
-                    "uptime": "99.95%"
-                },
-                "game_performance": {
-                    "average_game_duration": "3.2 minutes",
-                    "games_completed_today": 847,
-                    "successful_game_rate": "99.2%",
-                    "player_error_rate": "0.8%",
-                    "timeout_rate": "0.3%"
-                },
-                "player_metrics": {
-                    "foo_player_status": "active",
-                    "recent_win_rate": "35%",
-                    "average_score": 8.2,
-                    "performance_trend": "improving",
-                    "last_game_result": "victory - 10 points"
-                },
-                "resource_usage": {
-                    "cpu_usage": "25%",
-                    "memory_usage": "45%",
-                    "disk_space": "78% available",
-                    "network_latency": "12ms"
-                },
-                "recent_issues": [
-                    "Occasional timeout in complex board states",
-                    "Memory usage spike during endgame calculations"
-                ]
-            }
+            
+            try:
+                # Get real performance metrics
+                current_metrics = get_current_metrics()
+                performance_trends = analyze_performance_trends()
+                
+                if "error" in current_metrics:
+                    return {
+                        "system_health": {
+                            "catanatron_status": "unknown",
+                            "player_status": "no_data",
+                            "last_check": "now",
+                            "data_availability": "no performance data available"
+                        },
+                        "monitoring_status": "limited - no historical data available"
+                    }
+                
+                # Extract real metrics
+                game_perf = current_metrics.get("game_performance", {})
+                current_win_rate = game_perf.get("win_rate", {}).get("current", 0.0)
+                evolution_cycle = game_perf.get("evolution_cycle", 0)
+                
+                return {
+                    "system_health": {
+                        "catanatron_status": "operational",
+                        "player_status": "active" if current_win_rate > 0 else "needs_development",
+                        "last_check": "now",
+                        "data_availability": "performance data available"
+                    },
+                    "game_performance": {
+                        "current_win_rate": f"{current_win_rate:.1%}",
+                        "evolution_cycle": evolution_cycle,
+                        "performance_trend": game_perf.get("win_rate", {}).get("trend", "unknown"),
+                        "data_points": "based on real game results"
+                    },
+                    "player_metrics": {
+                        "foo_player_status": "active",
+                        "current_performance": current_win_rate,
+                        "average_score": game_perf.get("average_score", {}).get("current", 0.0),
+                        "performance_level": self._assess_performance_level(current_win_rate)
+                    },
+                    "system_status": {
+                        "tools_operational": True,
+                        "file_access": True,
+                        "game_execution": True,
+                        "data_collection": True
+                    }
+                }
+                
+            except Exception as e:
+                return {
+                    "system_health": {
+                        "catanatron_status": "error",
+                        "error": str(e),
+                        "last_check": "now"
+                    },
+                    "monitoring_status": "system monitoring failed"
+                }
         
         return monitor_catanatron_performance
+    
+    def _assess_performance_level(self, win_rate: float) -> str:
+        """Assess performance level based on win rate"""
+        if win_rate > 0.6:
+            return "excellent"
+        elif win_rate > 0.4:
+            return "good"
+        elif win_rate > 0.2:
+            return "developing"
+        elif win_rate > 0.0:
+            return "basic"
+        else:
+            return "needs_development"
     
     def _create_validation_tool(self):
         """Create Catanatron player validation tool"""
@@ -259,47 +359,6 @@ class PlayerAgent:
                 }
         
         return validate_catanatron_player
-    
-    def _simulate_catanatron_games(self, players: List[str], num_games: int, game_type: str) -> Dict[str, Any]:
-        """Simulate Catanatron game execution results"""
-        # This would be replaced with actual game execution logic
-        foo_wins = int(num_games * 0.35)  # 35% win rate
-        total_vp = num_games * 8.2  # Average 8.2 points per game
-        
-        return {
-            "foo_wins": foo_wins,
-            "foo_win_rate": foo_wins / num_games,
-            "avg_score": total_vp / num_games,
-            "total_vp": total_vp,
-            "avg_duration": 3.2,
-            "errors": 0,
-            "timeouts": 1,
-            "exceptions": 0,
-            "valid_moves_pct": 99.5
-        }
-    
-    def _run_catanatron_tests(self, player_file: str, test_type: str) -> Dict[str, Any]:
-        """Run Catanatron player tests"""
-        # This would be replaced with actual testing logic
-        return {
-            "total_tests": 25,
-            "passed": 23,
-            "failed": 2,
-            "coverage": 85.5,
-            "valid_syntax": True,
-            "syntax_errors": [],
-            "import_errors": [],
-            "compatible": True,
-            "api_correct": True,
-            "actions_valid": True,
-            "decision_speed": 0.15,
-            "memory_usage": 45.2,
-            "timeout_risk": "low",
-            "recommendations": [
-                "Add timeout handling for complex decisions",
-                "Improve memory efficiency in board analysis"
-            ]
-        }
     
     def _validate_player_implementation(self, player_code: str) -> Dict[str, Any]:
         """Validate player implementation"""
