@@ -84,13 +84,13 @@ class CreatorAgent():
         
         # Create unique run directory if it doesn't exist
         # This ensures each run has its own isolated storage
-        if CreatorAgentADK.run_dir is None:
+        if CreatorAgent.run_dir is None:
             agent_dir = os.path.dirname(os.path.abspath(__file__))
             runs_dir = os.path.join(agent_dir, "runs_adk")
             os.makedirs(runs_dir, exist_ok=True)
             run_id = datetime.now().strftime("adk_creator_%Y%m%d_%H%M%S")
-            CreatorAgentADK.run_dir = os.path.join(runs_dir, run_id)
-            os.makedirs(CreatorAgentADK.run_dir, exist_ok=True)
+            CreatorAgent.run_dir = os.path.join(runs_dir, run_id)
+            os.makedirs(CreatorAgent.run_dir, exist_ok=True)
 
         # Copy the template player file to start evolution from a clean slate
         shutil.copy2(
@@ -181,7 +181,7 @@ class CreatorAgent():
                 return candidate.read_text(encoding="utf-8", errors="ignore")
             
             # Handle run directory files (results, logs, etc.)
-            run_path = Path(CreatorAgentADK.run_dir) / rel_path
+            run_path = Path(CreatorAgent.run_dir) / rel_path
             if run_path.exists() and run_path.is_file():
                 if run_path.stat().st_size > 64_000:
                     raise ValueError("File too large")
@@ -474,8 +474,8 @@ class CreatorAgent():
         print("Starting ADK-based evolution cycle...")
         
         # Main evolution loop
-        while CreatorAgentADK.current_evolution < NUM_EVOLUTIONS:
-            print(f"\n=== EVOLUTION {CreatorAgentADK.current_evolution} ===")
+        while CreatorAgent.current_evolution < NUM_EVOLUTIONS:
+            print(f"\n=== EVOLUTION {CreatorAgent.current_evolution} ===")
             
             # Step 1: Test the current player implementation
             print("Running game test...")
@@ -486,7 +486,7 @@ class CreatorAgent():
             analysis_query = f"""
             ANALYZER OBJECTIVE:
             
-            Analyze the results from Evolution {CreatorAgentADK.current_evolution}.
+            Analyze the results from Evolution {CreatorAgent.current_evolution}.
             
             If no syntax errors:
             - Report scores of the {FOO_TARGET_FILENAME} player
@@ -508,7 +508,7 @@ class CreatorAgent():
             meta_query = f"""
             Previous Analysis: {analysis_response}
             Game Results: {game_results}
-            Current Evolution: {CreatorAgentADK.current_evolution}
+            Current Evolution: {CreatorAgent.current_evolution}
             Performance History: {self._get_performance_summary()}
             
             Based on this information, determine next steps.
@@ -520,7 +520,7 @@ class CreatorAgent():
             self._route_to_specialist(meta_response)
             
             # Move to next evolution cycle
-            CreatorAgentADK.current_evolution += 1
+            CreatorAgent.current_evolution += 1
             
             # Save progress after each evolution
             self._save_evolution_state()
@@ -707,7 +707,7 @@ class CreatorAgent():
             run_id = datetime.now().strftime("game_%Y%m%d_%H%M%S_fg")  # fg = full game
             
         # Set up directory structure for this game run
-        game_run_dir = Path(CreatorAgentADK.run_dir) / run_id
+        game_run_dir = Path(CreatorAgent.run_dir) / run_id
         game_run_dir.mkdir(exist_ok=True)
         
         # Copy current player implementation to run directory for record-keeping
@@ -784,7 +784,7 @@ class CreatorAgent():
         Note: The current implementation uses simplified metric extraction.
         A production version would parse game results more thoroughly.
         """
-        performance_history_path = Path(CreatorAgentADK.run_dir) / "performance_history.json"
+        performance_history_path = Path(CreatorAgent.run_dir) / "performance_history.json"
         
         # Load existing performance history or create new one
         try:
@@ -805,9 +805,9 @@ class CreatorAgent():
             pass
         
         # Create performance record for this evolution
-        evolution_key = CreatorAgentADK.current_evolution
-        rel_output_file_path = output_file_path.relative_to(Path(CreatorAgentADK.run_dir))
-        rel_cur_foo_path = cur_foo_path.relative_to(Path(CreatorAgentADK.run_dir))
+        evolution_key = CreatorAgent.current_evolution
+        rel_output_file_path = output_file_path.relative_to(Path(CreatorAgent.run_dir))
+        rel_cur_foo_path = cur_foo_path.relative_to(Path(CreatorAgent.run_dir))
         
         performance_history[f"Evolution {evolution_key}"] = {
             "wins": wins,
@@ -838,7 +838,7 @@ class CreatorAgent():
         - Which changes were successful or unsuccessful
         - Trends in performance metrics
         """
-        performance_history_path = Path(CreatorAgentADK.run_dir) / "performance_history.json"
+        performance_history_path = Path(CreatorAgent.run_dir) / "performance_history.json"
         
         if not performance_history_path.exists():
             return "No performance history available."
@@ -893,9 +893,9 @@ class CreatorAgent():
         - Timestamp
         - Model information
         """
-        state_file = Path(CreatorAgentADK.run_dir) / "evolution_state.json"
+        state_file = Path(CreatorAgent.run_dir) / "evolution_state.json"
         state = {
-            "current_evolution": CreatorAgentADK.current_evolution,
+            "current_evolution": CreatorAgent.current_evolution,
             "timestamp": datetime.now().isoformat(),
             "llm_name": self.llm_name
         }
@@ -918,7 +918,7 @@ class CreatorAgent():
         """
         # Create timestamped filename for final player
         dt = datetime.now().strftime("_%Y%m%d_%H%M%S_")
-        final_file = Path(CreatorAgentADK.run_dir) / ("final_adk" + dt + FOO_TARGET_FILENAME)
+        final_file = Path(CreatorAgent.run_dir) / ("final_adk" + dt + FOO_TARGET_FILENAME)
         
         # Copy the evolved player to final location
         shutil.copy2(FOO_TARGET_FILE.resolve(), final_file)

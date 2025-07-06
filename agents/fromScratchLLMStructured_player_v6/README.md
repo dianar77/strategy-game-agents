@@ -112,10 +112,10 @@ This will:
 ### Programmatic Usage
 
 ```python
-from agents.fromScratchLLMStructured_player_v6 import CreatorAgentADK
+from agents.fromScratchLLMStructured_player_v6 import CreatorAgent
 
 # Create and run the evolution system
-creator = CreatorAgentADK()
+creator = CreatorAgent()
 creator.run_evolution_cycle()
 ```
 

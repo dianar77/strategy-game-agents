@@ -15,8 +15,28 @@ from catanatron.state_functions import (
     get_player_buildings,
 )
 from catanatron.models.enums import VICTORY_POINT, SETTLEMENT, CITY
-from catanatron_server.models import database_session, upsert_game_state
-from catanatron_server.utils import ensure_link
+
+# Make catanatron_server imports conditional (for database functionality)
+try:
+    from catanatron_server.models import database_session, upsert_game_state
+    from catanatron_server.utils import ensure_link
+    DATABASE_AVAILABLE = True
+except ImportError:
+    DATABASE_AVAILABLE = False
+    # Create dummy functions when database is not available
+    def database_session():
+        class DummySession:
+            def __enter__(self):
+                return self
+            def __exit__(self, *args):
+                pass
+        return DummySession()
+    
+    def upsert_game_state(game, session):
+        pass
+    
+    def ensure_link(game):
+        return "Database not available"
 from catanatron_experimental.utils import formatSecs
 from catanatron_experimental.machine_learning.utils import (
     get_discounted_return,

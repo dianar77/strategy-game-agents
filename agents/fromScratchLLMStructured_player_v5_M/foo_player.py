@@ -1,7 +1,6 @@
 import os
-from catanatron import Player
+from catanatron.models.player import Player, Color
 from catanatron.game import Game
-from catanatron.models.player import Color
 from catanatron.models.actions import ActionType
 from catanatron.models.enums import (
     WOOD, BRICK, SHEEP, WHEAT, ORE, RESOURCES,
@@ -88,7 +87,7 @@ class FooPlayer(Player):
         buildings = state.buildings_by_color.get(color, {})
         settlements = [node for node, building_type in buildings.items() if building_type == SETTLEMENT]
         cities = [node for node, building_type in buildings.items() if building_type == CITY]
-        roads = state.board.roads_by_color.get(color, [])
+        roads = [edge for edge, road_color in state.board.roads.items() if road_color == color]
         
         # Get board state
         is_initial_build = state.is_initial_build_phase
@@ -109,7 +108,7 @@ class FooPlayer(Player):
                 other_buildings = state.buildings_by_color.get(other_color, {})
                 other_settlements = [node for node, building_type in other_buildings.items() if building_type == SETTLEMENT]
                 other_cities = [node for node, building_type in other_buildings.items() if building_type == CITY]
-                other_roads = state.board.roads_by_color.get(other_color, [])
+                other_roads = [edge for edge, road_color in state.board.roads.items() if road_color == other_color]
                 
                 other_vp = len(other_settlements) + 2 * len(other_cities)
                 

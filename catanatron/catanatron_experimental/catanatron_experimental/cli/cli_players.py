@@ -1,4 +1,15 @@
+import os
+import sys
 from collections import namedtuple
+
+# Add the root directory to Python path so we can import from the agents folder
+# This file is at: catanatron/catanatron_experimental/catanatron_experimental/cli/cli_players.py
+# Root directory is: ../../../../ (up 4 levels)
+current_dir = os.path.dirname(os.path.abspath(__file__))
+root_dir = os.path.join(current_dir, '..', '..', '..', '..')
+root_dir = os.path.abspath(root_dir)
+if root_dir not in sys.path:
+    sys.path.insert(0, root_dir)
 
 from rich.table import Table
 
@@ -38,10 +49,11 @@ from agents.fromScratch_player.foo_player import FooPlayer as FooScratchPlayer
 from agents.fromScratchLLM_player.foo_player import FooPlayer as FooLLMPlayer
 from agents.fromScratchLLM_player_v2.foo_player import FooPlayer as FooLLMPlayerV2
 
-from agents.fromScratchLLMStructured_player.foo_player import FooPlayer as FooLLMStructuredPlayer
-from agents.fromScratchLLMStructured_player_v2.foo_player import FooPlayer as FooLLMStructuredPlayerV2
-from agents.fromScratchLLMStructured_player_v3.foo_player import FooPlayer as FooLLMStructuredPlayerV3
-from agents.fromScratchLLMStructured_player_v4.foo_player import FooPlayer as FooLLMStructuredPlayerV4
+# Temporarily commenting out problematic imports that have missing dependencies
+# from agents.fromScratchLLMStructured_player.foo_player import FooPlayer as FooLLMStructuredPlayer
+# from agents.fromScratchLLMStructured_player_v2.foo_player import FooPlayer as FooLLMStructuredPlayerV2
+# from agents.fromScratchLLMStructured_player_v3.foo_player import FooPlayer as FooLLMStructuredPlayerV3
+# from agents.fromScratchLLMStructured_player_v4.foo_player import FooPlayer as FooLLMStructuredPlayerV4
 from agents.fromScratchLLMStructured_player_v5_M.foo_player import FooPlayer as FooLLMStructuredPlayerV5M
 from agents.fromScratchLLMStructured_player_v6.foo_player import FooPlayer as FooLLMStructuredPlayerV6
 from agents.fromScratchLLMStructured_player_v7.foo_player import FooPlayer as FooLLMStructuredPlayerV7
@@ -177,48 +189,49 @@ CLI_PLAYERS = [
     #     "Player being created by creator agent that has more tools to edit FooPlayer's code. FooPlayer has access to query the LLM",
     #     FooLLMPlayerV2_1
     # ),
-    CliPlayer(
-        "FOO_LLM_S",
-        "FooPlayer_LLM_Structured",
-        "Player being created by creator agent. FooPlayer has access to query the LLM",
-        FooLLMStructuredPlayer
-    ),
-    CliPlayer(
-        "FOO_LLM_S2",
-        "FooPlayer_LLM_Structured_V2",
-        "Player being created by creator agent that has more tools to edit FooPlayer's code. FooPlayer has access to query the LLM",
-        FooLLMStructuredPlayerV2
-    ),
-    CliPlayer(
-        "FOO_LLM_S3",
-        "FooPlayer_LLM_Structured_V3",
-        "Player being created by creator agent that has more tools to edit FooPlayer's code. FooPlayer has access to query the LLM",
-        FooLLMStructuredPlayerV3
-    ),
-    CliPlayer(
-        "FOO_LLM_S4",
-        "FooPlayer_LLM_Structured_V4",
-        "Player being created by creator agent that has more tools to edit FooPlayer's code. FooPlayer has access to query the LLM",
-        FooLLMStructuredPlayerV4
-    ),
-    CliPlayer(
-        "FOO_LLM_S5_M",
-        "FooPlayer_LLM_Structured_V5_M",
-        "Player being created by creator agent that has more tools to edit FooPlayer's code. FooPlayer has access to query the LLM",
-        FooLLMStructuredPlayerV5M
-    ),
-    CliPlayer(
-        "FOO_LLM_V6",
-        "FooPlayer_LLM_V6",
-        "ADK-powered multi-agent evolved player (V6) with Google Gemini backend",
-        FooLLMStructuredPlayerV6
-    ),
-    CliPlayer(
-        "FOO_LLM_S7",
-        "FooPlayer_LLM_S7",
-        "Multi-agent evolved player (V7) with advanced strategic capabilities",
-        FooLLMStructuredPlayerV7
-    ),
+    # Temporarily commenting out players with missing dependencies
+    # CliPlayer(
+    #     "FOO_LLM_S",
+    #     "FooPlayer_LLM_Structured",
+    #     "Player being created by creator agent. FooPlayer has access to query the LLM",
+    #     FooLLMStructuredPlayer
+    # ),
+    # CliPlayer(
+    #     "FOO_LLM_S2",
+    #     "FooPlayer_LLM_Structured_V2",
+    #     "Player being created by creator agent that has more tools to edit FooPlayer's code. FooPlayer has access to query the LLM",
+    #     FooLLMStructuredPlayerV2
+    # ),
+    # CliPlayer(
+    #     "FOO_LLM_S3",
+    #     "FooPlayer_LLM_Structured_V3",
+    #     "Player being created by creator agent that has more tools to edit FooPlayer's code. FooPlayer has access to query the LLM",
+    #     FooLLMStructuredPlayerV3
+    # ),
+    # CliPlayer(
+    #     "FOO_LLM_S4",
+    #     "FooPlayer_LLM_Structured_V4",
+    #     "Player being created by creator agent that has more tools to edit FooPlayer's code. FooPlayer has access to query the LLM",
+    #     FooLLMStructuredPlayerV4
+    # ),
+         CliPlayer(
+         "FOO_LLM_S5_M",
+         "FooPlayer_LLM_Structured_V5_M",
+         "Player being created by creator agent that has more tools to edit FooPlayer's code. FooPlayer has access to query the LLM",
+         FooLLMStructuredPlayerV5M
+     ),
+     CliPlayer(
+         "FOO_LLM_V6",
+         "FooPlayer_LLM_V6",
+         "ADK-powered multi-agent evolved player (V6) with Google Gemini backend",
+         FooLLMStructuredPlayerV6
+     ),
+     CliPlayer(
+         "FOO_LLM_S7",
+         "FooPlayer_LLM_S7",
+         "Multi-agent evolved player (V7) with advanced strategic capabilities",
+         FooLLMStructuredPlayerV7
+     ),
 ]
 
 
