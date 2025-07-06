@@ -57,6 +57,7 @@ from agents.fromScratchLLM_player_v2.foo_player import FooPlayer as FooLLMPlayer
 from agents.fromScratchLLMStructured_player_v5_M.foo_player import FooPlayer as FooLLMStructuredPlayerV5M
 from agents.fromScratchLLMStructured_player_v6.foo_player import FooPlayer as FooLLMStructuredPlayerV6
 from agents.fromScratchLLMStructured_player_v7.foo_player import FooPlayer as FooLLMStructuredPlayerV7
+from agents.fromScratchLLMStructured_player_v8.foo_player import FooPlayer as FooLLMStructuredPlayerV8
 # from agents.fromScratchLLM_player_v2.runs.creator_20250508_112135_hitl.foo_player import FooPlayer as FooLLMPlayerV2_1
 # from catanatron_experimental.machine_learning.players.online_mcts_dqn import (
 #     OnlineMCTSDQNPlayer,
@@ -231,6 +232,12 @@ CLI_PLAYERS = [
          "FooPlayer_LLM_S7",
          "Multi-agent evolved player (V7) with advanced strategic capabilities",
          FooLLMStructuredPlayerV7
+     ),
+     CliPlayer(
+         "FOO_LLM_S8",
+         "FooPlayer_LLM_S8",
+         "Multi-agent evolved player (V8) with advanced strategic capabilities",
+         FooLLMStructuredPlayerV8
      ),
 ]
 

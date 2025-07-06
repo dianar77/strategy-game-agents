@@ -6,7 +6,7 @@ import re
 from datetime import datetime
 
 LLM = "gpt-4o"  # The LLM used
-EVAL_PLAYER = "FOO_LLM_V6"  # The player you want to evaluate (use the code/key)
+EVAL_PLAYER = "FOO_LLM_S6"  # The player you want to evaluate (use the code/key)
 NUM_GAMES = 10
 
 # Dictionary mapping player codes to their full names as they appear in summary
@@ -26,8 +26,9 @@ AGENTS = {
     "FOO_S": "FooPlayer",
     "PR_LLM": "PromptRefiningLLMPlayer",
     "CR_LLM": "CodeRefiningLLMPlayer",
-    "FOO_LLM_V6": "FooPlayer_LLM_V6",
+    "FOO_LLM_S6": "FooPlayer_LLM_V6",
     "FOO_LLM_S7": "FooPlayer_LLM_S7",
+    "FOO_LLM_S8": "FooPlayer_LLM_S8",
 }
 
 # List opponents from strongest to weakest
@@ -87,9 +88,9 @@ def parse_agent_wins(output, agent_code):
                 break
     return 0
 
-def test_both_versions():
-    """Test both v6 and v7 versions against opponents"""
-    versions = ["FOO_LLM_V6", "FOO_LLM_S7"]
+def test_all_versions():
+    """Test all v6 and v7 versions against opponents"""
+    versions = ["FOO_LLM_S6", "FOO_LLM_S7", "FOO_LLM_S8"]
     
     for version in versions:
         print(f"\n{'='*60}")
@@ -120,7 +121,7 @@ def test_both_versions():
             with open(filepath, "w") as f:
                 f.write(output)
 
-            # Parse wins for both players
+            # Parse wins for all players
             eval_wins = parse_agent_wins(output, version)
             opponent_wins = parse_agent_wins(output, opponent)
             
@@ -161,8 +162,8 @@ def test_both_versions():
         print(f"\nEvaluation for {version} complete. Results saved to {results_dir}")
 
 def main():
-    """Main function - can test single version or both versions"""
-    if EVAL_PLAYER in ["FOO_LLM_V6", "FOO_LLM_S7"]:
+    """Main function - can test single version or all versions"""
+    if EVAL_PLAYER in ["FOO_LLM_S6", "FOO_LLM_S7", "FOO_LLM_S8"]:
         # Test single version
         # Create a unique directory name based on current date/time
         timestamp = datetime.now().strftime("trial_%Y%m%d_%H%M%S")
@@ -189,7 +190,7 @@ def main():
             with open(filepath, "w") as f:
                 f.write(output)
 
-            # Parse wins for both players
+            # Parse wins for all players
             eval_wins = parse_agent_wins(output, EVAL_PLAYER)
             opponent_wins = parse_agent_wins(output, opponent)
             
@@ -229,13 +230,13 @@ def main():
 
         print(f"\nEvaluation complete. Results saved to {results_dir}")
     
-    elif EVAL_PLAYER == "BOTH":
-        # Test both versions
-        test_both_versions()
+    elif EVAL_PLAYER == "ALL":
+        # Test all versions
+        test_all_versions()
     else:
         print(f"Unknown EVAL_PLAYER: {EVAL_PLAYER}")
-        print("Available options: FOO_LLM_V6, FOO_LLM_S7, BOTH")
+        print("Available options: FOO_LLM_S6, FOO_LLM_S7, FOO_LLM_S8, ALL")
 
 if __name__ == "__main__":
-    # You can change EVAL_PLAYER to "FOO_LLM_V6", "FOO_LLM_S7", or "BOTH" to test different configurations
+    # You can change EVAL_PLAYER to "FOO_LLM_V6", "FOO_LLM_S7", "FOO_LLM_S8", or "ALL" to test different configurations
     main() 

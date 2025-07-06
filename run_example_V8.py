@@ -8,7 +8,7 @@ This script demonstrates how to run different parts of the system:
 2. Creator agent (evolves strategies)  
 3. Full evaluation testing
 
-For your fromScratchLLMStructured_player_v7 agent specifically.
+For your fromScratchLLMStructured_player_v8 agent specifically.
 """
 
 import os
@@ -22,7 +22,7 @@ load_dotenv()
 print("="*80)
 print("🎮 CATAN STRATEGY GAME AGENTS - EXAMPLE RUNNER")
 print("="*80)
-print("Target Agent: fromScratchLLMStructured_player_v7 (FOO_LLM_S7)")
+print("Target Agent: fromScratchLLMStructured_player_v8 (FOO_LLM_S8)")
 print("="*80)
 
 def show_menu():
@@ -45,7 +45,7 @@ def run_quick_test():
     print("This will test the current foo_player.py without modification")
     
     try:
-        cmd = '.venv\\Scripts\\catanatron-play.exe --players=AB,FOO_LLM_S7 --num=3 --output=data/ --json --config-vps-to-win=10'
+        cmd = '.venv\\Scripts\\catanatron-play.exe --players=AB,FOO_LLM_S8 --num=3 --output=data/ --json --config-vps-to-win=10'
         print(f"Command: {cmd}")
         
         result = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=600)
@@ -147,7 +147,7 @@ def view_results():
         print("No results directory found.")
     
     # Check agent runs
-    agent_runs_dir = "agents/fromScratchLLMStructured_player_v7/runs"
+    agent_runs_dir = "agents/fromScratchLLMStructured_player_v8/runs"
     if os.path.exists(agent_runs_dir):
         run_dirs = [d for d in os.listdir(agent_runs_dir) if os.path.isdir(os.path.join(agent_runs_dir, d))]
         run_dirs.sort(reverse=True)
@@ -179,8 +179,8 @@ def show_system_info():
     important_files = [
         "main.py",
         "testing.py", 
-        "agents/fromScratchLLMStructured_player_v7/creator_agent.py",
-        "agents/fromScratchLLMStructured_player_v7/foo_player.py",
+        "agents/fromScratchLLMStructured_player_v8/creator_agent.py",
+        "agents/fromScratchLLMStructured_player_v8/foo_player.py",
         ".venv/Scripts/catanatron-play.exe"
     ]
     

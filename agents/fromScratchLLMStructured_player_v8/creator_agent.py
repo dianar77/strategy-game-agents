@@ -99,7 +99,7 @@ class CreatorAgent:
     
     async def evolve_system(self, target_system: str, improvement_goal: str) -> Dict[str, Any]:
         """
-        Main evolution process that coordinates all agents using proper ADK Runner
+        Main evolution process that coordinates all agents using a single main runner
         """
         print(f"🚀 Starting evolution process for: {target_system}")
         print(f"📋 Goal: {improvement_goal}")
@@ -136,68 +136,19 @@ class CreatorAgent:
         fresh_analyzer = AnalyzerAgent(self.model)
         fresh_evolver = EvolverAgent(self.model)
         
-        # Step 1: Research and Strategy (Parallel execution)
+        # Create the main orchestrating agent structure
+        # Phase 1: Research and Strategy (Parallel execution)
         research_strategy_agent = ParallelAgent(
-            name="research_strategy",
+            name="research_strategy_phase",
             sub_agents=[
                 fresh_researcher.get_agent(),
                 fresh_strategizer.get_agent()
             ]
         )
         
-        runner = Runner(
-            agent=research_strategy_agent,
-            app_name=app_name,
-            session_service=session_service
-        )
-        
-        # Create user message to trigger the research and strategy phase
-        content = types.Content(
-            role='user', 
-            parts=[types.Part(text=f"Execute research and strategy for {target_system} with goal: {improvement_goal}")]
-        )
-        
-        research_strategy_result = None
-        try:
-            for event in runner.run(user_id=user_id, session_id=session_id, new_message=content):
-                if event.is_final_response() and event.content and event.content.parts:
-                    research_strategy_result = event.content.parts[0].text
-        except Exception as e:
-            print(f"⚠️ Error in research and strategy phase: {e}")
-            research_strategy_result = f"Research and strategy phase encountered an error: {str(e)}"
-        
-        # Update session state with research findings
-        current_session = await session_service.get_session(app_name=app_name, user_id=user_id, session_id=session_id)
-        current_session.state["research_findings"] = research_strategy_result
-        
-        # Step 2: Evolver decides on approach using Chain-of-Thought
-        evolver_runner = Runner(
-            agent=fresh_evolver.get_agent(),
-            app_name=app_name,
-            session_service=session_service
-        )
-        
-        evolver_content = types.Content(
-            role='user',
-            parts=[types.Part(text=f"Create detailed evolution plan for {target_system} with goal: {improvement_goal}")]
-        )
-        
-        evolution_plan = None
-        try:
-            for event in evolver_runner.run(user_id=user_id, session_id=session_id, new_message=evolver_content):
-                if event.is_final_response() and event.content and event.content.parts:
-                    evolution_plan = event.content.parts[0].text
-        except Exception as e:
-            print(f"⚠️ Error in evolution planning phase: {e}")
-            evolution_plan = f"Evolution planning phase encountered an error: {str(e)}"
-        
-        # Update session state with evolution plan
-        current_session = await session_service.get_session(app_name=app_name, user_id=user_id, session_id=session_id)
-        current_session.state["evolution_plan"] = evolution_plan
-        
-        # Step 3: Implementation and Analysis (Sequential execution)
+        # Phase 2: Implementation and Analysis (Sequential execution)
         implementation_analysis_agent = SequentialAgent(
-            name="implement_analyze",
+            name="implementation_analysis_phase",
             sub_agents=[
                 fresh_coder.get_agent(),
                 fresh_player.get_agent(),
@@ -205,59 +156,104 @@ class CreatorAgent:
             ]
         )
         
-        impl_runner = Runner(
-            agent=implementation_analysis_agent,
+        # Main orchestrating agent that coordinates all phases
+        main_evolution_agent = SequentialAgent(
+            name="main_evolution_orchestrator",
+            sub_agents=[
+                research_strategy_agent,           # Phase 1: Research & Strategy (Parallel)
+                fresh_evolver.get_agent(),         # Phase 2: Evolution Planning
+                implementation_analysis_agent,     # Phase 3: Implementation & Analysis (Sequential)
+                fresh_evolver.get_agent()          # Phase 4: Final Assessment (reuse evolver)
+            ]
+        )
+        
+        # Create single main runner
+        main_runner = Runner(
+            agent=main_evolution_agent,
             app_name=app_name,
             session_service=session_service
         )
         
-        impl_content = types.Content(
-            role='user',
-            parts=[types.Part(text="Implement the planned improvements, execute and test, then analyze results")]
-        )
-        
-        implementation_result = None
-        try:
-            for event in impl_runner.run(user_id=user_id, session_id=session_id, new_message=impl_content):
-                if event.is_final_response() and event.content and event.content.parts:
-                    implementation_result = event.content.parts[0].text
-        except Exception as e:
-            print(f"⚠️ Error in implementation phase: {e}")
-            implementation_result = f"Implementation phase encountered an error: {str(e)}"
-        
-        # Update session state with implementation results
-        current_session = await session_service.get_session(app_name=app_name, user_id=user_id, session_id=session_id)
-        current_session.state["implementation_results"] = implementation_result
-        
-        # Step 4: Final evolution assessment
-        final_evolver_content = types.Content(
-            role='user',
-            parts=[types.Part(text="Assess the evolution results and plan next iteration")]
-        )
-        
-        final_assessment = None
-        try:
-            for event in evolver_runner.run(user_id=user_id, session_id=session_id, new_message=final_evolver_content):
-                if event.is_final_response() and event.content and event.content.parts:
-                    final_assessment = event.content.parts[0].text
-        except Exception as e:
-            print(f"⚠️ Error in final assessment phase: {e}")
-            final_assessment = f"Final assessment phase encountered an error: {str(e)}"
-        
-        # Update session state with final assessment
-        current_session = await session_service.get_session(app_name=app_name, user_id=user_id, session_id=session_id)
-        current_session.state["assessment"] = final_assessment
-      
+        # Execute the entire evolution process with a single comprehensive message
+        evolution_message = f"""
+        Execute the complete evolution process for {target_system} with the following phases:
 
-        return {
+        Phase 1 - Research & Strategy (Parallel):
+        - Research best practices for improving {target_system}
+        - Create improvement strategy for {target_system}
+        - Goal: {improvement_goal}
+
+        Phase 2 - Evolution Planning:
+        - Create detailed evolution plan based on research findings
+        - Use Chain-of-Thought reasoning for approach selection
+
+        Phase 3 - Implementation & Analysis (Sequential):
+        - Implement the planned improvements
+        - Execute and test the implementation
+        - Analyze results and performance
+
+        Phase 4 - Final Assessment:
+        - Assess the evolution results
+        - Plan next iteration improvements
+        - Provide comprehensive evaluation
+        """
+        
+        content = types.Content(
+            role='user', 
+            parts=[types.Part(text=evolution_message)]
+        )
+        
+        # Execute the complete evolution process
+        complete_result = None
+        phase_results = []
+        
+        try:
+            print("🔄 Executing complete evolution process...")
+            for event in main_runner.run(user_id=user_id, session_id=session_id, new_message=content):
+                if event.is_final_response() and event.content and event.content.parts:
+                    complete_result = event.content.parts[0].text
+                    phase_results.append(complete_result)
+                    print(f"✅ Phase completed: {len(phase_results)}")
+                
+        except Exception as e:
+            print(f"⚠️ Error in evolution process: {e}")
+            complete_result = f"Evolution process encountered an error: {str(e)}"
+        
+        # Get final session state
+        final_session = await session_service.get_session(app_name=app_name, user_id=user_id, session_id=session_id)
+        
+        # Parse results from the complete execution
+        # Since we're using a single runner, we'll structure the results based on what we expect
+        results = {
             "system": target_system,
             "goal": improvement_goal,
-            "research_strategy": research_strategy_result,
-            "evolution_plan": evolution_plan,
-            "implementation": implementation_result,
-            "assessment": final_assessment,
-            "status": "completed"
+            "complete_execution": complete_result,
+            "phase_results": phase_results,
+            "session_state": final_session.state if final_session else {},
+            "status": "completed" if complete_result else "failed"
         }
+        
+        # Extract individual phase results if possible
+        if isinstance(complete_result, str):
+            # Try to parse structured results from the complete execution
+            try:
+                # Look for phase markers in the result
+                if "Research" in complete_result or "Strategy" in complete_result:
+                    results["research_strategy"] = complete_result
+                if "Evolution Plan" in complete_result:
+                    results["evolution_plan"] = complete_result
+                if "Implementation" in complete_result:
+                    results["implementation"] = complete_result
+                if "Assessment" in complete_result:
+                    results["assessment"] = complete_result
+            except:
+                # If parsing fails, just use the complete result
+                results["research_strategy"] = complete_result
+                results["evolution_plan"] = complete_result
+                results["implementation"] = complete_result
+                results["assessment"] = complete_result
+        
+        return results
     
     async def continuous_evolution(self, target_system: str, iterations: int = 5):
         """
