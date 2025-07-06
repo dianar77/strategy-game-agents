@@ -1,5 +1,6 @@
 import os
 from datetime import datetime
+# from dotenv import load_dotenv  # Temporarily disabled
 #from langchain.chat_models import AzureChatOpenAI
 from langchain_openai import AzureChatOpenAI
 from langchain_mistralai import ChatMistralAI
@@ -8,20 +9,21 @@ from langchain_core.rate_limiters import InMemoryRateLimiter
 import time
 import httpx  # Ensure httpx is imported to catch HTTPStatusError
 from langchain_aws import ChatBedrockConverse
+from dotenv import load_dotenv
 
-
+load_dotenv()
 
 class LLM:
     def __init__(self):
-        # Initialize the LLM with the desired model and parameters
-        # For example, using OpenAI's GPT-3.5-turbo
-
-        self.llm = AzureChatOpenAI(
-            model="gpt-4o-mini",
-            azure_endpoint="https://gpt-amayuelas.openai.azure.com/",
-            api_version = "2024-12-01-preview"
+        # Initialize the LLM with Claude 3.7 via AWS Bedrock
+        self.model_name = "claude-3.7"
+        self.llm = ChatBedrockConverse(
+            aws_access_key_id = os.environ["AWS_ACESS_KEY"],
+            aws_secret_access_key = os.environ["AWS_SECRET_KEY"],
+            region_name = "us-east-2",
+            provider = "anthropic",
+            model_id="arn:aws:bedrock:us-east-2:288380904485:inference-profile/us.anthropic.claude-3-7-sonnet-20250219-v1:0"
         )
-        self.model_name = "gpt-4o-mini"
         self.save_dir = f"agents/fromScratchLLMStructured_player_v5_M/runs/game_run_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
         # Set the environment variable to disable tracing
         os.environ["LANGCHAIN_TRACING_V2"] = "false"
@@ -37,15 +39,26 @@ class LLM:
         messages = [msg]
 
         # Invoke the model with a list of messages 
-        response = self.llm.invoke(messages).content
+        while True:
+            try:
+                response = self.llm.invoke(messages).content
 
-        log_path = os.path.join(self.save_dir, f"{self.model_name}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt")
-        if not os.path.exists(self.save_dir):
-            os.makedirs(self.save_dir, exist_ok=True)
-        with open(log_path, "a") as log_file:
-            log_file.write(f"Prompt:\n{prompt}\n\n{'='*40}\n\nResponse:\n{response}")
+                log_path = os.path.join(self.save_dir, f"{self.model_name}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt")
+                if not os.path.exists(self.save_dir):
+                    os.makedirs(self.save_dir, exist_ok=True)
+                with open(log_path, "a") as log_file:
+                    log_file.write(f"Prompt:\n{prompt}\n\n{'='*40}\n\nResponse:\n{response}")
 
-        return response.strip()
+                return response.strip()
+                
+            except httpx.HTTPStatusError as e:
+                if e.response.status_code == 429:
+                    time.sleep(1)  # Add a small delay for rate limiting
+                    continue
+                else:
+                    return f"LLM query error: {e.response.status_code} - {e.response.text}"
+            except Exception as e:
+                return f"LLM query error: {e}"
 
 
 # class LLM:

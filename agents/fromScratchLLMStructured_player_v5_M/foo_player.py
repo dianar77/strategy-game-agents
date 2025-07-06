@@ -9,7 +9,9 @@ from catanatron.models.enums import (
     SETTLEMENT, CITY, ROAD, ActionPrompt
 )
 from agents.fromScratchLLMStructured_player_v5_M.llm_tools import LLM
+from dotenv import load_dotenv
 
+load_dotenv()
 
 class FooPlayer(Player):
     def __init__(self, name=None):
@@ -88,7 +90,7 @@ class FooPlayer(Player):
         buildings = state.buildings_by_color.get(color, {})
         settlements = [node for node, building_type in buildings.items() if building_type == SETTLEMENT]
         cities = [node for node, building_type in buildings.items() if building_type == CITY]
-        roads = state.board.roads_by_color.get(color, [])
+        roads = [edge for edge, edge_color in state.board.roads.items() if edge_color == color]
         
         # Get board state
         is_initial_build = state.is_initial_build_phase
@@ -109,7 +111,7 @@ class FooPlayer(Player):
                 other_buildings = state.buildings_by_color.get(other_color, {})
                 other_settlements = [node for node, building_type in other_buildings.items() if building_type == SETTLEMENT]
                 other_cities = [node for node, building_type in other_buildings.items() if building_type == CITY]
-                other_roads = state.board.roads_by_color.get(other_color, [])
+                other_roads = [edge for edge, edge_color in state.board.roads.items() if edge_color == other_color]
                 
                 other_vp = len(other_settlements) + 2 * len(other_cities)
                 
@@ -240,6 +242,7 @@ class FooPlayer(Player):
                         continue
                 
                 if action_index is not None and 0 <= action_index < len(playable_actions):
+                    print(f"Selected action: {playable_actions[action_index].action_type}")
                     return playable_actions[action_index]
             
             if self.debug:
