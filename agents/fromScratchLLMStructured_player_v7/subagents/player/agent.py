@@ -1,5 +1,5 @@
 """
-Player Agent - Executes actions and interacts with external systems/APIs
+Player Agent - Executes actions and interacts with Catanatron game systems
 """
 
 from google.adk.agents import LlmAgent
@@ -10,8 +10,8 @@ import json
 
 class PlayerAgent:
     """
-    Player Agent that executes actions in the target system.
-    Handles interaction with external APIs and systems.
+    Player Agent that executes actions in Catanatron game systems.
+    Handles interaction with game testing and execution.
     """
     
     def __init__(self, model, api_config: Optional[Dict[str, str]] = None):
@@ -25,278 +25,308 @@ class PlayerAgent:
             name="player",
             model=self.model,
             instruction="""
-            You are a Player Agent that executes actions in the target system.
+            You are a Player Agent that executes actions in Catanatron game systems.
             Your role is to:
-            1. Execute planned actions and implementations safely
-            2. Interact with external APIs and systems
+            1. Execute Catanatron game tests and player implementations
+            2. Run game simulations and collect performance data
             3. Monitor game state and system responses
             4. Collect execution results and comprehensive feedback
             5. Handle errors and edge cases gracefully
+            6. Validate player implementations before deployment
             
             When executing actions:
-            - Always validate inputs and parameters
-            - Implement proper error handling and recovery
-            - Log all actions and their outcomes
-            - Collect detailed performance metrics
-            - Ensure system safety and stability
+            - Always validate player implementations
+            - Run comprehensive game tests
+            - Log all game results and performance metrics
+            - Collect detailed win/loss statistics
+            - Ensure game execution safety and stability
             - Provide clear status updates and feedback
             
-            Always execute actions safely and collect comprehensive results.
+            Always execute games safely and collect comprehensive results.
             Report both successes and failures with detailed context.
             """,
             tools=[
-                self._create_execution_tool(),
-                self._create_api_tool(),
+                self._create_game_execution_tool(),
+                self._create_testing_tool(),
                 self._create_monitoring_tool(),
-                self._create_safety_tool()
+                self._create_validation_tool()
             ]
         )
     
-    def _create_execution_tool(self):
-        """Create execution tool for system actions"""
-        def execute_action(action: Dict[str, Any]) -> Dict[str, Any]:
-            """Execute a specific action in the target system"""
-            action_type = action.get('type', 'unknown')
-            action_params = action.get('parameters', {})
+    def _create_game_execution_tool(self):
+        """Create Catanatron game execution tool"""
+        def execute_catanatron_game(game_config: Dict[str, Any]) -> Dict[str, Any]:
+            """Execute a Catanatron game with specified configuration"""
+            game_type = game_config.get('type', 'standard')
+            players = game_config.get('players', ['FOO_PLAYER', 'ALPHA_BETA'])
+            num_games = game_config.get('num_games', 10)
             
             try:
-                # Simulate action execution - replace with actual implementation
-                if action_type == 'code_deployment':
-                    result = self._execute_code_deployment(action_params)
-                elif action_type == 'configuration_update':
-                    result = self._execute_configuration_update(action_params)
-                elif action_type == 'system_restart':
-                    result = self._execute_system_restart(action_params)
-                elif action_type == 'test_execution':
-                    result = self._execute_tests(action_params)
-                else:
-                    result = self._execute_generic_action(action_type, action_params)
+                # Simulate game execution - replace with actual Catanatron game runner
+                results = self._simulate_catanatron_games(players, num_games, game_type)
                 
                 return {
-                    "action": action,
-                    "status": "success",
-                    "result": result,
-                    "execution_time": result.get('execution_time', 'unknown'),
-                    "output": result.get('output', f"Successfully executed {action_type}"),
-                    "metrics": result.get('metrics', {}),
-                    "timestamp": result.get('timestamp', 'now')
+                    "game_execution": {
+                        "status": "completed",
+                        "game_type": game_type,
+                        "players": players,
+                        "games_played": num_games,
+                        "execution_time": f"{num_games * 2.5}s",
+                        "command_used": f"catanatron-play --players={','.join(players)} --num={num_games}"
+                    },
+                    "results": results,
+                    "performance_summary": {
+                        "foo_player_wins": results.get('foo_wins', 0),
+                        "foo_player_win_rate": results.get('foo_win_rate', 0.0),
+                        "average_score": results.get('avg_score', 0.0),
+                        "total_victory_points": results.get('total_vp', 0),
+                        "average_game_duration": results.get('avg_duration', 0.0)
+                    },
+                    "detailed_metrics": {
+                        "error_count": results.get('errors', 0),
+                        "timeout_count": results.get('timeouts', 0),
+                        "exception_count": results.get('exceptions', 0),
+                        "valid_moves_percentage": results.get('valid_moves_pct', 100.0)
+                    }
                 }
                 
             except Exception as e:
                 return {
-                    "action": action,
-                    "status": "error",
-                    "error": str(e),
-                    "error_type": type(e).__name__,
-                    "output": f"Failed to execute {action_type}: {str(e)}",
-                    "timestamp": "now"
-                }
-        
-        return execute_action
-    
-    def _create_api_tool(self):
-        """Create API interaction tool (e.g., for Catanatron API)"""
-        def call_api(endpoint: str, data: Dict[str, Any], method: str = "POST") -> Dict[str, Any]:
-            """Call external API (like Catanatron API)"""
-            try:
-                # Get API configuration
-                base_url = self.api_config.get('base_url', 'https://api.example.com')
-                api_key = self.api_config.get('api_key', '')
-                timeout = self.api_config.get('timeout', 30)
-                
-                # Prepare request
-                url = f"{base_url}/{endpoint.lstrip('/')}"
-                headers = {
-                    'Content-Type': 'application/json',
-                    'Authorization': f'Bearer {api_key}' if api_key else ''
-                }
-                
-                # Make request (simulated - replace with actual requests)
-                # response = requests.request(method, url, json=data, headers=headers, timeout=timeout)
-                
-                # Simulated response for example
-                simulated_response = {
-                    "status": "success",
-                    "data": f"API response from {endpoint}",
-                    "game_state": {
-                        "current_round": 5,
-                        "player_score": 1250,
-                        "system_performance": 0.92
+                    "game_execution": {
+                        "status": "error",
+                        "error": str(e),
+                        "error_type": type(e).__name__,
+                        "game_type": game_type,
+                        "players": players
                     },
+                    "results": {},
                     "recommendations": [
-                        "optimize move selection algorithm",
-                        "improve resource management"
+                        "Check player implementation for syntax errors",
+                        "Verify Catanatron installation",
+                        "Review game configuration parameters"
                     ]
                 }
+        
+        return execute_catanatron_game
+    
+    def _create_testing_tool(self):
+        """Create Catanatron testing tool"""
+        def test_catanatron_player(test_config: Dict[str, Any]) -> Dict[str, Any]:
+            """Run comprehensive tests on Catanatron player implementation"""
+            test_type = test_config.get('type', 'full')
+            player_file = test_config.get('player_file', 'foo_player.py')
+            
+            try:
+                # Simulate testing - replace with actual testing logic
+                test_results = self._run_catanatron_tests(player_file, test_type)
                 
                 return {
-                    "endpoint": endpoint,
-                    "method": method,
-                    "request_data": data,
-                    "response": simulated_response,
-                    "status": "success",
-                    "response_time": "150ms",
-                    "timestamp": "now"
+                    "testing_results": {
+                        "status": "completed",
+                        "test_type": test_type,
+                        "player_file": player_file,
+                        "tests_run": test_results.get('total_tests', 0),
+                        "tests_passed": test_results.get('passed', 0),
+                        "tests_failed": test_results.get('failed', 0),
+                        "test_coverage": test_results.get('coverage', 0.0)
+                    },
+                    "syntax_validation": {
+                        "valid_syntax": test_results.get('valid_syntax', True),
+                        "syntax_errors": test_results.get('syntax_errors', []),
+                        "import_errors": test_results.get('import_errors', [])
+                    },
+                    "game_compatibility": {
+                        "catanatron_compatible": test_results.get('compatible', True),
+                        "api_usage_correct": test_results.get('api_correct', True),
+                        "action_types_valid": test_results.get('actions_valid', True)
+                    },
+                    "performance_tests": {
+                        "decision_speed": test_results.get('decision_speed', 0.0),
+                        "memory_usage": test_results.get('memory_usage', 0.0),
+                        "timeout_risk": test_results.get('timeout_risk', 'low')
+                    },
+                    "recommendations": test_results.get('recommendations', [])
                 }
                 
             except Exception as e:
                 return {
-                    "endpoint": endpoint,
-                    "method": method,
-                    "request_data": data,
-                    "status": "error",
-                    "error": str(e),
-                    "error_type": type(e).__name__,
-                    "timestamp": "now"
+                    "testing_results": {
+                        "status": "error",
+                        "error": str(e),
+                        "error_type": type(e).__name__,
+                        "player_file": player_file
+                    },
+                    "critical_issues": [
+                        "Unable to load player implementation",
+                        "Syntax or import errors detected",
+                        "Player may not be functional"
+                    ]
                 }
         
-        return call_api
+        return test_catanatron_player
     
     def _create_monitoring_tool(self):
-        """Create monitoring tool for system state"""
-        def monitor_system() -> Dict[str, Any]:
-            """Monitor current system state and health"""
+        """Create Catanatron game monitoring tool"""
+        def monitor_catanatron_performance() -> Dict[str, Any]:
+            """Monitor Catanatron game performance and system health"""
             return {
                 "system_health": {
-                    "status": "healthy",
-                    "uptime": "99.95%",
+                    "catanatron_status": "operational",
+                    "game_engine_health": "excellent",
+                    "player_loading": "functional",
                     "last_check": "now",
-                    "components": {
-                        "database": "online",
-                        "api_server": "online",
-                        "cache": "online",
-                        "message_queue": "online"
-                    }
+                    "uptime": "99.95%"
                 },
-                "performance_metrics": {
-                    "response_time": "125ms",
-                    "throughput": "1200 req/sec",
-                    "error_rate": "0.01%",
-                    "cpu_usage": "45%",
-                    "memory_usage": "67%"
+                "game_performance": {
+                    "average_game_duration": "3.2 minutes",
+                    "games_completed_today": 847,
+                    "successful_game_rate": "99.2%",
+                    "player_error_rate": "0.8%",
+                    "timeout_rate": "0.3%"
                 },
-                "game_metrics": {
-                    "active_games": 245,
-                    "avg_game_duration": "8.5 minutes",
-                    "win_rate": "52%",
-                    "player_satisfaction": 4.3
+                "player_metrics": {
+                    "foo_player_status": "active",
+                    "recent_win_rate": "35%",
+                    "average_score": 8.2,
+                    "performance_trend": "improving",
+                    "last_game_result": "victory - 10 points"
+                },
+                "resource_usage": {
+                    "cpu_usage": "25%",
+                    "memory_usage": "45%",
+                    "disk_space": "78% available",
+                    "network_latency": "12ms"
+                },
+                "recent_issues": [
+                    "Occasional timeout in complex board states",
+                    "Memory usage spike during endgame calculations"
+                ]
+            }
+        
+        return monitor_catanatron_performance
+    
+    def _create_validation_tool(self):
+        """Create Catanatron player validation tool"""
+        def validate_catanatron_player(player_code: str) -> Dict[str, Any]:
+            """Validate Catanatron player implementation"""
+            try:
+                # Simulate validation - replace with actual validation logic
+                validation_results = self._validate_player_implementation(player_code)
+                
+                return {
+                    "validation_status": "completed",
+                    "overall_score": validation_results.get('score', 0.0),
+                    "syntax_validation": {
+                        "valid": validation_results.get('syntax_valid', True),
+                        "errors": validation_results.get('syntax_errors', []),
+                        "warnings": validation_results.get('warnings', [])
+                    },
+                    "catanatron_compliance": {
+                        "api_usage": validation_results.get('api_compliance', True),
+                        "required_methods": validation_results.get('methods_present', True),
+                        "action_handling": validation_results.get('actions_valid', True),
+                        "game_state_access": validation_results.get('state_access', True)
+                    },
+                    "strategic_analysis": {
+                        "has_strategy": validation_results.get('has_strategy', True),
+                        "decision_logic": validation_results.get('decision_quality', 'good'),
+                        "endgame_handling": validation_results.get('endgame_logic', 'basic'),
+                        "resource_management": validation_results.get('resource_logic', 'present')
+                    },
+                    "quality_metrics": {
+                        "code_complexity": validation_results.get('complexity', 'medium'),
+                        "maintainability": validation_results.get('maintainability', 'good'),
+                        "documentation": validation_results.get('documentation', 'adequate'),
+                        "error_handling": validation_results.get('error_handling', 'basic')
+                    },
+                    "recommendations": validation_results.get('recommendations', [
+                        "Add more comprehensive error handling",
+                        "Improve endgame strategy logic",
+                        "Optimize decision-making performance"
+                    ])
                 }
-            }
+                
+            except Exception as e:
+                return {
+                    "validation_status": "error",
+                    "error": str(e),
+                    "error_type": type(e).__name__,
+                    "critical_issues": [
+                        "Unable to parse player code",
+                        "Severe syntax or structural errors",
+                        "Player implementation may be corrupted"
+                    ]
+                }
         
-        return monitor_system
+        return validate_catanatron_player
     
-    def _create_safety_tool(self):
-        """Create safety validation tool"""
-        def validate_safety(action: Dict[str, Any]) -> Dict[str, Any]:
-            """Validate action safety before execution"""
-            action_type = action.get('type', 'unknown')
-            
-            # Safety checks
-            safety_checks = {
-                "input_validation": self._validate_inputs(action),
-                "resource_check": self._check_resources(action),
-                "dependency_check": self._check_dependencies(action),
-                "rollback_plan": self._verify_rollback_plan(action)
-            }
-            
-            all_safe = all(check['safe'] for check in safety_checks.values())
-            
-            return {
-                "action_type": action_type,
-                "safety_status": "safe" if all_safe else "unsafe",
-                "checks": safety_checks,
-                "recommendations": self._get_safety_recommendations(safety_checks),
-                "can_proceed": all_safe
-            }
-        
-        return validate_safety
-    
-    def _execute_code_deployment(self, params: Dict[str, Any]) -> Dict[str, Any]:
-        """Execute code deployment action"""
-        # TODO: Replace with actual deployment logic
-        # Example real implementation:
-        # - Copy files to target directory
-        # - Run build/compile processes  
-        # - Update configurations
-        # - Restart services
+    def _simulate_catanatron_games(self, players: List[str], num_games: int, game_type: str) -> Dict[str, Any]:
+        """Simulate Catanatron game execution results"""
+        # This would be replaced with actual game execution logic
+        foo_wins = int(num_games * 0.35)  # 35% win rate
+        total_vp = num_games * 8.2  # Average 8.2 points per game
         
         return {
-            "deployment_id": "deploy_001",
-            "status": "completed",
-            "execution_time": "45s",
-            "output": "Code deployed successfully to production",
-            "metrics": {"deployment_size": "2.3MB", "files_changed": 15}
+            "foo_wins": foo_wins,
+            "foo_win_rate": foo_wins / num_games,
+            "avg_score": total_vp / num_games,
+            "total_vp": total_vp,
+            "avg_duration": 3.2,
+            "errors": 0,
+            "timeouts": 1,
+            "exceptions": 0,
+            "valid_moves_pct": 99.5
         }
     
-    def _execute_configuration_update(self, params: Dict[str, Any]) -> Dict[str, Any]:
-        """Execute configuration update action"""
+    def _run_catanatron_tests(self, player_file: str, test_type: str) -> Dict[str, Any]:
+        """Run Catanatron player tests"""
+        # This would be replaced with actual testing logic
         return {
-            "config_version": "v1.2.3",
-            "status": "applied",
-            "execution_time": "5s",
-            "output": "Configuration updated successfully",
-            "metrics": {"configs_changed": 3, "restart_required": False}
+            "total_tests": 25,
+            "passed": 23,
+            "failed": 2,
+            "coverage": 85.5,
+            "valid_syntax": True,
+            "syntax_errors": [],
+            "import_errors": [],
+            "compatible": True,
+            "api_correct": True,
+            "actions_valid": True,
+            "decision_speed": 0.15,
+            "memory_usage": 45.2,
+            "timeout_risk": "low",
+            "recommendations": [
+                "Add timeout handling for complex decisions",
+                "Improve memory efficiency in board analysis"
+            ]
         }
     
-    def _execute_system_restart(self, params: Dict[str, Any]) -> Dict[str, Any]:
-        """Execute system restart action"""
+    def _validate_player_implementation(self, player_code: str) -> Dict[str, Any]:
+        """Validate player implementation"""
+        # This would be replaced with actual validation logic
         return {
-            "restart_type": params.get('type', 'graceful'),
-            "status": "completed",
-            "execution_time": "30s",
-            "output": "System restarted successfully",
-            "metrics": {"downtime": "15s", "startup_time": "15s"}
+            "score": 0.82,
+            "syntax_valid": True,
+            "syntax_errors": [],
+            "warnings": ["Unused import detected"],
+            "api_compliance": True,
+            "methods_present": True,
+            "actions_valid": True,
+            "state_access": True,
+            "has_strategy": True,
+            "decision_quality": "good",
+            "endgame_logic": "basic",
+            "resource_logic": "present",
+            "complexity": "medium",
+            "maintainability": "good",
+            "documentation": "adequate",
+            "error_handling": "basic",
+            "recommendations": [
+                "Add more sophisticated endgame logic",
+                "Improve error handling coverage",
+                "Consider adding opponent behavior tracking"
+            ]
         }
-    
-    def _execute_tests(self, params: Dict[str, Any]) -> Dict[str, Any]:
-        """Execute test suite"""
-        # TODO: Replace with actual test execution
-        # Example real implementation:
-        # import subprocess
-        # result = subprocess.run(['python', '-m', 'pytest'], capture_output=True, text=True)
-        # return parse_test_results(result)
-        
-        return {
-            "test_suite": params.get('suite', 'all'),
-            "status": "passed",
-            "execution_time": "120s",
-            "output": "All tests passed successfully",
-            "metrics": {"tests_run": 156, "passed": 156, "failed": 0, "coverage": "94%"}
-        }
-    
-    def _execute_generic_action(self, action_type: str, params: Dict[str, Any]) -> Dict[str, Any]:
-        """Execute generic action"""
-        return {
-            "action_type": action_type,
-            "status": "completed",
-            "execution_time": "10s",
-            "output": f"Generic action {action_type} executed",
-            "metrics": {"success": True}
-        }
-    
-    def _validate_inputs(self, action: Dict[str, Any]) -> Dict[str, Any]:
-        """Validate action inputs"""
-        return {"safe": True, "message": "All inputs validated"}
-    
-    def _check_resources(self, action: Dict[str, Any]) -> Dict[str, Any]:
-        """Check resource availability"""
-        return {"safe": True, "message": "Sufficient resources available"}
-    
-    def _check_dependencies(self, action: Dict[str, Any]) -> Dict[str, Any]:
-        """Check system dependencies"""
-        return {"safe": True, "message": "All dependencies satisfied"}
-    
-    def _verify_rollback_plan(self, action: Dict[str, Any]) -> Dict[str, Any]:
-        """Verify rollback plan exists"""
-        return {"safe": True, "message": "Rollback plan verified"}
-    
-    def _get_safety_recommendations(self, checks: Dict[str, Dict[str, Any]]) -> List[str]:
-        """Get safety recommendations based on checks"""
-        recommendations = []
-        for check_name, check_result in checks.items():
-            if not check_result.get('safe', True):
-                recommendations.append(f"Address {check_name} issues before proceeding")
-        return recommendations or ["All safety checks passed"]
     
     async def run(self, task_data: Dict[str, Any]) -> Dict[str, Any]:
         """Run the player agent with given task data"""
