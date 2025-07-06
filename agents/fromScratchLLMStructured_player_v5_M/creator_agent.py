@@ -1,18 +1,9 @@
 import time
 import os
 import sys, pathlib
-# from dotenv import load_dotenv  # Temporarily disabled
 sys.path.insert(0, str(pathlib.Path(__file__).parent.parent))
 import base_llm
 from base_llm import OpenAILLM, AzureOpenAILLM, MistralLLM, BaseLLM, MistralLLM, AzureOpenAILLM
-
-# Load environment variables from .env file (if it exists)
-# Temporarily disabled due to encoding issues
-# try:
-#     load_dotenv()
-# except Exception as e:
-#     print(f"Warning: Could not load .env file: {e}")
-#     print("Please set environment variables AWS_ACESS_KEY and AWS_SECRET_KEY manually")
 from typing import List, Dict, Tuple, Any, Optional
 import json
 import random
@@ -40,7 +31,7 @@ from langgraph.errors import GraphRecursionError
 
 from typing_extensions import TypedDict
 from typing_extensions import TypedDict
-from dotenv import load_dotenv
+
 # import warnings
 # from langchain.warnings import LangChainDeprecationWarning   # same class they raise
 # warnings.filterwarnings("ignore", category=LangChainDeprecationWarning)
@@ -57,8 +48,6 @@ FOO_RUN_COMMAND = "catanatron-play --players=AB,FOO_LLM_S5_M  --num=3  --config-
 
 RUN_TEST_FOO_HAPPENED = False # Used to keep track of whether the testfoo tool has been called
 # -------------------------------------------------------------------------------------
-
-load_dotenv()
 
 class CreatorAgent():
     """LLM-powered player that uses Claude API to make Catan game decisions."""

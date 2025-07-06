@@ -11,7 +11,7 @@ from pathlib import Path
 # Add the parent directory to the path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from .creator_agent_adk import CreatorAgentADK
+from .creator_agent import CreatorAgent
 
 
 def main():
@@ -42,7 +42,7 @@ def main():
     
     try:
         # Create and run the ADK creator agent
-        creator = CreatorAgentADK()
+        creator = CreatorAgent()
         creator.run_evolution_cycle()
         
         print("\n" + "=" * 50)

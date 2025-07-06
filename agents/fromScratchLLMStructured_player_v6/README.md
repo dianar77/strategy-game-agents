@@ -13,7 +13,7 @@ This is the **Google ADK-powered** version of the multi-agent system for evolvin
 ## 📁 Files Overview
 
 ### Core System Files
-- **`creator_agent_adk.py`** - Main multi-agent evolution system (951 lines)
+- **`creator_agent.py`** - Main multi-agent evolution system (951 lines)
 - **`main_adk.py`** - Entry point for running the full system
 - **`adk_agent.py`** - Simple interactive single-agent version for testing
 
@@ -73,7 +73,7 @@ export GOOGLE_API_KEY='your-api-key-here'
 
 ### 3. Configure Catanatron Player Name
 
-The system is configured to use player name `FOO_LLM_V6`. Make sure your Catanatron setup recognizes this player name, or update the command in `creator_agent_adk.py`:
+The system is configured to use player name `FOO_LLM_V6`. Make sure your Catanatron setup recognizes this player name, or update the command in `creator_agent.py`:
 
 ```python
 FOO_RUN_COMMAND = "catanatron-play --players=AB,FOO_LLM_V6  --num=3  --config-vps-to-win=10"
@@ -134,7 +134,7 @@ This v6 version **replaces** the ADK files from v5_M:
 
 | v5_M File | v6 Equivalent | Status |
 |-----------|---------------|---------|
-| `creator_agent.py` | `creator_agent_adk.py` | ✅ Migrated |
+| `creator_agent.py` | `creator_agent.py` | ✅ Migrated |
 | `llm_tools.py` | `llm_tools_adk.py` | ✅ Migrated |
 | `foo_player.py` | `foo_player.py` | ✅ Updated |
 
@@ -164,7 +164,7 @@ export GOOGLE_API_KEY='your-api-key-here'
 ```
 
 **3. Player Name Not Recognized**
-Update the command in `creator_agent_adk.py` to match your Catanatron setup.
+Update the command in `creator_agent.py` to match your Catanatron setup.
 
 **4. Permission/Path Issues**
 Make sure you're running from the correct directory and have write permissions for creating `runs_adk/`.

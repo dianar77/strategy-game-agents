@@ -5,10 +5,10 @@ Google ADK-powered multi-agent system for evolving Catan game players.
 This is the ADK version of the multi-agent evolution system.
 """
 
-from .creator_agent_adk import CreatorAgentADK
+from .creator_agent import CreatorAgentADK
 from .adk_agent import create_evolution_agent
 from .llm_tools_adk import LLM, create_llm
-from .foo_player_adk import FooPlayer
+from ..fromScratchLLMStructured_player_v7.foo_player import FooPlayer
 
 __version__ = "6.0.0"
 __author__ = "ADK Evolution Team"

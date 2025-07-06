@@ -46,7 +46,7 @@ FOO_MAX_BYTES   = 64_000
 # AB = AlphaBeta player, FOO_LLM_V6 = our evolved player
 FOO_RUN_COMMAND = "catanatron-play --players=AB,FOO_LLM_V6  --num=3  --config-vps-to-win=10"
 
-class CreatorAgentADK():
+class CreatorAgent():
     """
     ADK-powered multi-agent system for evolving Catan game players.
     

@@ -1,9 +1,9 @@
 import os
-from catanatron import Player
+from catanatron.models.player import Player
 from catanatron.game import Game
 from catanatron.models.player import Color
 from catanatron.models.actions import ActionType
-from agents.fromScratchLLMStructured_player_v6.llm_tools_adk import LLM
+from .llm_tools import LLM
 
 
 

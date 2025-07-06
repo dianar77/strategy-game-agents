@@ -31,7 +31,7 @@ logger = logging.getLogger(__name__)
 # Load environment variables
 load_dotenv()
 
-class AgentEvolver:
+class CreatorAgent:
     """
     Main Agent Evolver system that coordinates multiple specialized agents
     to continuously improve and evolve software/agents.

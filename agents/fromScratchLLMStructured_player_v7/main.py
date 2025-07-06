@@ -2,7 +2,7 @@
 Main entry point for the Agent Evolver system
 """
 
-from agent_evolver import AgentEvolver
+from agents.fromScratchLLMStructured_player_v7.creator_agent import CreatorAgent
 import json
 import asyncio
 
@@ -13,7 +13,7 @@ async def main():
     Note: Ollama configuration is loaded from .env file automatically
     """
     # Initialize the Agent Evolver (Ollama configuration loaded from .env file)
-    evolver = AgentEvolver()
+    evolver = CreatorAgent()
     
     # Single evolution cycle
     result = await evolver.evolve_system(

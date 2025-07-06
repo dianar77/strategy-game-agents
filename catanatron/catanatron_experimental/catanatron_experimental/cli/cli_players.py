@@ -208,15 +208,15 @@ CLI_PLAYERS = [
         FooLLMStructuredPlayerV5M
     ),
     CliPlayer(
-        "FOO_LLM_S6",
-        "FooPlayer_LLM_Structured_V6",
-        "Player being created by creator agent with v7 architecture and enhanced coordination. FooPlayer has access to query the LLM",
+        "FOO_LLM_V6",
+        "FooPlayer_LLM_V6",
+        "ADK-powered multi-agent evolved player (V6) with Google Gemini backend",
         FooLLMStructuredPlayerV6
     ),
     CliPlayer(
         "FOO_LLM_S7",
-        "FooPlayer_LLM_Structured_V7",
-        "Player being created by creator agent with v7 architecture and enhanced coordination. FooPlayer has access to query the LLM",
+        "FooPlayer_LLM_S7",
+        "Multi-agent evolved player (V7) with advanced strategic capabilities",
         FooLLMStructuredPlayerV7
     ),
 ]

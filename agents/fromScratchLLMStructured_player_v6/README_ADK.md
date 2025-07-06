@@ -28,7 +28,7 @@ This is a conversion of the original LangGraph-based multi-agent system to use G
 
 ## Files
 
-- `creator_agent_adk.py` - Main multi-agent system using ADK
+- `creator_agent.py` - Main multi-agent system using ADK
 - `adk_agent.py` - Simple single-agent version for testing
 - `main_adk.py` - Entry point for the full multi-agent system
 - `requirements_adk.txt` - ADK-specific dependencies
