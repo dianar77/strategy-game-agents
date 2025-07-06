@@ -83,8 +83,8 @@ def run_creator_agent():
         return
     
     try:
-        print("\n🚀 Starting main.py (Creator Agent)...")
-        result = subprocess.run([sys.executable, "main.py"], 
+        print("\n🚀 Starting main_adk.py (Creator Agent)...")
+        result = subprocess.run([sys.executable, "main_adk.py"], 
                               capture_output=False, text=True, timeout=3600)
         
         if result.returncode == 0:
@@ -177,7 +177,7 @@ def show_system_info():
     
     # Check important files
     important_files = [
-        "main.py",
+        "main_adk.py",
         "testing.py", 
         "agents/fromScratchLLMStructured_player_v8/creator_agent.py",
         "agents/fromScratchLLMStructured_player_v8/foo_player.py",
@@ -204,7 +204,7 @@ def show_system_info():
     print("1. foo_player.py: The Catan player agent that gets evolved")
     print("2. creator_agent.py: AI that analyzes and improves foo_player.py")
     print("3. testing.py: Evaluates the agent against different opponents")
-    print("4. main.py: Runs the creator agent evolution process")
+    print("4. main_adk.py: Runs the creator agent evolution process")
     
     print("\n🎯 AGENT TYPES:")
     print("- FOO_LLM_S5_M: Your advanced structured LLM player")
