@@ -6,7 +6,7 @@ import re
 from datetime import datetime
 
 LLM = "gpt-4o"  # The LLM used
-EVAL_PLAYER = "FOO_LLM_S6"  # The player you want to evaluate (use the code/key)
+EVAL_PLAYER = "FOO_LLM_S7"  # The player you want to evaluate (use the code/key)
 NUM_GAMES = 10
 
 # Dictionary mapping player codes to their full names as they appear in summary
