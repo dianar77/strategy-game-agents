@@ -2,7 +2,7 @@
 Main entry point for the Agent Evolver system
 """
 
-from agents.fromScratchLLMStructured_player_v7.creator_agent import CreatorAgent
+from agents.fromScratchLLMStructured_player_v8.creator_agent import CreatorAgent
 import json
 import asyncio
 

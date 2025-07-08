@@ -9,6 +9,7 @@ from .researcher.agent import ResearcherAgent
 from .analyzer.agent import AnalyzerAgent
 from .evolver.agent import EvolverAgent
 from .player.agent import PlayerAgent
+from .assessment.agent import AssessmentAgent
 
 __all__ = [
     'StrategizerAgent',
@@ -16,5 +17,6 @@ __all__ = [
     'ResearcherAgent',
     'AnalyzerAgent',
     'EvolverAgent',
-    'PlayerAgent'
+    'PlayerAgent',
+    'AssessmentAgent'
 ] 

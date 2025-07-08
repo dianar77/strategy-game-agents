@@ -29,6 +29,7 @@ AGENTS = {
     "FOO_LLM_S6": "FooPlayer_LLM_V6",
     "FOO_LLM_S7": "FooPlayer_LLM_S7",
     "FOO_LLM_S8": "FooPlayer_LLM_S8",
+    "FOO_LLM_S9": "FooPlayer_LLM_S9",
 }
 
 # List opponents from strongest to weakest
@@ -90,7 +91,7 @@ def parse_agent_wins(output, agent_code):
 
 def test_all_versions():
     """Test all v6 and v7 versions against opponents"""
-    versions = ["FOO_LLM_S6", "FOO_LLM_S7", "FOO_LLM_S8"]
+    versions = ["FOO_LLM_S6", "FOO_LLM_S7", "FOO_LLM_S8", "FOO_LLM_S9"]
     
     for version in versions:
         print(f"\n{'='*60}")
@@ -163,7 +164,7 @@ def test_all_versions():
 
 def main():
     """Main function - can test single version or all versions"""
-    if EVAL_PLAYER in ["FOO_LLM_S6", "FOO_LLM_S7", "FOO_LLM_S8"]:
+    if EVAL_PLAYER in ["FOO_LLM_S6", "FOO_LLM_S7", "FOO_LLM_S8", "FOO_LLM_S9"]:
         # Test single version
         # Create a unique directory name based on current date/time
         timestamp = datetime.now().strftime("trial_%Y%m%d_%H%M%S")
@@ -235,7 +236,7 @@ def main():
         test_all_versions()
     else:
         print(f"Unknown EVAL_PLAYER: {EVAL_PLAYER}")
-        print("Available options: FOO_LLM_S6, FOO_LLM_S7, FOO_LLM_S8, ALL")
+        print("Available options: FOO_LLM_S6, FOO_LLM_S7, FOO_LLM_S8, FOO_LLM_S9, ALL")
 
 if __name__ == "__main__":
     # You can change EVAL_PLAYER to "FOO_LLM_V6", "FOO_LLM_S7", "FOO_LLM_S8", or "ALL" to test different configurations

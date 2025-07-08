@@ -16,14 +16,15 @@ from subagents import (
     ResearcherAgent, 
     AnalyzerAgent, 
     EvolverAgent, 
-    PlayerAgent
+    PlayerAgent,
+    AssessmentAgent
 )
 from typing import Dict, List, Any, Optional
 import json
 import asyncio
 import os
 import logging
-from loop_assessment_agent import create_evolution_assessor_agent
+
 
 # Enable debug logging for LiteLLM
 logging.basicConfig(level=logging.DEBUG)
@@ -297,7 +298,7 @@ class CreatorAgent:
         fresh_evolver = EvolverAgent(self.model)
         
         # Create the evolution assessment agent with exit capability
-        evolution_assessor = create_evolution_assessor_agent(model="gemini-2.0-flash")
+        evolution_assessor = AssessmentAgent(self.model)
         
         # Create the single iteration evolution agent (without final assessment)
         single_iteration_agent = SequentialAgent(
