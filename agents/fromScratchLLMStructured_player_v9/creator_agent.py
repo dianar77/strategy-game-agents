@@ -3,7 +3,7 @@ Agent Evolver Implementation using Google ADK with LiteLLM/Ollama
 This implements a self-improving agent system with multiple specialized agents.
 """
 
-from google.adk.agents import SequentialAgent, ParallelAgent
+from google.adk.agents import SequentialAgent, ParallelAgent, LoopAgent
 from google.adk.models.lite_llm import LiteLlm
 from google.adk.sessions import DatabaseSessionService
 from google.adk.runners import Runner
@@ -23,6 +23,7 @@ import json
 import asyncio
 import os
 import logging
+from loop_assessment_agent import create_evolution_assessor_agent
 
 # Enable debug logging for LiteLLM
 logging.basicConfig(level=logging.DEBUG)
@@ -255,54 +256,150 @@ class CreatorAgent:
         
         return results
     
-    async def continuous_evolution(self, target_system: str, iterations: int = 5):
+    async def continuous_evolution(self, target_system: str, max_iterations: int = 10):
         """
-        Run continuous evolution cycles
+        Run continuous evolution cycles using LoopAgent pattern
         """
-        print(f"🔄 Starting continuous evolution for {iterations} iterations")
+        print(f"🔄 Starting continuous evolution with LoopAgent (max {max_iterations} iterations)")
         
-        evolution_history = []
-        current_goal = "Initial system optimization"
+        # Set up ADK session and runner infrastructure for the loop
+        db_url = "sqlite:///./my_agent_data.db"
+        session_service = DatabaseSessionService(db_url=db_url)
         
-        for i in range(iterations):
-            print(f"\n--- Evolution Iteration {i+1}/{iterations} ---")
-            
-            try:
-                result = await self.evolve_system(target_system, current_goal)
-                evolution_history.append(result)
+        app_name = "continuous_evolution"
+        user_id = "system_user"
+        session_id = f"loop_evolution_{hash(target_system) % 10000}"
+        
+        current_goal = "Initial system optimization and improvement"
+        
+        # Initialize session with the continuous evolution context
+        initial_state = {
+            "target_system": target_system,
+            "current_goal": current_goal,
+            "iteration_count": 0,
+            "evolution_history": [],
+            "max_iterations": max_iterations
+        }
+        
+        session = await session_service.create_session(
+            app_name=app_name,
+            user_id=user_id,
+            session_id=session_id,
+            state=initial_state
+        )
+        
+        # Create fresh agent instances for the loop
+        fresh_researcher = ResearcherAgent(self.model)
+        fresh_strategizer = StrategizerAgent(self.model)
+        fresh_coder = CoderAgent(self.model)
+        fresh_player = PlayerAgent(self.model, self.api_config)
+        fresh_analyzer = AnalyzerAgent(self.model)
+        fresh_evolver = EvolverAgent(self.model)
+        
+        # Create the evolution assessment agent with exit capability
+        evolution_assessor = create_evolution_assessor_agent(model="gemini-2.0-flash")
+        
+        # Create the single iteration evolution agent (without final assessment)
+        single_iteration_agent = SequentialAgent(
+            name="single_evolution_iteration",
+            sub_agents=[
+                # Phase 1: Research & Strategy (Parallel)
+                ParallelAgent(
+                    name="research_strategy_phase", 
+                    sub_agents=[
+                        fresh_researcher.get_agent(),
+                        fresh_strategizer.get_agent()
+                    ]
+                ),
+                # Phase 2: Evolution Planning
+                fresh_evolver.get_agent(),
+                # Phase 3: Implementation & Analysis (Sequential)
+                SequentialAgent(
+                    name="implementation_analysis_phase",
+                    sub_agents=[
+                        fresh_coder.get_agent(),
+                        fresh_player.get_agent(),
+                        fresh_analyzer.get_agent()
+                    ]
+                )
+            ]
+        )
+        
+        # Create the LoopAgent that combines evolution + assessment
+        evolution_loop = LoopAgent(
+            name="ContinuousEvolutionLoop",
+            max_iterations=max_iterations,
+            sub_agents=[
+                single_iteration_agent,  # Execute one evolution cycle
+                evolution_assessor       # Assess and decide whether to continue or exit
+            ],
+            description=f"Iteratively evolves {target_system} until goals are met or max iterations reached"
+        )
+        
+        # Create the loop runner
+        loop_runner = Runner(
+            agent=evolution_loop,
+            app_name=app_name,
+            session_service=session_service
+        )
+        
+        # Execute the continuous evolution loop
+        evolution_message = f"""
+        Execute continuous evolution for {target_system}:
+        
+        **Target System:** {target_system}
+        **Initial Goal:** {current_goal}
+        **Max Iterations:** {max_iterations}
+        
+        For each iteration:
+        1. Research and strategize improvements
+        2. Plan evolution approach  
+        3. Implement improvements
+        4. Test and analyze results
+        5. Assess progress and decide whether to continue
+        
+        The assessment agent will terminate the loop when:
+        - Goals are sufficiently achieved
+        - Quality standards are met
+        - Diminishing returns are evident
+        - Maximum iterations are reached
+        """
+        
+        content = types.Content(
+            role='user', 
+            parts=[types.Part(text=evolution_message)]
+        )
+        
+        # Execute the continuous evolution loop
+        final_result = None
+        iteration_results = []
+        
+        try:
+            print("🔄 Executing continuous evolution loop...")
+            for event in loop_runner.run(user_id=user_id, session_id=session_id, new_message=content):
+                if event.is_final_response() and event.content and event.content.parts:
+                    result_text = event.content.parts[0].text
+                    iteration_results.append(result_text)
+                    print(f"✅ Loop iteration completed: {len(iteration_results)}")
+                    final_result = result_text
                 
-                # Extract next goal from assessment with proper error handling
-                if result and isinstance(result, dict):
-                    assessment = result.get("assessment", "")
-                    if isinstance(assessment, dict):
-                        next_goal = assessment.get("next_goal", "Continue optimization")
-                    else:
-                        # If assessment is a string, use a default next goal
-                        next_goal = f"Continue optimization based on iteration {i+1}"
-                else:
-                    next_goal = f"Continue optimization (iteration {i+1} had issues)"
-                
-                current_goal = next_goal
-                print(f"✅ Iteration {i+1} completed")
-                
-            except Exception as e:
-                print(f"⚠️ Error in iteration {i+1}: {e}")
-                # Create a fallback result
-                fallback_result = {
-                    "system": target_system,
-                    "goal": current_goal,
-                    "research_strategy": f"Iteration {i+1} failed due to error: {str(e)}",
-                    "evolution_plan": None,
-                    "implementation": None,
-                    "assessment": None,
-                    "status": "failed"
-                }
-                evolution_history.append(fallback_result)
-                current_goal = f"Recover from iteration {i+1} failure"
-            
+        except Exception as e:
+            print(f"⚠️ Error in continuous evolution loop: {e}")
+            final_result = f"Continuous evolution encountered an error: {str(e)}"
+        
+        # Get final session state
+        final_session = await session_service.get_session(app_name=app_name, user_id=user_id, session_id=session_id)
+        
+        # Parse and return results
         return {
-            "total_iterations": iterations,
-            "evolution_history": evolution_history,
-            "final_state": evolution_history[-1] if evolution_history else None
+            "target_system": target_system,
+            "max_iterations": max_iterations,
+            "actual_iterations": len(iteration_results),
+            "evolution_results": iteration_results,
+            "final_result": final_result,
+            "session_state": final_session.state if final_session else {},
+            "loop_terminated": final_session.state.get("loop_terminated", False) if final_session else False,
+            "termination_reason": final_session.state.get("termination_reason", "Unknown") if final_session else "Unknown",
+            "status": "completed"
         }
 
